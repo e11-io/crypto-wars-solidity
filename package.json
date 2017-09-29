@@ -1,0 +1,31 @@
+{
+  "name": "crypto-wars-solidity",
+  "version": "1.0.0",
+  "description": "",
+  "main": "truffle.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "e11-contracts": "git+https://github.com/e11-io/e11-contracts.git",
+    "zeppelin-solidity": "1.3.0"
+  },
+  "devDependencies": {
+    "@digix/doxity": "0.5.2"
+  },
+  "scripts": {
+    "test": "rm -rf build/ && truffle compile && truffle test",
+    "doxity": "doxity",
+    "docs": "doxity compile && doxity publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fetcher/crypto-wars-solidity.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Fetcher/crypto-wars-solidity/issues"
+  },
+  "homepage": "https://github.com/Fetcher/crypto-wars-solidity#readme"
+}
