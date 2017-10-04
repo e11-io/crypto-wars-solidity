@@ -23,7 +23,7 @@ contract UserVault is NoOwner {
 	event VaultAdd(address indexed owner, uint256 amount);
 
   // Mapping of user -> balance (keeps track of owned balance)
-  mapping(address => uint256) balances;
+  mapping(address => uint256) public balances;
 
 	ExperimentalToken public experimentalToken;
 
@@ -42,7 +42,7 @@ contract UserVault is NoOwner {
    * @param _amount The amount of tokens to add.
    * @return A boolean that indicates if the operation was successful.
    */
-  function add(address _from, uint256 _amount) public returns(bool) {
+  function add(address _from, uint256 _amount) external returns(bool) {
     require(_amount >= 0);
     // TODO Should we use safeTransferFrom?
     require(experimentalToken.transferFrom(_from, this, _amount));
@@ -68,7 +68,7 @@ contract UserVault is NoOwner {
    * @param _user The address to query the balance of.
    * @return An uint256 representing the amount owned by the passed address.
    */
-  function balanceOf(address _user) public constant returns (uint256 balance) {
+  function balanceOf(address _user) external constant returns (uint256 balance) {
     return balances[_user];
   }
 }

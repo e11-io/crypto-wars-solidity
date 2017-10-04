@@ -1,6 +1,8 @@
 pragma solidity ^0.4.15;
 
 import 'zeppelin-solidity/contracts/ownership/NoOwner.sol';
+import './BuildingsData.sol';
+import './UserVillage.sol';
 
 /**
  * @title UserBuildings (WIP)
@@ -12,25 +14,43 @@ import 'zeppelin-solidity/contracts/ownership/NoOwner.sol';
 contract UserBuildings is NoOwner {
 
   /**
-   * @dev event for adding a building to a user logging
+   * event for adding multiple buildings to a user logging
    * @param userAddress the address of the user to add the building
-   * @param buildingId the id of the building to be added
+   * @param ids the IDs of the buildings to be added
    */
-  event AddUserBuilding(address userAddress, uint buildingId);
+  event AddUserBuildings(address userAddress, uint[] ids);
 
   // Mapping of user -> buildings ids (keeps track of owned buildings)
-  mapping (address => uint[]) userBuildings;
+  mapping (address => uint[]) public userBuildings;
+
+  BuildingsData buildingsData;
+  UserVillage userVillage;
+
+  function UserBuildings(address _buildingsData) {
+    buildingsData = BuildingsData(_buildingsData);
+  }
+
+  function setUserVillage(address _userVillage) external onlyOwner {
+    userVillage = UserVillage(_userVillage);
+  }
+
 
   /**
-   * @notice Add new building to an user
-   * @dev Function to add a building
-   * @param _buildingId The ID of the building to add. (uint)
+   * @notice Add new buildings to an user
+   * @dev Function to add multiple buildings to a user
+   * @param _ids An array of IDs of the buildings to add. (uint)
    * @return A boolean that indicates if the operation was successful.
    */
-  function addUserBuilding(uint _buildingId) public returns (bool) {
-    // TODO require check if valid
-    userBuildings[msg.sender].push(_buildingId);
-    AddUserBuilding(msg.sender, _buildingId);
+  function addUserBuildings(address _user, uint[] _ids) external returns (bool) {
+    require(msg.sender == address(userVillage));
+    for (uint i = 0; i < _ids.length; i++) {
+      require(_ids[i] >= 0);
+      require(buildingsData.checkBuildingExist(_ids[i]));
+    }
+    for (uint j = 0; j < _ids.length; j++) {
+      userBuildings[_user].push(_ids[j]);
+    }
+    AddUserBuildings(_user, _ids);
     return true;
   }
 

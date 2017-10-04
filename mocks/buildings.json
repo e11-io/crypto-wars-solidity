@@ -1,0 +1,44 @@
+{
+  "buildingProperties":[
+    "id",
+    "name",
+    "health",
+    "defense",
+    "attack",
+    "goldCapacity",
+    "crystalEnergyCapacity",
+    "price",
+    "resource"
+  ],
+  "initialBuildings": [[
+    0,
+    "City Center",
+    1500,
+    50,
+    0,
+    3000,
+    4000,
+    0,
+    0
+  ],[
+    1,
+    "Mine Gold",
+    500,
+    20,
+    0,
+    500,
+    0,
+    200,
+    0
+  ],[
+    2,
+    "Crystal Straction",
+    500,
+    20,
+    0,
+    0,
+    400,
+    200,
+    1
+  ]]
+}

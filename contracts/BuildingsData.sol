@@ -68,7 +68,8 @@ contract BuildingsData is NoOwner {
 
   mapping (uint => Building) public buildings;
 
-  function BuildingsData() {}
+  function BuildingsData() {
+  }
 
   /*
    * @notice Create new definition of a building
@@ -91,7 +92,7 @@ contract BuildingsData is NoOwner {
                        int goldCapacity,
                        int crystalEnergyCapacity,
                        int price,
-                       int resource) onlyOwner {
+                       int resource) external onlyOwner {
 
     require(id >= 0);
     require(keccak256(buildings[id].name) == keccak256(""));
@@ -134,7 +135,7 @@ contract BuildingsData is NoOwner {
                           int goldCapacity,
                           int crystalEnergyCapacity,
                           int price,
-                          int resource) onlyOwner {
+                          int resource) external onlyOwner {
     require(id >= 0);
     require(keccak256(buildings[id].name) != keccak256(""));
     Building storage build = buildings[id];
@@ -165,6 +166,12 @@ contract BuildingsData is NoOwner {
 
     UpdateBuilding(id, build.name, build.health, build.defense, build.attack,
                     build.goldCapacity, build.crystalEnergyCapacity, build.price, build.resource);
+  }
+
+  function checkBuildingExist(uint id) external returns (bool) {
+    require(id >= 0);
+    require(keccak256(buildings[id].name) != keccak256(""));
+    return true;
   }
 
 }
