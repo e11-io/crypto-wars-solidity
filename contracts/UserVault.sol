@@ -8,7 +8,7 @@ import 'e11-contracts/contracts/ExperimentalToken.sol';
  /**
   * @title UserVault (WIP)
   * @dev Keeps track of users e11 balance inside the game.
-  * Aditional funtionality might be added to allow withdraws, implement time locks on withdraws,
+  * Additional functionality might be added to allow withdraws, implement time locks on withdraws,
   * and enable internal transfers between users.
   * @dev Issue: * https://github.com/e11-io/crypto-wars-solidity/issues/2
   */

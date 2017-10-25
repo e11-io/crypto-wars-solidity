@@ -1,6 +1,6 @@
 {
   "name": "crypto-wars-solidity",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "truffle.js",
   "directories": {
@@ -20,12 +20,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Fetcher/crypto-wars-solidity.git"
+    "url": "git+https://github.com/e11-io/crypto-wars-solidity.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Fetcher/crypto-wars-solidity/issues"
+    "url": "https://github.com/e11-io/crypto-wars-solidity/issues"
   },
-  "homepage": "https://github.com/Fetcher/crypto-wars-solidity#readme"
+  "homepage": "https://github.com/e11-io/crypto-wars-solidity#readme"
 }

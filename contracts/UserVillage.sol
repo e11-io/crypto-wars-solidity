@@ -9,8 +9,8 @@ import './UserBuildings.sol';
 /**
  * @title UserVillage (WIP)
  * @dev Manages the user village.
- * Aditional funtionality might be added to allow the village to be destroyed,
- * transfered to another user, paused and unpaused.
+ * Additional functionality might be added to allow the village to be destroyed,
+ * transferred to another user, paused and un-paused.
  * @dev Issue: * https://github.com/e11-io/crypto-wars-solidity/issues/1
  */
 contract UserVillage is NoOwner {
@@ -26,13 +26,14 @@ contract UserVillage is NoOwner {
 	// Mapping of user -> village name (keeps track of owned villages)
 	mapping(address => string) public villages;
 	// Mapping of username -> user (useful for quick lookup)
-	mapping(bytes32 => address) private addreses;
+	mapping(bytes32 => address) public addresses;
 
 	// Vault contract used to store in-game currency.
 	UserVault userVault;
 	UserResources userResources;
 	UserBuildings userBuildings;
-	uint[] initialBuildingsIds = [uint(0),uint(1), uint(2)] ;
+	uint[] initialBuildingsIds = [uint(1),uint(2), uint(3)] ;
+	uint[] initialBuildingsIndexes = [uint(0), uint(0), uint(0)];
 
 
 	/**
@@ -57,15 +58,15 @@ contract UserVillage is NoOwner {
     require(keccak256(_name) != keccak256("")); // 'invalid_village_name'
     require(keccak256(_username) != keccak256("")); // 'invalid_user_name'
 		require(keccak256(villages[msg.sender]) == keccak256("")); // 'user_already_has_village'
-		require(addreses[keccak256(_username)] == address(0)); // 'user_name_already_in_use'
+		require(addresses[keccak256(_username)] == address(0)); // 'user_name_already_in_use'
 
 		// Check and Transfer user's token.
 		require(userVault.add(msg.sender, 1 ether)); // 'could_not_transfer_tokens'
 		require(userResources.initUserResources(msg.sender));
-		require(userBuildings.addUserBuildings(msg.sender, initialBuildingsIds));
+		require(userBuildings.addUserBuildings(msg.sender, initialBuildingsIds, initialBuildingsIndexes));
 
 		villages[msg.sender] = _name;
-		addreses[keccak256(_username)] = msg.sender;
+		addresses[keccak256(_username)] = msg.sender;
 		VillageCreated(msg.sender, _name, _username);
   }
 

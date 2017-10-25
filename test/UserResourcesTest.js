@@ -1,120 +1,152 @@
-var ExperimentalToken = artifacts.require('ExperimentalToken');
-var UserVault = artifacts.require('UserVault');
-var UserVillage = artifacts.require('UserVillage');
-var UserResources = artifacts.require('UserResources');
-var UserBuildings = artifacts.require('UserBuildings');
-var BuildingsData = artifacts.require('BuildingsData');
+const ExperimentalToken = artifacts.require('ExperimentalToken');
+const UserVault = artifacts.require('UserVault');
+const UserVillage = artifacts.require('UserVillage');
+const UserResources = artifacts.require('UserResources');
+const UserBuildings = artifacts.require('UserBuildings');
+const BuildingsData = artifacts.require('BuildingsData');
+
 var buildingsMock = require('../mocks/buildings');
 var resourcesMock = require('../mocks/resources');
+const { assertInvalidOpcode } = require('./helpers/assertThrow');
 
+contract('User Resources Test', (accounts) => {
+  let experimentalToken, userVault, userVillage, userResources, userBuilding, buildingsData = {};
 
-contract('User Resources', (accounts) => {
+  const Alice = accounts[0];
+  const Bob = accounts[1];
+  const Carol = accounts[2];
+  const David = accounts[3];
+  const ether = Math.pow(10, 18);
+  const goldAmount = 2000;
+  const crystalAmount = 3000;
+  const quantumAmount = 500;
 
-  let ether = Math.pow(10, 18);
-  acc_zero = accounts[0];
-  acc_one = accounts[1];
-  acc_two = accounts[2];
-  acc_three = accounts[3];
-  let experimentalToken;
-  let userVault;
-  let userVillage;
-  let userResources;
-  let userBuildings
-  let buildingsData;
+  beforeEach(async () => {
+    experimentalToken = await ExperimentalToken.new();
+    userVault = await UserVault.new(experimentalToken.address);
+    userResources = await UserResources.new();
+    buildingsData = await BuildingsData.new();
+    userBuildings= await UserBuildings.new(buildingsData.address);
+    userVillage = await UserVillage.new(userVault.address,
+                                        userResources.address,
+                                        userBuildings.address);
 
-  it('Set Deployed Contracts', () => {
-    return ExperimentalToken.deployed().then((instance) => {
-      experimentalToken = instance;
-      return UserVault.deployed().then((instance) => {
-        userVault = instance;
-        return UserVillage.deployed().then((instance) => {
-          userVillage = instance;
-          return UserResources.deployed().then((instance) => {
-            userResources = instance;
-            return UserBuildings.deployed().then((instance) => {
-              userBuildings = instance;
-              return BuildingsData.deployed().then((instance) => {
-                buildingsData = instance;
-              })
-            })
-          })
-        })
+    await userResources.setUserVillageAddress(userVillage.address);
+    await userBuildings.setUserVillage(userVillage.address);
+    await buildingsData.addBuilding(...buildingsMock.initialBuildings[0]);
+    await buildingsData.addBuilding(...buildingsMock.initialBuildings[1]);
+    await buildingsData.addBuilding(...buildingsMock.initialBuildings[2]);
+    await experimentalToken.approve(userVault.address, 1 * ether); // needed to create village
+  })
+
+  it('Init User Resources from not User Village Contract', async () => {
+    return assertInvalidOpcode(async () => {
+      await userResources.initUserResources(Bob)
+    })
+  })
+
+  it('Set BuildingsQueue as Alice', async () => {
+    await userResources.setBuildingsQueue(Alice);
+    await userResources.giveResourcesToUser(
+      Alice, goldAmount, crystalAmount, quantumAmount
+    );
+
+    const [gold, crystal, quantum] = await userResources.getUserResources.call(Alice);
+
+    assert.equal(gold.toNumber(), goldAmount);
+  })
+
+  it('Set UserVillageAddress as Alice', async () => {
+    await userResources.setUserVillageAddress(Alice);
+    await userResources.initUserResources(Bob);
+
+    const [gold, crystal, quantum] = await userResources.getUserResources.call(Bob);
+
+    assert.equal(gold.toNumber(), 0);
+  })
+
+  context('Resources initialized period', async () => {
+    beforeEach(async () => {
+      await userResources.setInitialResources(...resourcesMock.initialResources);
+    })
+
+    it('Give Resources to User', async () => {
+      await userResources.giveResourcesToUser(
+        Alice, goldAmount, crystalAmount, quantumAmount
+      );
+
+      const [gold, crystal, quantum] = await userResources.getUserResources.call(Alice);
+
+      assert.equal(gold.toNumber(), goldAmount);
+      assert.equal(crystal.toNumber(), crystalAmount);
+      assert.equal(quantum.toNumber(), quantumAmount);
+    })
+
+    it('Check if resources are given correctly when user creation', async () => {
+      await userVillage.create('My new village!', 'Cool player');
+
+      const [gold, crystal, quantumDust] = await userResources.getUserResources.call(Alice);
+
+      assert.equal(gold.toNumber(), resourcesMock.initialResources[0], 'Initial gold amount is incorrect')
+      assert.equal(crystal.toNumber(), resourcesMock.initialResources[1], 'Initial crystal amount is incorrect')
+      assert.equal(quantumDust.toNumber(), resourcesMock.initialResources[2], 'Initial quantum amount is incorrect')
+    })
+
+    it('Set initial resources amount not from owner', async () => {
+      return assertInvalidOpcode(async () => {
+        await userResources.setInitialResources(...resourcesMock.initialResources, {from: Bob});
       })
     })
-  }),
 
-  it('Set User Resources', () => {
-    return userResources.setUserVillageAddress(userVillage.address);
-  })
+    context('BuildingsQueue as Alice period', async () => {
+      beforeEach(async () => {
+        await userResources.setBuildingsQueue(Alice);
+      })
 
-  it('Set User Buildings', () => {
-    return userBuildings.setUserVillage(userVillage.address);
-  })
+      it('Consume gold without enough resources', async () => {
+        return assertInvalidOpcode(async () => {
+          await userResources.consumeGold(Alice, 300);
+        })
+      })
 
-  it('Create Buildings', () => {
-    return buildingsData.addBuilding(...buildingsMock.initialBuildings[0]
-    ).then(() => {
-      return buildingsData.addBuilding(...buildingsMock.initialBuildings[1]);
-    }).then(() => {
-      return buildingsData.addBuilding(...buildingsMock.initialBuildings[2]);
+      it('Consume crystal without enough resources', async () => {
+        return assertInvalidOpcode(async () => {
+          await userResources.consumeCrystal(Alice, 300);
+        })
+      })
+
+      it('Consume quantum without enough resources', async () => {
+        return assertInvalidOpcode(async () => {
+          await userResources.consumeQuantumDust(Alice, 300);
+        })
+      })
+
+      context('User with resources period', async () => {
+        beforeEach(async () => {
+          await userResources.giveResourcesToUser(
+            Alice, goldAmount, crystalAmount, quantumAmount
+          );
+        })
+
+        it('Test consume gold with enough resources', async () => {
+          await userResources.consumeGold(Alice, 300);
+          const [gold, crystal, quantum] = await userResources.getUserResources.call(Alice);
+          assert.equal(gold.toNumber(), goldAmount - 300);
+        })
+
+        it('Test consume crystal with enough resources', async () => {
+          await userResources.consumeCrystal(Alice, 300);
+          const [gold, crystal, quantum] = await userResources.getUserResources.call(Alice);
+          assert.equal(crystal.toNumber(), crystalAmount - 300);
+        })
+
+        it('Test consume quantum with enough resources', async () => {
+          await userResources.consumeQuantumDust(Alice, 300);
+          const [gold, crystal, quantum] = await userResources.getUserResources.call(Alice);
+          assert.equal(quantum.toNumber(), quantumAmount - 300);
+        })
+      })
+
     })
   })
-
-  it('Initialize Resources', () => {
-    return userResources.setInitialResources(...resourcesMock.initialResources);
-  })
-
-
-
-  it('Create village', () => {
-    return experimentalToken.approve(userVault.address, 1 * ether).then((result) => {
-      return userVillage.create('My new village!', 'Cool player')
-    }).then((result) => {
-      assert.equal(result.logs[0].event,'VillageCreated');
-      assert.equal(result.logs[0].args.owner, acc_zero);
-      assert.equal(result.logs[0].args.name,'My new village!');
-      assert.equal(result.logs[0].args.username,'Cool player');
-      assert('Village was created');
-      return userVault.balanceOf(acc_zero);
-    }).then((balance) => {
-      assert.equal(balance.toNumber(), 1 * ether, 'User E11 in Vault should be 1');
-      return experimentalToken.balanceOf(userVault.address);
-    }).then((balance) => {
-      assert.equal(balance.toNumber(), 1 * ether, 'UserVault E11 balance should be 1');
-      return userResources.getUserResources.call(acc_zero);
-    }).then((resources) => {
-      assert.equal(resources[0].toNumber(), 4000, 'Initial gold amount is incorrect')
-      assert.equal(resources[1].toNumber(), 4000, 'Initial crystal amount is incorrect')
-      assert.equal(resources[2].toNumber(), 1, 'Initial quantum amount is incorrect')
-    })
-  });
-
-  it('Set User Village from Not Owner', () => {
-    expectedError = true;
-    return userResources.setUserVillageAddress(
-      userVillage.address, {from: acc_one}
-    ).then(() => {
-      expectedError = false;
-      assert(false, 'Test should fail');
-    }).catch((error) => {
-      if (!expectedError) {
-        assert(false, error.toString());
-      }
-    })
-  })
-
-  it('Init User Resources from not User Village Contract', () => {
-    expectedError = true;
-    return userResources.initUserResources(acc_one).then(() => {
-      return userResources.getUserResources.call(acc_one);
-    }).then((resources) => {
-      expectedError = false;
-      assert(false, 'Test should fail');
-    }).catch((error) => {
-      if (!expectedError) {
-        assert(false, error.toString());
-      }
-    })
-  })
-
 });

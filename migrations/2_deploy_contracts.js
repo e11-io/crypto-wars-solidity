@@ -5,20 +5,24 @@ var UserVillage = artifacts.require('./UserVillage.sol');
 var UserResources = artifacts.require('./UserResources.sol');
 var BuildingsData = artifacts.require('./BuildingsData.sol');
 var UserBuildings = artifacts.require('./UserBuildings.sol');
+var BuildingsQueue = artifacts.require('./BuildingsQueue.sol');
 
 
 module.exports = function(deployer) {
-  deployer.deploy(ExperimentalToken).then(function() {
-    return deployer.deploy(SimpleToken).then(function() {
-      return deployer.deploy(UserVault, ExperimentalToken.address).then(function() {
-        return deployer.deploy(UserResources).then(function() {
-          return deployer.deploy(BuildingsData).then(function() {
-            return deployer.deploy(UserBuildings, BuildingsData.address).then(function() {
+  deployer.deploy(ExperimentalToken).then(() => {
+    return deployer.deploy(SimpleToken).then(() => {
+      return deployer.deploy(UserVault, ExperimentalToken.address).then(() => {
+        return deployer.deploy(UserResources).then(() => {
+          return deployer.deploy(BuildingsData).then(() => {
+            return deployer.deploy(UserBuildings, BuildingsData.address).then(() => {
               return deployer.deploy(UserVillage,
                                    UserVault.address,
                                    UserResources.address,
                                    UserBuildings.address)
-              .then(function() {
+              .then(() => {
+                return deployer.deploy(BuildingsQueue).then(() => {
+
+                })
               })
             })
           })

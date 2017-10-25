@@ -8,10 +8,11 @@
     "goldCapacity",
     "crystalEnergyCapacity",
     "price",
-    "resource"
+    "resource",
+    "block"
   ],
   "initialBuildings": [[
-    0,
+    1,
     "City Center",
     1500,
     50,
@@ -19,26 +20,29 @@
     3000,
     4000,
     0,
-    0
+    0,
+    1
   ],[
-    1,
-    "Mine Gold",
+    2,
+    "Gold Mine",
     500,
     20,
     0,
     500,
     0,
     200,
-    0
+    0,
+    5
   ],[
-    2,
-    "Crystal Straction",
+    3,
+    "Crystal Mine",
     500,
     20,
     0,
     0,
     400,
     200,
-    1
+    1,
+    2
   ]]
 }
