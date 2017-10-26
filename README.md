@@ -1,5 +1,7 @@
 # Crypto Wars
 
+[![Join the chat at https://gitter.im/crypto-wars-solidity/Lobby](https://badges.gitter.im/crypto-wars-solidity/Lobby.svg)](https://gitter.im/crypto-wars-solidity/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 This repository holds all the smart contracts that are going to be used on the game [Crypto Wars](https://e11.io).
 Please check the [documentation](https://e11-io.github.io/crypto-wars-solidity/) for more details.
 
