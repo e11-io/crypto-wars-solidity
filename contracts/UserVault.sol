@@ -1,9 +1,8 @@
 pragma solidity ^0.4.15;
 
+import 'e11-contracts/contracts/ExperimentalToken.sol';
 import 'zeppelin-solidity/contracts/math/SafeMath.sol';
 import 'zeppelin-solidity/contracts/ownership/NoOwner.sol';
-import 'zeppelin-solidity/contracts/token/ERC20Basic.sol';
-import 'e11-contracts/contracts/ExperimentalToken.sol';
 
  /**
   * @title UserVault (WIP)
@@ -44,7 +43,6 @@ contract UserVault is NoOwner {
    */
   function add(address _from, uint256 _amount) external returns(bool) {
     require(_amount >= 0);
-    // TODO Should we use safeTransferFrom?
     require(experimentalToken.transferFrom(_from, this, _amount));
     balances[_from] = balances[_from].add(_amount);
 		VaultAdd(_from, _amount);

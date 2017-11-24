@@ -1,7 +1,9 @@
 const BuildingsData = artifacts.require('BuildingsData');
 
 var buildingsMock = require('../mocks/buildings');
-const { assertInvalidOpcode } = require('./helpers/assertThrow');
+const { assertRevert } = require('./helpers/assertThrow');
+
+const stat = buildingsMock.stats;
 
 contract('Buildings Data Test', accounts => {
   let buildingsData = {};
@@ -13,237 +15,379 @@ contract('Buildings Data Test', accounts => {
   })
 
   it('Building creation', async () => {
-    await buildingsData.addBuilding(...buildingsMock.initialBuildings[0]);
+    let building = buildingsMock.initialBuildings[0];
+    await buildingsData.addBuilding(building.id, building.name, building.stats);
 
     const [price, resource, blocks] = await buildingsData.getBuildingData.call(1);
 
-    assert.equal(buildingsMock.initialBuildings[0][7], price.toNumber());
-    assert.equal(buildingsMock.initialBuildings[0][8], resource.toNumber());
-    assert.equal(buildingsMock.initialBuildings[0][9], blocks.toNumber());
+    assert.equal(building.stats[stat.price], price.toNumber());
+    assert.equal(building.stats[stat.resource], resource.toNumber());
+    assert.equal(building.stats[stat.blocks], blocks.toNumber());
   })
 
   it('Add building with empty name', async () => {
-    return assertInvalidOpcode(async () => {
-      await buildingsData.addBuilding(88, '', 1500, 50, 0, 3000, 4000, 0, 0, 2);
+    return assertRevert(async () => {
+      await buildingsData.addBuilding(88, '', [1500, 50, 0, 3000, 4000, 0, 0, 2, 0, 0, 0, 0]);
     })
   })
 
   it('Add Building with negative Health', async () => {
-    return assertInvalidOpcode(async () => {
-      await buildingsData.addBuilding(44, 'Wall', -20, 50, 0, 3000, 4000, 0, 0, 2);
+    return assertRevert(async () => {
+      await buildingsData.addBuilding(44, 'Wall', [-20, 50, 0, 3000, 4000, 0, 0, 2, 0, 0, 0, 0]);
     })
   })
 
   it('Add Building with negative Health and empty name', async () => {
-    return assertInvalidOpcode(async () => {
-      await buildingsData.addBuilding(2, '', -20, 50, 0, 3000, 4000, 0, 0, 2);
+    return assertRevert(async () => {
+      await buildingsData.addBuilding(2, '', [-20, 50, 0, 3000, 4000, 0, 0, 2, 0, 0, 0, 0]);
     })
   })
 
   context('Existing buildings period', async() => {
     beforeEach(async () => {
-      await buildingsData.addBuilding(...buildingsMock.initialBuildings[0]);
-      await buildingsData.addBuilding(...buildingsMock.initialBuildings[1]);
-      await buildingsData.addBuilding(...buildingsMock.initialBuildings[2]);
+      await buildingsData.addBuilding(buildingsMock.initialBuildings[0].id,
+        buildingsMock.initialBuildings[0].name,
+        buildingsMock.initialBuildings[0].stats);
+      await buildingsData.addBuilding(buildingsMock.initialBuildings[1].id,
+        buildingsMock.initialBuildings[1].name,
+        buildingsMock.initialBuildings[1].stats);
+      await buildingsData.addBuilding(buildingsMock.initialBuildings[2].id,
+        buildingsMock.initialBuildings[2].name,
+        buildingsMock.initialBuildings[2].stats);
     })
 
     it('Update building name', async () => {
       let building = buildingsMock.initialBuildings[0];
 
-      const txData = await buildingsData.updateBuilding(
-        building[0], 'Castle', -1, -1, -1, -1, -1, -1, -1, -1
+      await buildingsData.updateBuilding(
+        building.id, 'Castle', [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
       )
-      let logArgs = txData.logs[0].args;
 
-      assert.equal(logArgs.name, 'Castle');
-      assert.equal(logArgs.health.toNumber(), building[2], 'health');
-      assert.equal(logArgs.defense.toNumber(), building[3], 'defense');
-      assert.equal(logArgs.attack.toNumber(), building[4], 'attack');
-      assert.equal(logArgs.goldCapacity.toNumber(), building[5], 'goldCapacity');
-      assert.equal(logArgs.crystalEnergyCapacity.toNumber(), building[6], 'crystalEnergyCapacity');
-      assert.equal(logArgs.price.toNumber(), building[7], 'price');
-      assert.equal(logArgs.resource.toNumber(), building[8], 'resource');
-      assert.equal(logArgs.blocks.toNumber(), building[9], 'blocks');
+      const data = await buildingsData.buildings.call(building.id);
+
+      assert.equal(data[0], 'Castle');
+      assert.equal(data[1].toNumber(), building.stats[stat.health], 'health');
+      assert.equal(data[2].toNumber(), building.stats[stat.defense], 'defense');
+      assert.equal(data[3].toNumber(), building.stats[stat.attack], 'attack');
+      assert.equal(data[4].toNumber(), building.stats[stat.goldCapacity], 'goldCapacity');
+      assert.equal(data[5].toNumber(), building.stats[stat.crystalEnergyCapacity], 'crystalEnergyCapacity');
+      assert.equal(data[6].toNumber(), building.stats[stat.goldRate], 'goldRate');
+      assert.equal(data[7].toNumber(), building.stats[stat.crystalRate], 'crystalRate');
+      assert.equal(data[8].toNumber(), building.stats[stat.price], 'price');
+      assert.equal(data[9].toNumber(), building.stats[stat.resource], 'resource');
+      assert.equal(data[10].toNumber(), building.stats[stat.blocks], 'blocks');
+      assert.equal(data[11].toNumber(), building.stats[stat.previousLevelId], 'previousLevelId');
+      assert.equal(data[12].toNumber(), building.stats[stat.nextLevelId], 'nextLevelId');
     })
 
     it('Update building health', async () => {
       let building = buildingsMock.initialBuildings[0];
 
-      const txData = await buildingsData.updateBuilding(
-        building[0], '', 6000, -1, -1, -1, -1, -1, -1, -1
+      await buildingsData.updateBuilding(
+        building.id, '', [6000, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
       )
-      let logArgs = txData.logs[0].args;
 
-      assert.equal(logArgs.name, building[1]);
-      assert.equal(logArgs.health.toNumber(), 6000, 'health');
-      assert.equal(logArgs.defense.toNumber(), building[3], 'defense');
-      assert.equal(logArgs.attack.toNumber(), building[4], 'attack');
-      assert.equal(logArgs.goldCapacity.toNumber(), building[5], 'goldCapacity');
-      assert.equal(logArgs.crystalEnergyCapacity.toNumber(), building[6], 'crystalEnergyCapacity');
-      assert.equal(logArgs.price.toNumber(), building[7], 'price');
-      assert.equal(logArgs.resource.toNumber(), building[8], 'resource');
-      assert.equal(logArgs.blocks.toNumber(), building[9], 'blocks');
+      const data = await buildingsData.buildings.call(building.id);
+
+      assert.equal(data[0], building.name);
+      assert.equal(data[1].toNumber(), 6000, 'health');
+      assert.equal(data[2].toNumber(), building.stats[stat.defense], 'defense');
+      assert.equal(data[3].toNumber(), building.stats[stat.attack], 'attack');
+      assert.equal(data[4].toNumber(), building.stats[stat.goldCapacity], 'goldCapacity');
+      assert.equal(data[5].toNumber(), building.stats[stat.crystalEnergyCapacity], 'crystalEnergyCapacity');
+      assert.equal(data[6].toNumber(), building.stats[stat.goldRate], 'goldRate');
+      assert.equal(data[7].toNumber(), building.stats[stat.crystalRate], 'crystalRate');
+      assert.equal(data[8].toNumber(), building.stats[stat.price], 'price');
+      assert.equal(data[9].toNumber(), building.stats[stat.resource], 'resource');
+      assert.equal(data[10].toNumber(), building.stats[stat.blocks], 'blocks');
+      assert.equal(data[11].toNumber(), building.stats[stat.previousLevelId], 'previousLevelId');
+      assert.equal(data[12].toNumber(), building.stats[stat.nextLevelId], 'nextLevelId');
     })
 
     it('Update building defense', async () => {
       let building = buildingsMock.initialBuildings[0];
 
-      const txData = await buildingsData.updateBuilding(
-        1, '', -1, 6000, -1, -1, -1, -1, -1, -1
+      await buildingsData.updateBuilding(
+        building.id, '', [-1, 6000, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
       )
 
-      let logArgs = txData.logs[0].args;
+      const data = await buildingsData.buildings.call(building.id);
 
-      assert.equal(logArgs.name, building[1]);
-      assert.equal(logArgs.health.toNumber(), building[2], 'health');
-      assert.equal(logArgs.defense.toNumber(), 6000, 'defense');
-      assert.equal(logArgs.attack.toNumber(), building[4], 'attack');
-      assert.equal(logArgs.goldCapacity.toNumber(), building[5], 'goldCapacity');
-      assert.equal(logArgs.crystalEnergyCapacity.toNumber(), building[6], 'crystalEnergyCapacity');
-      assert.equal(logArgs.price.toNumber(), building[7], 'price');
-      assert.equal(logArgs.resource.toNumber(), building[8], 'resource');
-      assert.equal(logArgs.blocks.toNumber(), building[9], 'blocks');
+      assert.equal(data[0], building.name);
+      assert.equal(data[1].toNumber(), building.stats[stat.health], 'health');
+      assert.equal(data[2].toNumber(), 6000, 'defense');
+      assert.equal(data[3].toNumber(), building.stats[stat.attack], 'attack');
+      assert.equal(data[4].toNumber(), building.stats[stat.goldCapacity], 'goldCapacity');
+      assert.equal(data[5].toNumber(), building.stats[stat.crystalEnergyCapacity], 'crystalEnergyCapacity');
+      assert.equal(data[6].toNumber(), building.stats[stat.goldRate], 'goldRate');
+      assert.equal(data[7].toNumber(), building.stats[stat.crystalRate], 'crystalRate');
+      assert.equal(data[8].toNumber(), building.stats[stat.price], 'price');
+      assert.equal(data[9].toNumber(), building.stats[stat.resource], 'resource');
+      assert.equal(data[10].toNumber(), building.stats[stat.blocks], 'blocks');
+      assert.equal(data[11].toNumber(), building.stats[stat.previousLevelId], 'previousLevelId');
+      assert.equal(data[12].toNumber(), building.stats[stat.nextLevelId], 'nextLevelId');
     })
 
     it('Update building attack', async () => {
       let building = buildingsMock.initialBuildings[0];
 
-      const txData = await buildingsData.updateBuilding(
-        1, '', -1, -1, 6000, -1, -1, -1, -1, -1
+      await buildingsData.updateBuilding(
+        building.id, '', [-1, -1, 6000, -1, -1, -1, -1, -1, -1, -1, -1, -1]
       )
 
-      let logArgs = txData.logs[0].args;
+      const data = await buildingsData.buildings.call(building.id);
 
-      assert.equal(logArgs.name, building[1]);
-      assert.equal(logArgs.health.toNumber(), building[2], 'health');
-      assert.equal(logArgs.defense.toNumber(), building[3], 'defense');
-      assert.equal(logArgs.attack.toNumber(), 6000, 'attack');
-      assert.equal(logArgs.goldCapacity.toNumber(), building[5], 'goldCapacity');
-      assert.equal(logArgs.crystalEnergyCapacity.toNumber(), building[6], 'crystalEnergyCapacity');
-      assert.equal(logArgs.price.toNumber(), building[7], 'price');
-      assert.equal(logArgs.resource.toNumber(), building[8], 'resource');
-      assert.equal(logArgs.blocks.toNumber(), building[9], 'blocks');
+      assert.equal(data[0], building.name);
+      assert.equal(data[1].toNumber(), building.stats[stat.health], 'health');
+      assert.equal(data[2].toNumber(), building.stats[stat.defense], 'defense');
+      assert.equal(data[3].toNumber(), 6000, 'attack');
+      assert.equal(data[4].toNumber(), building.stats[stat.goldCapacity], 'goldCapacity');
+      assert.equal(data[5].toNumber(), building.stats[stat.crystalEnergyCapacity], 'crystalEnergyCapacity');
+      assert.equal(data[6].toNumber(), building.stats[stat.goldRate], 'goldRate');
+      assert.equal(data[7].toNumber(), building.stats[stat.crystalRate], 'crystalRate');
+      assert.equal(data[8].toNumber(), building.stats[stat.price], 'price');
+      assert.equal(data[9].toNumber(), building.stats[stat.resource], 'resource');
+      assert.equal(data[10].toNumber(), building.stats[stat.blocks], 'blocks');
+      assert.equal(data[11].toNumber(), building.stats[stat.previousLevelId], 'previousLevelId');
+      assert.equal(data[12].toNumber(), building.stats[stat.nextLevelId], 'nextLevelId');
     })
 
     it('Update building gold capacity', async () => {
       let building = buildingsMock.initialBuildings[0];
 
-      const txData = await buildingsData.updateBuilding(
-        1, '', -1, -1, -1, 6000, -1, -1, -1, -1
+      await buildingsData.updateBuilding(
+        building.id, '', [-1, -1, -1, 6000, -1, -1, -1, -1, -1, -1, -1, -1]
       )
 
-      let logArgs = txData.logs[0].args;
+      const data = await buildingsData.buildings.call(building.id);
 
-      assert.equal(logArgs.name, building[1]);
-      assert.equal(logArgs.health.toNumber(), building[2], 'health');
-      assert.equal(logArgs.defense.toNumber(), building[3], 'defense');
-      assert.equal(logArgs.attack.toNumber(), building[4], 'attack');
-      assert.equal(logArgs.goldCapacity.toNumber(), 6000, 'goldCapacity');
-      assert.equal(logArgs.crystalEnergyCapacity.toNumber(), building[6], 'crystalEnergyCapacity');
-      assert.equal(logArgs.price.toNumber(), building[7], 'price');
-      assert.equal(logArgs.resource.toNumber(), building[8], 'resource');
-      assert.equal(logArgs.blocks.toNumber(), building[9], 'blocks');
+      assert.equal(data[0], building.name);
+      assert.equal(data[1].toNumber(), building.stats[stat.health], 'health');
+      assert.equal(data[2].toNumber(), building.stats[stat.defense], 'defense');
+      assert.equal(data[3].toNumber(), building.stats[stat.attack], 'attack');
+      assert.equal(data[4].toNumber(), 6000, 'goldCapacity');
+      assert.equal(data[5].toNumber(), building.stats[stat.crystalEnergyCapacity], 'crystalEnergyCapacity');
+      assert.equal(data[6].toNumber(), building.stats[stat.goldRate], 'goldRate');
+      assert.equal(data[7].toNumber(), building.stats[stat.crystalRate], 'crystalRate');
+      assert.equal(data[8].toNumber(), building.stats[stat.price], 'price');
+      assert.equal(data[9].toNumber(), building.stats[stat.resource], 'resource');
+      assert.equal(data[10].toNumber(), building.stats[stat.blocks], 'blocks');
+      assert.equal(data[11].toNumber(), building.stats[stat.previousLevelId], 'previousLevelId');
+      assert.equal(data[12].toNumber(), building.stats[stat.nextLevelId], 'nextLevelId');
     })
 
-    it('Update building crystal energy', async () => {
+    it('Update building crystal energy capacity', async () => {
       let building = buildingsMock.initialBuildings[0];
 
-      const txData = await buildingsData.updateBuilding(
-        1, '', -1, -1, -1, -1, 6000, -1, -1, -1
+      await buildingsData.updateBuilding(
+        building.id, '', [-1, -1, -1, -1, 6000, -1, -1, -1, -1, -1, -1, -1]
       )
 
-      let logArgs = txData.logs[0].args;
+      const data = await buildingsData.buildings.call(building.id);
 
-      assert.equal(logArgs.name, building[1]);
-      assert.equal(logArgs.health.toNumber(), building[2], 'health');
-      assert.equal(logArgs.defense.toNumber(), building[3], 'defense');
-      assert.equal(logArgs.attack.toNumber(), building[4], 'attack');
-      assert.equal(logArgs.goldCapacity.toNumber(), building[5], 'goldCapacity');
-      assert.equal(logArgs.crystalEnergyCapacity.toNumber(), 6000, 'crystalEnergyCapacity');
-      assert.equal(logArgs.price.toNumber(), building[7], 'price');
-      assert.equal(logArgs.resource.toNumber(), building[8], 'resource');
-      assert.equal(logArgs.blocks.toNumber(), building[9], 'blocks');
+      assert.equal(data[0], building.name);
+      assert.equal(data[1].toNumber(), building.stats[stat.health], 'health');
+      assert.equal(data[2].toNumber(), building.stats[stat.defense], 'defense');
+      assert.equal(data[3].toNumber(), building.stats[stat.attack], 'attack');
+      assert.equal(data[4].toNumber(), building.stats[stat.goldCapacity], 'goldCapacity');
+      assert.equal(data[5].toNumber(), 6000, 'crystalEnergyCapacity');
+      assert.equal(data[6].toNumber(), building.stats[stat.goldRate], 'goldRate');
+      assert.equal(data[7].toNumber(), building.stats[stat.crystalRate], 'crystalRate');
+      assert.equal(data[8].toNumber(), building.stats[stat.price], 'price');
+      assert.equal(data[9].toNumber(), building.stats[stat.resource], 'resource');
+      assert.equal(data[10].toNumber(), building.stats[stat.blocks], 'blocks');
+      assert.equal(data[11].toNumber(), building.stats[stat.previousLevelId], 'previousLevelId');
+      assert.equal(data[12].toNumber(), building.stats[stat.nextLevelId], 'nextLevelId');
+    })
+
+    it('Update building gold rate', async () => {
+      let building = buildingsMock.initialBuildings[0];
+
+      await buildingsData.updateBuilding(
+        building.id, '', [-1, -1, -1, -1, -1, 6000, -1, -1, -1, -1, -1, -1]
+      )
+
+      const data = await buildingsData.buildings.call(building.id);
+
+      assert.equal(data[0], building.name);
+      assert.equal(data[1].toNumber(), building.stats[stat.health], 'health');
+      assert.equal(data[2].toNumber(), building.stats[stat.defense], 'defense');
+      assert.equal(data[3].toNumber(), building.stats[stat.attack], 'attack');
+      assert.equal(data[4].toNumber(), building.stats[stat.goldCapacity], 'goldCapacity');
+      assert.equal(data[5].toNumber(), building.stats[stat.crystalEnergyCapacity], 'crystalEnergyCapacity');
+      assert.equal(data[6].toNumber(), 6000, 'goldRate');
+      assert.equal(data[7].toNumber(), building.stats[stat.crystalRate], 'crystalRate');
+      assert.equal(data[8].toNumber(), building.stats[stat.price], 'price');
+      assert.equal(data[9].toNumber(), building.stats[stat.resource], 'resource');
+      assert.equal(data[10].toNumber(), building.stats[stat.blocks], 'blocks');
+      assert.equal(data[11].toNumber(), building.stats[stat.previousLevelId], 'previousLevelId');
+      assert.equal(data[12].toNumber(), building.stats[stat.nextLevelId], 'nextLevelId');
+    })
+
+    it('Update building crystal rate', async () => {
+      let building = buildingsMock.initialBuildings[0];
+
+      await buildingsData.updateBuilding(
+        building.id, '', [-1, -1, -1, -1, -1, -1, 6000, -1, -1, -1, -1, -1]
+      )
+
+      const data = await buildingsData.buildings.call(building.id);
+
+      assert.equal(data[0], building.name);
+      assert.equal(data[1].toNumber(), building.stats[stat.health], 'health');
+      assert.equal(data[2].toNumber(), building.stats[stat.defense], 'defense');
+      assert.equal(data[3].toNumber(), building.stats[stat.attack], 'attack');
+      assert.equal(data[4].toNumber(), building.stats[stat.goldCapacity], 'goldCapacity');
+      assert.equal(data[5].toNumber(), building.stats[stat.crystalEnergyCapacity], 'crystalEnergyCapacity');
+      assert.equal(data[6].toNumber(), building.stats[stat.goldRate], 'goldRate');
+      assert.equal(data[7].toNumber(), 6000, 'crystalRate');
+      assert.equal(data[8].toNumber(), building.stats[stat.price], 'price');
+      assert.equal(data[9].toNumber(), building.stats[stat.resource], 'resource');
+      assert.equal(data[10].toNumber(), building.stats[stat.blocks], 'blocks');
+      assert.equal(data[11].toNumber(), building.stats[stat.previousLevelId], 'previousLevelId');
+      assert.equal(data[12].toNumber(), building.stats[stat.nextLevelId], 'nextLevelId');
     })
 
     it('Update building price', async () => {
       let building = buildingsMock.initialBuildings[0];
 
-      const txData = await buildingsData.updateBuilding(
-        1, '', -1, -1, -1, -1, -1, 6000, -1, -1
+      await buildingsData.updateBuilding(
+        building.id, '', [-1, -1, -1, -1, -1, -1, -1, 6000, -1, -1, -1, -1]
       )
 
-      let logArgs = txData.logs[0].args;
+      const data = await buildingsData.buildings.call(building.id);
 
-      assert.equal(logArgs.name, building[1]);
-      assert.equal(logArgs.health.toNumber(), building[2], 'health');
-      assert.equal(logArgs.defense.toNumber(), building[3], 'defense');
-      assert.equal(logArgs.attack.toNumber(), building[4], 'attack');
-      assert.equal(logArgs.goldCapacity.toNumber(), building[5], 'goldCapacity');
-      assert.equal(logArgs.crystalEnergyCapacity.toNumber(), building[6], 'crystalEnergyCapacity');
-      assert.equal(logArgs.price.toNumber(), 6000, 'price');
-      assert.equal(logArgs.resource.toNumber(), building[8], 'resource');
-      assert.equal(logArgs.blocks.toNumber(), building[9], 'blocks');
+      assert.equal(data[0], building.name);
+      assert.equal(data[1].toNumber(), building.stats[stat.health], 'health');
+      assert.equal(data[2].toNumber(), building.stats[stat.defense], 'defense');
+      assert.equal(data[3].toNumber(), building.stats[stat.attack], 'attack');
+      assert.equal(data[4].toNumber(), building.stats[stat.goldCapacity], 'goldCapacity');
+      assert.equal(data[5].toNumber(), building.stats[stat.crystalEnergyCapacity], 'crystalEnergyCapacity');
+      assert.equal(data[6].toNumber(), building.stats[stat.goldRate], 'goldRate');
+      assert.equal(data[7].toNumber(), building.stats[stat.crystalRate], 'crystalRate');
+      assert.equal(data[8].toNumber(), 6000, 'price');
+      assert.equal(data[9].toNumber(), building.stats[stat.resource], 'resource');
+      assert.equal(data[10].toNumber(), building.stats[stat.blocks], 'blocks');
+      assert.equal(data[11].toNumber(), building.stats[stat.previousLevelId], 'previousLevelId');
+      assert.equal(data[12].toNumber(), building.stats[stat.nextLevelId], 'nextLevelId');
     })
 
     it('Update building resources', async () => {
       let building = buildingsMock.initialBuildings[0];
 
-      const txData = await buildingsData.updateBuilding(
-        1, '', -1, -1, -1, -1, -1, -1, 6000, -1
+      await buildingsData.updateBuilding(
+        building.id, '', [-1, -1, -1, -1, -1, -1, -1, -1, 6000, -1, -1, -1]
       )
 
-      let logArgs = txData.logs[0].args;
+      const data = await buildingsData.buildings.call(building.id);
 
-      assert.equal(logArgs.name, building[1]);
-      assert.equal(logArgs.health.toNumber(), building[2], 'health');
-      assert.equal(logArgs.defense.toNumber(), building[3], 'defense');
-      assert.equal(logArgs.attack.toNumber(), building[4], 'attack');
-      assert.equal(logArgs.goldCapacity.toNumber(), building[5], 'goldCapacity');
-      assert.equal(logArgs.crystalEnergyCapacity.toNumber(), building[6], 'crystalEnergyCapacity');
-      assert.equal(logArgs.price.toNumber(), building[7], 'price');
-      assert.equal(logArgs.resource.toNumber(), 6000, 'resource');
-      assert.equal(logArgs.blocks.toNumber(), building[9], 'blocks');
+      assert.equal(data[0], building.name);
+      assert.equal(data[1].toNumber(), building.stats[stat.health], 'health');
+      assert.equal(data[2].toNumber(), building.stats[stat.defense], 'defense');
+      assert.equal(data[3].toNumber(), building.stats[stat.attack], 'attack');
+      assert.equal(data[4].toNumber(), building.stats[stat.goldCapacity], 'goldCapacity');
+      assert.equal(data[5].toNumber(), building.stats[stat.crystalEnergyCapacity], 'crystalEnergyCapacity');
+      assert.equal(data[6].toNumber(), building.stats[stat.goldRate], 'goldRate');
+      assert.equal(data[7].toNumber(), building.stats[stat.crystalRate], 'crystalRate');
+      assert.equal(data[8].toNumber(), building.stats[stat.price], 'price');
+      assert.equal(data[9].toNumber(), 6000, 'resource');
+      assert.equal(data[10].toNumber(), building.stats[stat.blocks], 'blocks');
+      assert.equal(data[11].toNumber(), building.stats[stat.previousLevelId], 'previousLevelId');
+      assert.equal(data[12].toNumber(), building.stats[stat.nextLevelId], 'nextLevelId');
     })
 
     it('Update building blocks', async () => {
       let building = buildingsMock.initialBuildings[0];
 
-      const txData = await buildingsData.updateBuilding(
-        1, '', -1, -1, -1, -1, -1, -1, -1, 6000
+      await buildingsData.updateBuilding(
+        building.id, '', [-1, -1, -1, -1, -1, -1, -1, -1, -1, 6000, -1, -1]
       )
 
-      let logArgs = txData.logs[0].args;
+      const data = await buildingsData.buildings.call(building.id);
 
-      assert.equal(logArgs.name, building[1]);
-      assert.equal(logArgs.health.toNumber(), building[2], 'health');
-      assert.equal(logArgs.defense.toNumber(), building[3], 'defense');
-      assert.equal(logArgs.attack.toNumber(), building[4], 'attack');
-      assert.equal(logArgs.goldCapacity.toNumber(), building[5], 'goldCapacity');
-      assert.equal(logArgs.crystalEnergyCapacity.toNumber(), building[6], 'crystalEnergyCapacity');
-      assert.equal(logArgs.price.toNumber(), building[7], 'price');
-      assert.equal(logArgs.resource.toNumber(), building[8], 'resource');
-      assert.equal(logArgs.blocks.toNumber(), 6000, 'blocks');
+      assert.equal(data[0], building.name);
+      assert.equal(data[1].toNumber(), building.stats[stat.health], 'health');
+      assert.equal(data[2].toNumber(), building.stats[stat.defense], 'defense');
+      assert.equal(data[3].toNumber(), building.stats[stat.attack], 'attack');
+      assert.equal(data[4].toNumber(), building.stats[stat.goldCapacity], 'goldCapacity');
+      assert.equal(data[5].toNumber(), building.stats[stat.crystalEnergyCapacity], 'crystalEnergyCapacity');
+      assert.equal(data[6].toNumber(), building.stats[stat.goldRate], 'goldRate');
+      assert.equal(data[7].toNumber(), building.stats[stat.crystalRate], 'crystalRate');
+      assert.equal(data[8].toNumber(), building.stats[stat.price], 'price');
+      assert.equal(data[9].toNumber(), building.stats[stat.resource], 'resource');
+      assert.equal(data[10].toNumber(), 6000, 'blocks');
+      assert.equal(data[11].toNumber(), building.stats[stat.previousLevelId], 'previousLevelId');
+      assert.equal(data[12].toNumber(), building.stats[stat.nextLevelId], 'nextLevelId');
+    })
+
+    it('Update building previous level id', async () => {
+      let building = buildingsMock.initialBuildings[0];
+
+      await buildingsData.updateBuilding(
+        building.id, '', [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 6000, -1]
+      )
+
+      const data = await buildingsData.buildings.call(building.id);
+
+      assert.equal(data[0], building.name);
+      assert.equal(data[1].toNumber(), building.stats[stat.health], 'health');
+      assert.equal(data[2].toNumber(), building.stats[stat.defense], 'defense');
+      assert.equal(data[3].toNumber(), building.stats[stat.attack], 'attack');
+      assert.equal(data[4].toNumber(), building.stats[stat.goldCapacity], 'goldCapacity');
+      assert.equal(data[5].toNumber(), building.stats[stat.crystalEnergyCapacity], 'crystalEnergyCapacity');
+      assert.equal(data[6].toNumber(), building.stats[stat.goldRate], 'goldRate');
+      assert.equal(data[7].toNumber(), building.stats[stat.crystalRate], 'crystalRate');
+      assert.equal(data[8].toNumber(), building.stats[stat.price], 'price');
+      assert.equal(data[9].toNumber(), building.stats[stat.resource], 'resource');
+      assert.equal(data[10].toNumber(), building.stats[stat.blocks], 'blocks');
+      assert.equal(data[11].toNumber(), 6000, 'previousLevelId');
+      assert.equal(data[12].toNumber(), building.stats[stat.nextLevelId], 'nextLevelId');
+    })
+
+    it('Update building next level id', async () => {
+      let building = buildingsMock.initialBuildings[0];
+
+      await buildingsData.updateBuilding(
+        building.id, '', [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 6000]
+      )
+
+      const data = await buildingsData.buildings.call(building.id);
+
+      assert.equal(data[0], building.name);
+      assert.equal(data[1].toNumber(), building.stats[stat.health], 'health');
+      assert.equal(data[2].toNumber(), building.stats[stat.defense], 'defense');
+      assert.equal(data[3].toNumber(), building.stats[stat.attack], 'attack');
+      assert.equal(data[4].toNumber(), building.stats[stat.goldCapacity], 'goldCapacity');
+      assert.equal(data[5].toNumber(), building.stats[stat.crystalEnergyCapacity], 'crystalEnergyCapacity');
+      assert.equal(data[6].toNumber(), building.stats[stat.goldRate], 'goldRate');
+      assert.equal(data[7].toNumber(), building.stats[stat.crystalRate], 'crystalRate');
+      assert.equal(data[8].toNumber(), building.stats[stat.price], 'price');
+      assert.equal(data[9].toNumber(), building.stats[stat.resource], 'resource');
+      assert.equal(data[10].toNumber(), building.stats[stat.blocks], 'blocks');
+      assert.equal(data[11].toNumber(), building.stats[stat.previousLevelId], 'previousLevelId');
+      assert.equal(data[12].toNumber(), 6000, 'nextLevelId');
     })
 
     it('Update building from not owner', async () => {
-      return assertInvalidOpcode(async () => {
+      return assertRevert(async () => {
         await buildingsData.updateBuilding(
-          1, '', -1, -1, -1, -1, -1, -1, -1, 6000, {from: Bob}
+          1, '', [-1, -1, -1, -1, -1, -1, -1, 6000, -1, -1, -1, -1], { from: Bob }
         )
       })
     })
 
     it('Update non-existing building', async () => {
-      return assertInvalidOpcode(async () => {
+      return assertRevert(async () => {
         await buildingsData.updateBuilding(
-          9999, '', -1, -1, -1, -1, -1, -1, -1, 6000
+          9999, '', [-1, -1, -1, -1, -1, -1, -1, 6000, -1, -1, -1, -1]
         )
       })
     })
 
     it('Add Building that Already Exists', async () => {
-      return assertInvalidOpcode(async () => {
-        await buildingsData.addBuilding(...buildingsMock.initialBuildings[0]);
+      building = buildingsMock.initialBuildings[0];
+      return assertRevert(async () => {
+        await buildingsData.addBuilding(building.id, building.name, building.stats);
       })
     })
 

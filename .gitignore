@@ -27,7 +27,6 @@
 # misc
 /.sass-cache
 /connect.lock
-/coverage
 /libpeerconnection.log
 npm-debug.log
 testem.log
@@ -45,4 +44,10 @@ Thumbs.db
 /build
 
 # Doxity scripts
-/scripts
+/scripts/doxity*
+
+# Coverage
+/coverage
+/coverageEnv
+scTopics
+allFiredEvents

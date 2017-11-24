@@ -1,48 +1,65 @@
 {
-  "buildingProperties":[
-    "id",
-    "name",
-    "health",
-    "defense",
-    "attack",
-    "goldCapacity",
-    "crystalEnergyCapacity",
-    "price",
-    "resource",
-    "block"
-  ],
-  "initialBuildings": [[
-    1,
-    "City Center",
-    1500,
-    50,
-    0,
-    3000,
-    4000,
-    0,
-    0,
-    1
-  ],[
-    2,
-    "Gold Mine",
-    500,
-    20,
-    0,
-    500,
-    0,
-    200,
-    0,
-    5
-  ],[
-    3,
-    "Crystal Mine",
-    500,
-    20,
-    0,
-    0,
-    400,
-    200,
-    1,
-    2
-  ]]
+  "buildingProperties":{
+    "id": 0,
+    "name": "x",
+    "stats": [
+      "health", "defense", "attack",
+      "goldCapacity", "crystalEnergyCapacity", "goldRate", "crystalRate",
+      "price", "resource", "blocks", "previousLevelId", "nextLevelId"
+    ]
+  },
+  "stats": {
+    "health": 0, "defense": 1, "attack": 2,
+    "goldCapacity": 3, "crystalEnergyCapacity": 4, "goldRate": 5, "crystalRate": 6,
+    "price": 7, "resource": 8, "blocks": 9, "previousLevelId": 10, "nextLevelId": 11
+  },
+  "initialBuildings": [{
+    "id": 1,
+    "name": "City Center",
+    "stats": [
+      1500, 50, 0,
+      3000, 4000, 0, 0,
+      0, 0, 1, 0, 2001
+    ]
+  },{
+    "id": 2,
+    "name": "Gold Mine",
+    "stats": [
+      500, 20, 0,
+      500, 0, 50, 0,
+      200, 0, 5, 0, 2002
+    ]
+  },{
+    "id": 3,
+    "name": "Crystal Mine",
+    "stats": [
+      500, 20, 0,
+      0, 400, 0, 60,
+      200, 1, 2, 0, 2003
+    ]
+  },{
+    "id": 2001,
+    "name": "City Center",
+    "stats": [
+      3000, 100, 0,
+      5000, 6000, 0, 0,
+      0, 0, 1, 1, 3001
+    ]
+  },{
+    "id": 2002,
+    "name": "Gold Mine",
+    "stats": [
+      800, 40, 0,
+      1000, 0, 100, 0,
+      300, 0, 10, 2, 3002
+    ]
+  },{
+    "id": 2003,
+    "name": "Crystal Mine",
+    "stats": [
+      1000, 40, 0,
+      0, 800, 0, 120,
+      400, 1, 4, 3, 3003
+    ]
+    }]
 }

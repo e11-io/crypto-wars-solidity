@@ -1,10 +1,10 @@
 pragma solidity ^0.4.15;
 
-import 'zeppelin-solidity/contracts/ownership/NoOwner.sol';
 import 'zeppelin-solidity/contracts/token/ERC20Basic.sol';
-import './UserVault.sol';
-import './UserResources.sol';
+import 'zeppelin-solidity/contracts/ownership/NoOwner.sol';
 import './UserBuildings.sol';
+import './UserResources.sol';
+import './UserVault.sol';
 
 /**
  * @title UserVillage (WIP)
@@ -33,7 +33,6 @@ contract UserVillage is NoOwner {
 	UserResources userResources;
 	UserBuildings userBuildings;
 	uint[] initialBuildingsIds = [uint(1),uint(2), uint(3)] ;
-	uint[] initialBuildingsIndexes = [uint(0), uint(0), uint(0)];
 
 
 	/**
@@ -63,7 +62,8 @@ contract UserVillage is NoOwner {
 		// Check and Transfer user's token.
 		require(userVault.add(msg.sender, 1 ether)); // 'could_not_transfer_tokens'
 		require(userResources.initUserResources(msg.sender));
-		require(userBuildings.addUserBuildings(msg.sender, initialBuildingsIds, initialBuildingsIndexes));
+		require(userResources.initPayoutBlock(msg.sender));
+		require(userBuildings.addInitialBuildings(msg.sender, initialBuildingsIds));
 
 		villages[msg.sender] = _name;
 		addresses[keccak256(_username)] = msg.sender;

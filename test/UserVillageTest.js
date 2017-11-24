@@ -6,7 +6,7 @@ const UserBuildings = artifacts.require('UserBuildings');
 const BuildingsData = artifacts.require('BuildingsData');
 
 var buildingsMock = require('../mocks/buildings');
-const { assertInvalidOpcode } = require('./helpers/assertThrow');
+const { assertRevert } = require('./helpers/assertThrow');
 
 contract('User Village Test', (accounts) => {
   let experimentalToken, userVault, userResources, buildingsData, userBuildings, userVillage = {};
@@ -28,11 +28,18 @@ contract('User Village Test', (accounts) => {
                                         userResources.address,
                                         userBuildings.address);
 
-    await userResources.setUserVillageAddress(userVillage.address);
+    await userResources.setUserVillage(userVillage.address);
     await userBuildings.setUserVillage(userVillage.address);
-    await buildingsData.addBuilding(...buildingsMock.initialBuildings[0]);
-    await buildingsData.addBuilding(...buildingsMock.initialBuildings[1]);
-    await buildingsData.addBuilding(...buildingsMock.initialBuildings[2]);
+    await userBuildings.setUserResources(userResources.address);
+    await buildingsData.addBuilding(buildingsMock.initialBuildings[0].id,
+      buildingsMock.initialBuildings[0].name,
+      buildingsMock.initialBuildings[0].stats);
+    await buildingsData.addBuilding(buildingsMock.initialBuildings[1].id,
+      buildingsMock.initialBuildings[1].name,
+      buildingsMock.initialBuildings[1].stats);
+    await buildingsData.addBuilding(buildingsMock.initialBuildings[2].id,
+      buildingsMock.initialBuildings[2].name,
+      buildingsMock.initialBuildings[2].stats);
   })
 
   it('Create a village', async () =>  {
@@ -51,21 +58,21 @@ contract('User Village Test', (accounts) => {
     })
 
     it('Create village from same user', async () => {
-      return assertInvalidOpcode(async () => {
+      return assertRevert(async () => {
         await experimentalToken.approve(userVault.address, 1 * ether);
         await userVillage.create('My second village!', 'Awesome player');
       })
     })
 
     it('Create village from account without e11', async () => {
-      return assertInvalidOpcode(async () => {
+      return assertRevert(async () => {
         await experimentalToken.approve(userVault.address, 1 * ether, {from: Bob})
         await userVillage.create('AccOneVillage','Bob', {from: Bob});
       })
     })
 
     it('Create village with taken Username', async () => {
-      return assertInvalidOpcode(async () => {
+      return assertRevert(async () => {
         await experimentalToken.transfer(Carol, 5 * ether);
         await experimentalToken.approve(userVault.address, 1 * ether, {from: Carol});
         await userVillage.create('AccTwoVillage','Cool player', {from: Carol});
@@ -73,7 +80,7 @@ contract('User Village Test', (accounts) => {
     })
 
     it('Create village with empty Village Name', async () => {
-      return assertInvalidOpcode(async () => {
+      return assertRevert(async () => {
         await experimentalToken.transfer(Carol, 5 * ether);
         await experimentalToken.approve(userVault.address, 1 * ether, {from: Carol});
         await userVillage.create('','Player Two', {from: Carol});

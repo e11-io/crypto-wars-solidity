@@ -1,0 +1,48 @@
+<br>
+<h2>Village</h2>
+
+<h3>Experimental Token Contract - <a href="#">gh-issue</a></h3>
+<br>
+<label for="amount">Amount:</label>
+<input type="text" placeholder="e.g., 95" [(ngModel)]="amount">
+<label for="receiver">To Address:</label>
+<input type="text" id="receiver" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae" [(ngModel)]="receiver">
+<button (click)="sendCoin()">Send ExperimentalToken</button>
+<br><br>
+
+<br><br>
+<h3>User Vault Contract - <a href="#">gh-issue</a></h3>
+<br>
+<button (click)="getVaultAllowance()">Get Vault Allowance</button>
+<br><br>
+<input type="text" placeholder="Approve Address" [(ngModel)]="approveAddress">
+<input type="text" placeholder="Approve Amount" [(ngModel)]="approveAmount">
+<button (click)="approve()">approve</button>
+<br><br>
+
+<br><br>
+<h3>User Village Contract - <a href="#">gh-issue</a></h3>
+<br>
+<button (click)="getVillage()">Get Village</button>
+<br><br>
+<input type="text" placeholder="Village Name" [(ngModel)]="villageName">
+<input type="text" placeholder="User Name" [(ngModel)]="userName">
+<button (click)="createVillage()">Create Village</button>
+<br><br>
+
+<br><br>
+<h3>Buildings Queue - <a href="#">gh-issue</a></h3>
+<br>
+(TODO)
+<br><br>
+
+<br><br>
+<h3>Units Queue (Not-Started) - <a href="#">gh-issue</a></h3>
+<br><br>
+
+<br><br>
+<h3>Research Queue (Not-Started) - <a href="#">gh-issue</a></h3>
+<br><br>
+
+<br><br>
+<span>{{status}}</span>

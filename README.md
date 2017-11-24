@@ -10,29 +10,45 @@ Please check the [documentation](https://e11-io.github.io/crypto-wars-solidity/)
     npm install -g truffle
     npm install -g ethereumjs-testrpc
     truffle version
-    # Truffle v3.4.11 (core: 3.4.11)
-    # Solidity v0.4.15 (solc-js)
+    # Truffle v4.0.1 (core: 4.0.1)
+    # Solidity v0.4.18 (solc-js)
     ```
 
 2. Install dependencies.
     ```shell
-    yarn # or npm install
+    npm i # or yarn
     ```
-3. Compile and migrate the contracts.
+
+3. Run testrpc on a separate terminal
+    ```shell
+    npm run rpc
+    ```
+
+4. Compile and migrate the contracts.
     ```shell
     truffle compile
     truffle migrate
     ```
 
-4. Run the tets.
+5. Run the tests.
     ```shell
-    npm run test
+    truffle test
     ```
 
-5. Compile the docs.
+6. Compile the docs.
     ```shell
-    npm install @digix/doxity # This might take a while
+    npm run doxity init
     npm run docs
+    ```
+
+7. Run test coverage.
+    ```shell
+    npm run coverage
+    ```
+
+8. Run the web app.
+    ```shell
+    npm run start # and navigate to http://localhost:4200
     ```
 
 **NOTE**: This project is still a WIP, we encourage you to create a Pull Request and to participate in the ongoing discussions [here](https://github.com/e11-io/crypto-wars-solidity/issues).

@@ -4,7 +4,7 @@ const UserVillage = artifacts.require('UserVillage');
 const SimpleToken = artifacts.require('SimpleToken');
 const UserResources = artifacts.require('UserResources');
 
-const { assertInvalidOpcode } = require('./helpers/assertThrow')
+const { assertRevert } = require('./helpers/assertThrow')
 
 contract('User Vault Test', accounts => {
   let experimentalToken, userVault, userVillage, simpleToken, userResources = {};
@@ -26,31 +26,32 @@ contract('User Vault Test', accounts => {
   })
 
   it('Reclaim token != experimentalToken', async () => {
-    const initial_balance = await simpleToken.balanceOf(Alice);
+    const initial_balance = await simpleToken.balanceOf.call(Alice);
 
     await simpleToken.transfer(Bob, amountA);
     await simpleToken.transfer(userVault.address, amountB, {from: Bob});
 
-    assert.equal((await simpleToken.balanceOf(userVault.address)).toNumber(), amountB);
+    let balance = await simpleToken.balanceOf.call(userVault.address);
+    assert.equal(balance.toNumber(), amountB);
 
     await userVault.reclaimToken(simpleToken.address);
 
-    assert.equal((await simpleToken.balanceOf(userVault.address)).toNumber(), 0);
+    balance = await simpleToken.balanceOf.call(userVault.address);
+    assert.equal(balance.toNumber(), 0);
 
-    const balance = await simpleToken.balanceOf(Alice);
-
+    balance = await simpleToken.balanceOf.call(Alice);
     assert.equal(balance.toNumber(), initial_balance - (amountA - amountB), 'Alice, wrong balance after reclaimToken');
   })
 
   it('Reclaim experimentalToken', async () => {
-    const initial_balance = await experimentalToken.balanceOf(Alice);
+    const initial_balance = await experimentalToken.balanceOf.call(Alice);
 
     await experimentalToken.transfer(Bob, amountA);
     await experimentalToken.transfer(userVault.address, amountB, {from: Bob});
 
-    assert.equal((await experimentalToken.balanceOf(userVault.address)).toNumber(), amountB);
-
-    return assertInvalidOpcode(async () => {
+    let balance = await experimentalToken.balanceOf.call(userVault.address);
+    assert.equal(balance.toNumber(), amountB);
+    return assertRevert(async () => {
       await userVault.reclaimToken(experimentalToken.address);
     })
   })
@@ -58,13 +59,13 @@ contract('User Vault Test', accounts => {
   it('Add tokens from account without e11 balance', async () => {
     await experimentalToken.approve(userVault.address, 1 * ether, {from: Bob});
 
-    return assertInvalidOpcode(async () => {
+    return assertRevert(async () => {
       await userVault.add(Bob, 1 * ether);
     })
   })
 
   it('Balance of user without balance', async () => {
-    const balance = await userVault.balanceOf(Bob);
+    const balance = await userVault.balanceOf.call(Bob);
 
     assert.equal(balance.toNumber(), 0);
   })
@@ -79,7 +80,7 @@ contract('User Vault Test', accounts => {
       let amount = 1 * ether;
       await userVault.add(Bob, amount);
 
-      const balance = await userVault.balanceOf(Bob);
+      let balance = await userVault.balanceOf.call(Bob);
 
       assert.equal(balance.toNumber(), amount);
     })
@@ -90,7 +91,7 @@ contract('User Vault Test', accounts => {
       await userVault.add(Bob, amount);
       await userVault.add(Bob, amount);
 
-      const balance = await userVault.balanceOf(Bob);
+      let balance = await userVault.balanceOf.call(Bob);
 
       assert.equal(balance.toNumber(), amount * 2);
     })

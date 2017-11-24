@@ -1,0 +1,60 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">CryptoWars by <a href="https://e11.io" target="_blank">e11.io</a></a>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle active" href="#" id="accountDropdown" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Accounts
+        </a>
+        <div class="dropdown-menu" aria-labelledby="accountDropdown">
+          <a class="dropdown-item" href="#"
+              *ngFor="let account of accounts"
+              (click)="clickAddress(account)">
+            {{account}}
+          </a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle active text-capitalize" href="#" id="sectionDropdown" role="button"
+           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {{section}}
+        </a>
+        <div class="dropdown-menu" aria-labelledby="sectionDropdown">
+          <a class="dropdown-item" (click)="changeSection('village')">Village</a>
+          <a class="dropdown-item" (click)="changeSection('resources')">Resources</a>
+          <a class="dropdown-item" (click)="changeSection('defense')">Defense</a>
+          <a class="dropdown-item" (click)="changeSection('facilities')">Facilities</a>
+          <a class="dropdown-item" (click)="changeSection('army')">Army</a>
+          <a class="dropdown-item" (click)="changeSection('portal')">Portal</a>
+          <a class="dropdown-item" (click)="changeSection('attack')">Attack</a>
+          <a class="dropdown-item" (click)="changeSection('alliance')">Alliance</a>
+          <a class="dropdown-item" (click)="changeSection('messages')">Messages</a>
+          <a class="dropdown-item" (click)="changeSection('shop')">Shop</a>
+        </div>
+      </li>
+      <li class="nav-item" style="margin-left: 1em;">
+        <button class="btn btn-outline-success my-sm-0" type="button" (click)="mineBlock()">Mine Block</button>
+      </li>
+
+    </ul>
+
+    <span class="navbar-text" style="margin-right: 1em;">
+      {{e11Balance || 0}} E11
+    </span>
+    <span class="navbar-text">
+      {{ethBalance || 0}} ETH
+    </span>
+  </div>
+</nav>
+
+
+<app-village *ngIf="section == 'village'"
+             [account]="account"
+             [balance]="balance">
+</app-village>
+<app-resources *ngIf="section == 'resources'"
+             [account]="account"
+             [balance]="balance">
+</app-resources>

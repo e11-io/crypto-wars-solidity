@@ -1,31 +1,75 @@
 {
   "name": "crypto-wars-solidity",
-  "version": "1.0.1",
+  "author": "Experimental - e11.io",
+  "version": "1.0.2",
+  "license": "ISC",
   "description": "",
-  "main": "truffle.js",
-  "directories": {
-    "test": "test"
-  },
-  "dependencies": {
-    "e11-contracts": "git+https://github.com/e11-io/e11-contracts.git",
-    "zeppelin-solidity": "1.3.0"
-  },
-  "devDependencies": {
-    "@digix/doxity": "0.5.2"
-  },
-  "scripts": {
-    "test": "rm -rf build/ && truffle compile && truffle test",
-    "doxity": "doxity",
-    "docs": "doxity compile && doxity publish"
-  },
+  "private": true,
+  "homepage": "https://github.com/e11-io/crypto-wars-solidity#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/e11-io/crypto-wars-solidity.git"
   },
-  "author": "",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/e11-io/crypto-wars-solidity/issues"
   },
-  "homepage": "https://github.com/e11-io/crypto-wars-solidity#readme"
+  "scripts": {
+    "rpc": "testrpc -l 6718909 --seed 0",
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "test": "ng test --watch=false",
+    "lint": "ng lint",
+    "e2e": "ng e2e",
+    "doxity": "doxity",
+    "truffle": "truffle migrate --reset --compile-all",
+    "truffle:test": "truffle test",
+    "migrate": "scripts/migrate.sh",
+    "docs": "doxity compile && doxity publish",
+    "compile": "truffle compile --compile-all",
+    "coverage": "scripts/coverage.sh"
+  },
+  "dependencies": {
+    "@angular/animations": "5.0.1",
+    "@angular/common": "5.0.1",
+    "@angular/compiler": "5.0.1",
+    "@angular/core": "5.0.1",
+    "@angular/forms": "5.0.1",
+    "@angular/http": "5.0.1",
+    "@angular/platform-browser": "5.0.1",
+    "@angular/platform-browser-dynamic": "5.0.1",
+    "@angular/router": "5.0.1",
+    "core-js": "2.5.1",
+    "e11-contracts": "git+https://github.com/e11-io/e11-contracts.git",
+    "rxjs": "5.5.2",
+    "zeppelin-solidity": "1.3.0",
+    "zone.js": "0.8.18"
+  },
+  "devDependencies": {
+    "@angular/cli": "1.5.0",
+    "@angular/compiler-cli": "5.0.1",
+    "@angular/language-service": "5.0.1",
+    "@digix/doxity": "^0.5.2",
+    "@types/jasmine": "2.8.2",
+    "@types/jasminewd2": "2.0.3",
+    "@types/node": "8.0.52",
+    "codelyzer": "4.0.1",
+    "coveralls": "3.0.0",
+    "jasmine-core": "2.8.0",
+    "jasmine-spec-reporter": "4.2.1",
+    "karma": "1.7.1",
+    "karma-chrome-launcher": "2.2.0",
+    "karma-cli": "1.0.1",
+    "karma-coverage-istanbul-reporter": "1.3.0",
+    "karma-jasmine": "1.1.0",
+    "karma-jasmine-html-reporter": "0.2.2",
+    "protractor": "5.2.0",
+    "solidity-coverage": "git+https://github.com/e11io/solidity-coverage.git",
+    "truffle": "4.0.1",
+    "truffle-contract": "3.0.1",
+    "ts-node": "3.3.0",
+    "tslint": "5.8.0",
+    "typescript": "2.6.1",
+    "web3": "1.0.0-beta.26"
+  }
 }
