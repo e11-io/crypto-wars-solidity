@@ -26,10 +26,9 @@ Please check the [documentation](https://e11-io.github.io/crypto-wars-solidity/)
     npm run rpc
     ```
 
-4. Compile and migrate the contracts.
+4. Compile the contracts.
     ```shell
     truffle compile
-    truffle migrate
     ```
 
 5. Run the tests.
@@ -48,7 +47,12 @@ Please check the [documentation](https://e11-io.github.io/crypto-wars-solidity/)
     npm run coverage
     ```
 
-8. Run the web app.
+8. Migrate the contracts.
+    ```shell
+    truffle migrate
+    ```
+
+9. Run the web app.
     ```shell
     npm run start # and navigate to http://localhost:4200
     ```
