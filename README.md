@@ -1,5 +1,7 @@
 # Crypto Wars
 
+[![Build Status](https://travis-ci.org/e11-io/crypto-wars-solidity.svg?branch=master)](https://travis-ci.org/e11-io/crypto-wars-solidity)
+[![Coverage Status](https://coveralls.io/repos/github/e11-io/crypto-wars-solidity/badge.svg?branch=master)](https://coveralls.io/github/e11-io/crypto-wars-solidity?branch=master)
 [![Join the chat at https://gitter.im/e11-io/crypto-wars-solidity](https://badges.gitter.im/e11-io/crypto-wars-solidity.svg)](https://gitter.im/e11-io/crypto-wars-solidity?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 This repository holds all the smart contracts that are going to be used on the game [Crypto Wars](https://e11.io).
