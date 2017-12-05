@@ -77,7 +77,7 @@ contract('Buildings Data Test', accounts => {
       assert.equal(data[9].toNumber(), building.stats[stat.resource], 'resource');
       assert.equal(data[10].toNumber(), building.stats[stat.blocks], 'blocks');
       assert.equal(data[11].toNumber(), building.stats[stat.previousLevelId], 'previousLevelId');
-      assert.equal(data[12].toNumber(), building.stats[stat.nextLevelId], 'nextLevelId');
+      assert.equal(data[12].toNumber(), building.stats[stat.typeId], 'typeId');
     })
 
     it('Update building health', async () => {
@@ -101,7 +101,7 @@ contract('Buildings Data Test', accounts => {
       assert.equal(data[9].toNumber(), building.stats[stat.resource], 'resource');
       assert.equal(data[10].toNumber(), building.stats[stat.blocks], 'blocks');
       assert.equal(data[11].toNumber(), building.stats[stat.previousLevelId], 'previousLevelId');
-      assert.equal(data[12].toNumber(), building.stats[stat.nextLevelId], 'nextLevelId');
+      assert.equal(data[12].toNumber(), building.stats[stat.typeId], 'typeId');
     })
 
     it('Update building defense', async () => {
@@ -125,7 +125,7 @@ contract('Buildings Data Test', accounts => {
       assert.equal(data[9].toNumber(), building.stats[stat.resource], 'resource');
       assert.equal(data[10].toNumber(), building.stats[stat.blocks], 'blocks');
       assert.equal(data[11].toNumber(), building.stats[stat.previousLevelId], 'previousLevelId');
-      assert.equal(data[12].toNumber(), building.stats[stat.nextLevelId], 'nextLevelId');
+      assert.equal(data[12].toNumber(), building.stats[stat.typeId], 'typeId');
     })
 
     it('Update building attack', async () => {
@@ -149,7 +149,7 @@ contract('Buildings Data Test', accounts => {
       assert.equal(data[9].toNumber(), building.stats[stat.resource], 'resource');
       assert.equal(data[10].toNumber(), building.stats[stat.blocks], 'blocks');
       assert.equal(data[11].toNumber(), building.stats[stat.previousLevelId], 'previousLevelId');
-      assert.equal(data[12].toNumber(), building.stats[stat.nextLevelId], 'nextLevelId');
+      assert.equal(data[12].toNumber(), building.stats[stat.typeId], 'typeId');
     })
 
     it('Update building gold capacity', async () => {
@@ -173,7 +173,7 @@ contract('Buildings Data Test', accounts => {
       assert.equal(data[9].toNumber(), building.stats[stat.resource], 'resource');
       assert.equal(data[10].toNumber(), building.stats[stat.blocks], 'blocks');
       assert.equal(data[11].toNumber(), building.stats[stat.previousLevelId], 'previousLevelId');
-      assert.equal(data[12].toNumber(), building.stats[stat.nextLevelId], 'nextLevelId');
+      assert.equal(data[12].toNumber(), building.stats[stat.typeId], 'typeId');
     })
 
     it('Update building crystal energy capacity', async () => {
@@ -197,7 +197,7 @@ contract('Buildings Data Test', accounts => {
       assert.equal(data[9].toNumber(), building.stats[stat.resource], 'resource');
       assert.equal(data[10].toNumber(), building.stats[stat.blocks], 'blocks');
       assert.equal(data[11].toNumber(), building.stats[stat.previousLevelId], 'previousLevelId');
-      assert.equal(data[12].toNumber(), building.stats[stat.nextLevelId], 'nextLevelId');
+      assert.equal(data[12].toNumber(), building.stats[stat.typeId], 'typeId');
     })
 
     it('Update building gold rate', async () => {
@@ -221,7 +221,7 @@ contract('Buildings Data Test', accounts => {
       assert.equal(data[9].toNumber(), building.stats[stat.resource], 'resource');
       assert.equal(data[10].toNumber(), building.stats[stat.blocks], 'blocks');
       assert.equal(data[11].toNumber(), building.stats[stat.previousLevelId], 'previousLevelId');
-      assert.equal(data[12].toNumber(), building.stats[stat.nextLevelId], 'nextLevelId');
+      assert.equal(data[12].toNumber(), building.stats[stat.typeId], 'typeId');
     })
 
     it('Update building crystal rate', async () => {
@@ -245,7 +245,7 @@ contract('Buildings Data Test', accounts => {
       assert.equal(data[9].toNumber(), building.stats[stat.resource], 'resource');
       assert.equal(data[10].toNumber(), building.stats[stat.blocks], 'blocks');
       assert.equal(data[11].toNumber(), building.stats[stat.previousLevelId], 'previousLevelId');
-      assert.equal(data[12].toNumber(), building.stats[stat.nextLevelId], 'nextLevelId');
+      assert.equal(data[12].toNumber(), building.stats[stat.typeId], 'typeId');
     })
 
     it('Update building price', async () => {
@@ -269,7 +269,7 @@ contract('Buildings Data Test', accounts => {
       assert.equal(data[9].toNumber(), building.stats[stat.resource], 'resource');
       assert.equal(data[10].toNumber(), building.stats[stat.blocks], 'blocks');
       assert.equal(data[11].toNumber(), building.stats[stat.previousLevelId], 'previousLevelId');
-      assert.equal(data[12].toNumber(), building.stats[stat.nextLevelId], 'nextLevelId');
+      assert.equal(data[12].toNumber(), building.stats[stat.typeId], 'typeId');
     })
 
     it('Update building resources', async () => {
@@ -293,7 +293,7 @@ contract('Buildings Data Test', accounts => {
       assert.equal(data[9].toNumber(), 6000, 'resource');
       assert.equal(data[10].toNumber(), building.stats[stat.blocks], 'blocks');
       assert.equal(data[11].toNumber(), building.stats[stat.previousLevelId], 'previousLevelId');
-      assert.equal(data[12].toNumber(), building.stats[stat.nextLevelId], 'nextLevelId');
+      assert.equal(data[12].toNumber(), building.stats[stat.typeId], 'typeId');
     })
 
     it('Update building blocks', async () => {
@@ -317,7 +317,7 @@ contract('Buildings Data Test', accounts => {
       assert.equal(data[9].toNumber(), building.stats[stat.resource], 'resource');
       assert.equal(data[10].toNumber(), 6000, 'blocks');
       assert.equal(data[11].toNumber(), building.stats[stat.previousLevelId], 'previousLevelId');
-      assert.equal(data[12].toNumber(), building.stats[stat.nextLevelId], 'nextLevelId');
+      assert.equal(data[12].toNumber(), building.stats[stat.typeId], 'typeId');
     })
 
     it('Update building previous level id', async () => {
@@ -341,10 +341,10 @@ contract('Buildings Data Test', accounts => {
       assert.equal(data[9].toNumber(), building.stats[stat.resource], 'resource');
       assert.equal(data[10].toNumber(), building.stats[stat.blocks], 'blocks');
       assert.equal(data[11].toNumber(), 6000, 'previousLevelId');
-      assert.equal(data[12].toNumber(), building.stats[stat.nextLevelId], 'nextLevelId');
+      assert.equal(data[12].toNumber(), building.stats[stat.typeId], 'typeId');
     })
 
-    it('Update building next level id', async () => {
+    it('Update building type id', async () => {
       let building = buildingsMock.initialBuildings[0];
 
       await buildingsData.updateBuilding(
@@ -365,7 +365,11 @@ contract('Buildings Data Test', accounts => {
       assert.equal(data[9].toNumber(), building.stats[stat.resource], 'resource');
       assert.equal(data[10].toNumber(), building.stats[stat.blocks], 'blocks');
       assert.equal(data[11].toNumber(), building.stats[stat.previousLevelId], 'previousLevelId');
-      assert.equal(data[12].toNumber(), 6000, 'nextLevelId');
+      assert.equal(data[12].toNumber(), 6000, 'typeId');
+    })
+
+    it('Get buildings ids lenght', async () => {
+      const buildingsAmount = await buildingsData.getBuildingIdsLength.call();
     })
 
     it('Update building from not owner', async () => {

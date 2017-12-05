@@ -22,8 +22,9 @@ contract UserBuildings is NoOwner {
    * event for adding multiple buildings to a user logging
    * @param user the address of the user to add the buildings
    * @param ids the IDs of the buildings to be added
+   * @param indexes the indexes of the buildings to be added
    */
-  event AddUserBuildings(address user, uint[] ids);
+  event AddUserBuildings(address user, uint[] ids, uint[] indexes);
 
   /**
    * event for upgrading a building to a user logging
@@ -48,6 +49,12 @@ contract UserBuildings is NoOwner {
    */
   event RemoveUserBuildings(address user, uint[] ids, uint[] indexes);
 
+  /*
+   * event for initializing a new building right before the construction starts logging.
+   * @param _user the address of the user to initialize the buildings
+   * @param _id the id of the building to be initialize
+   */
+  event InitNewBuilding(address user, uint index);
 
   struct Building {
     uint id;
@@ -129,6 +136,8 @@ contract UserBuildings is NoOwner {
       userBuildings[_user][_indexes[j]] = Building(_ids[j], true);
     }
 
+    AddUserBuildings(_user, _ids, _indexes);
+
     return true;
   }
 
@@ -169,6 +178,8 @@ contract UserBuildings is NoOwner {
 
     userBuildings[_user].push(Building(_id, false));
 
+    InitNewBuilding(_user, userBuildings[_user].length - 1);
+
     return userBuildings[_user].length - 1;
   }
 
@@ -208,6 +219,7 @@ contract UserBuildings is NoOwner {
    */
   function upgradeBuilding(address _user, uint _id, uint _index) external returns (bool) {
     require(_user != address(0));
+    require(msg.sender == address(buildingsQueue));
     require(userBuildings[_user][_index].id == _id);
 
     userBuildings[_user][_index].active = false;
@@ -297,4 +309,23 @@ contract UserBuildings is NoOwner {
 
     return (totalGoldRate, totalCrystalRate);
 	}
+
+  /*
+   * @title Building Type is Unique
+   * @dev Function to check if the user has or not a specific building type in his buildings.
+   * @param _user The address of the user to get the rates of. (address)
+   * @param _typeid The id of the type to look for in the buildings. (uint)
+   * @return A boolean that indicates if the user has or not that type of building.
+   */
+  function buildingTypeIsUnique(address _user, uint _typeId) public returns (bool) {
+    bool unique = true;
+    uint i = 0;
+    while (unique && i < userBuildings[_user].length) {
+      if (_typeId == buildingsData.getBuildingTypeId(userBuildings[_user][i].id)) {
+        return false;
+      }
+      i++;
+    }
+    return unique;
+  }
 }

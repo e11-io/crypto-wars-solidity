@@ -37,7 +37,7 @@ contract BuildingsData is NoOwner {
     int32 resource;
     int32 blocks;
     int32 previousLevelId;
-    int32 nextLevelId;
+    int32 typeId;
   }
 
   // Mapping of id -> building struct.
@@ -69,7 +69,7 @@ contract BuildingsData is NoOwner {
    *      resource (int)
    *      blocks (int)
    *      previousLevelId (int)
-   *      nextLevelId (int)
+   *      typeId (int)
    */
   function addBuilding(uint id,
                        string name,
@@ -89,7 +89,7 @@ contract BuildingsData is NoOwner {
     require(stats[8] >= 0); //"resource"
     require(stats[9] >= 0); //"block"
     require(stats[10] >= 0); //"previousLevelId"
-    require(stats[11] >= 0); //"nextLevelId"
+    require(stats[11] >= 0); //"typeId"
 
     buildings[id] = Building(name,
                              stats[0],
@@ -122,7 +122,7 @@ contract BuildingsData is NoOwner {
    *      resource (int)
    *      blocks (int)
    *      previousLevelId (int)
-   *      nextLevelId (int)
+   *      typeId (int)
    */
   function updateBuilding(uint id,
                           string name,
@@ -152,7 +152,7 @@ contract BuildingsData is NoOwner {
    *      resource (int)
    *      blocks (int)
    *      previousLevelId (int)
-   *      nextLevelId (int)
+   *      typeId (int)
    */
   function updateBuildingBasicsA(uint id, string name, int32[] stats) internal {
       if (keccak256(name) != keccak256("")) {
@@ -188,7 +188,7 @@ contract BuildingsData is NoOwner {
    *      resource (int)
    *      blocks (int)
    *      previousLevelId (int)
-   *      nextLevelId (int)
+   *      typeId (int)
    */
   function updateBuildingBasicsB(uint id, int32[] stats) internal {
       if (stats[4] >= 0 && buildings[id].crystalEnergyCapacity != stats[4]) {
@@ -212,8 +212,8 @@ contract BuildingsData is NoOwner {
       if (stats[10] >= 0 && buildings[id].previousLevelId != stats[10]) {
         buildings[id].previousLevelId = stats[10];
       }
-      if (stats[11] >= 0 && buildings[id].nextLevelId != stats[11]) {
-        buildings[id].nextLevelId = stats[11];
+      if (stats[11] >= 0 && buildings[id].typeId != stats[11]) {
+        buildings[id].typeId = stats[11];
       }
   }
 
@@ -271,6 +271,10 @@ contract BuildingsData is NoOwner {
     require(_id >= 0);
     require(keccak256(buildings[_id].name) != keccak256(""));
     return (uint(buildings[_id].goldRate), uint(buildings[_id].crystalRate));
+  }
+
+  function getBuildingTypeId(uint _id) external returns (uint) {
+    return uint(buildings[_id].typeId);
   }
 
 }

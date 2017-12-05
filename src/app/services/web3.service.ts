@@ -11,8 +11,10 @@ declare let window: any;
 @Injectable()
 export class Web3Service {
   private accounts: string[];
-  public accountsObservable: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+  public accounts$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+  public lastBlock$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   public web3: Web3;
+  public lastBlock: number = 0;
 
   constructor() {
     window.addEventListener('load', (event) => {
@@ -28,21 +30,33 @@ export class Web3Service {
       this.web3 = results.web3;
       // Instantiate contract once web3 provided. Witha  delay to avoid colission
       setInterval(() => {
-        this.refreshAccounts();
-      }, 100);
+        this.web3.eth.getBlockNumber((e, blockNumber) => {
+          if (this.lastBlock < blockNumber) {
+            this.lastBlock = blockNumber;
+            this.lastBlock$.next(blockNumber);
+            this.newBlock();
+          }
+        })
+      }, 250);
     }).catch(() => {
       console.log('Error finding web3.');
     });
-
   }
 
-  public async artifactsToContract(artifacts) {
+  newBlock() {
+    this.refreshAccounts();
+  }
+
+  public async artifactsToContract(artifacts, address: string = null) {
     if (!this.web3) {
       const delay = new Promise(resolve => setTimeout(resolve, 100));
       await delay;
       return await this.artifactsToContract(artifacts);
     }
 
+    if (address) {
+      artifacts.address = address;
+    }
     const contractAbstraction = contract(artifacts);
     contractAbstraction.setProvider(this.web3.currentProvider);
     return contractAbstraction;
@@ -67,10 +81,9 @@ export class Web3Service {
       }
 
       if (!this.accounts || this.accounts.length !== accounts.length || this.accounts[0] !== accounts[0]) {
-        this.accountsObservable.next(accounts);
+        this.accounts$.next(accounts);
         this.accounts = accounts;
       }
-
     });
   }
 }

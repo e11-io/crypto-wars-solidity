@@ -10,6 +10,8 @@ var buildingsMock = require('../mocks/buildings');
 var resourcesMock = require('../mocks/resources');
 const { assertRevert } = require('./helpers/assertThrow');
 
+const stat = buildingsMock.stats;
+
 contract('User Resources Test', (accounts) => {
   let experimentalToken, userVault, userVillage, userResources, userBuildings, buildingsData, buildingsQueue = {};
 
@@ -35,6 +37,7 @@ contract('User Resources Test', (accounts) => {
 
     await buildingsQueue.setBuildingsData(buildingsData.address);
     await buildingsQueue.setUserResources(userResources.address);
+    await buildingsQueue.setUserBuildings(userBuildings.address);
     await userResources.setUserVillage(userVillage.address);
     await userResources.setUserBuildings(userBuildings.address);
     await userBuildings.setUserVillage(userVillage.address);
@@ -48,6 +51,12 @@ contract('User Resources Test', (accounts) => {
     await buildingsData.addBuilding(buildingsMock.initialBuildings[2].id,
       buildingsMock.initialBuildings[2].name,
       buildingsMock.initialBuildings[2].stats);
+    await buildingsData.addBuilding(buildingsMock.initialBuildings[7].id,
+      buildingsMock.initialBuildings[7].name,
+      buildingsMock.initialBuildings[7].stats);
+    await buildingsData.addBuilding(buildingsMock.initialBuildings[8].id,
+      buildingsMock.initialBuildings[8].name,
+      buildingsMock.initialBuildings[8].stats);
     await experimentalToken.approve(userVault.address, 1 * ether); // needed to create village
   })
 
@@ -152,24 +161,102 @@ contract('User Resources Test', (accounts) => {
             await userResources.setBuildingsQueue(buildingsQueue.address);
             await userResources.initPayoutBlock(Alice);
             await userBuildings.setUserVillage(Alice);
-            let ids = [2];
-            await userBuildings.addInitialBuildings(Alice, ids);
+
           })
 
-          it('Payout resources to user', async () => {
+          it('Payout gold resources to user', async () => {
+            let goldMine = buildingsMock.initialBuildings[1];
+            await userBuildings.addInitialBuildings(Alice, [goldMine.id]);
+
             let payoutBlock = await userResources.getUserPayoutBlock.call(Alice);
 
-            await userResources.payoutResources(Alice);
+            let goldFactory = buildingsMock.initialBuildings[7];
+            await buildingsQueue.addNewBuildingToQueue(goldFactory.id);
+            let resourcediff = goldMine.stats[stat.goldRate] * (web3.eth.blockNumber - payoutBlock);
+            resourcediff -= goldFactory.stats[stat.price];
+
+            for (var i = 0; i < goldFactory.stats[stat.blocks] + 1; i++) {
+              await web3.currentProvider.send({jsonrpc: "2.0", method: "evm_mine", params: [], id: 0});
+            }
 
             let [goldRate, crystalRate] = await userBuildings.getUserRates.call(Alice);
             let [queueGold, queueCrystal] = await buildingsQueue.getUserQueueResources.call(Alice);
 
+            payoutBlock = await userResources.getUserPayoutBlock.call(Alice);
+
+            await userResources.payoutResources(Alice);
+
             const [gold, crystal, quantum] = await userResources.getUserResources.call(Alice);
 
             let payoutDiff = (await web3.eth.blockNumber) - payoutBlock;
+            let extraQueueGold = goldFactory.stats[stat.goldRate];
 
-            assert.equal(gold.toNumber(), goldAmount + (payoutDiff * goldRate.toNumber()) + queueGold.toNumber());
-            assert.equal(crystal.toNumber(), crystalAmount + (payoutDiff * crystalRate.toNumber()) + queueCrystal.toNumber());
+            assert.equal(
+              gold.toNumber(),
+              goldAmount +
+              (payoutDiff * goldRate.toNumber()) +
+              queueGold.toNumber() + resourcediff + extraQueueGold
+            );
+          })
+
+          it('Payout crystal resources to user', async () => {
+            let crystalMine = buildingsMock.initialBuildings[2];
+            await userBuildings.addInitialBuildings(Alice, [crystalMine.id]);
+
+            let payoutBlock = await userResources.getUserPayoutBlock.call(Alice);
+
+            let crystalFactory = buildingsMock.initialBuildings[8];
+            await buildingsQueue.addNewBuildingToQueue(crystalFactory.id);
+            let resourcediff = crystalMine.stats[stat.crystalRate] * (web3.eth.blockNumber - payoutBlock);
+            resourcediff -= crystalFactory.stats[stat.price];
+
+            for (var i = 0; i < crystalFactory.stats[stat.blocks] + 1; i++) {
+              await web3.currentProvider.send({jsonrpc: "2.0", method: "evm_mine", params: [], id: 0});
+            }
+
+            let [goldRate, crystalRate] = await userBuildings.getUserRates.call(Alice);
+            let [queueGold, queueCrystal] = await buildingsQueue.getUserQueueResources.call(Alice);
+
+            payoutBlock = await userResources.getUserPayoutBlock.call(Alice);
+
+            await userResources.payoutResources(Alice);
+
+            const [gold, crystal, quantum] = await userResources.getUserResources.call(Alice);
+
+            let payoutDiff = (await web3.eth.blockNumber) - payoutBlock;
+            let extraQueueCrystal = crystalFactory.stats[stat.crystalRate];
+
+            assert.equal(
+              crystal.toNumber(),
+              crystalAmount +
+              (payoutDiff * crystalRate.toNumber()) +
+              queueCrystal.toNumber() + resourcediff + extraQueueCrystal
+            );
+          })
+
+          it('Check queue finished building payouts', async () => {
+            let crystalFactory = buildingsMock.initialBuildings[8];
+            await buildingsQueue.addNewBuildingToQueue(crystalFactory.id);
+
+            for (var i = 0; i < crystalFactory.stats[stat.blocks]; i++) {
+              await web3.currentProvider.send({jsonrpc: "2.0", method: "evm_mine", params: [], id: 0});
+            }
+            let blocksToSkip = 0;
+            await userResources.payoutResources(Alice);
+            blocksToSkip++;
+
+            for (var i = 0; i < 5; i++) {
+              await web3.currentProvider.send({jsonrpc: "2.0", method: "evm_mine", params: [], id: 0});
+              blocksToSkip++;
+            }
+
+            await userResources.payoutResources(Alice);
+            blocksToSkip++;
+
+            let [finalGold, finalCrystal, finalQuantum] = await userResources.getUserResources.call(Alice);
+
+            let amount = crystalFactory.stats[stat.crystalRate] * blocksToSkip;
+            assert.equal(finalCrystal.toNumber(), crystalAmount + amount - crystalFactory.stats[stat.price]);
           })
         })
       })

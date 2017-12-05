@@ -32,7 +32,8 @@ export class VillageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.contracts.init(() => {
+    this.contracts.init((error: boolean) => {
+      if (error) return;
       this.approveAddress = this.contracts.UserVaultInstance.address;
     });
   }
@@ -42,12 +43,29 @@ export class VillageComponent implements OnInit {
     console.log('status: ' + status);
   }
 
+  async sendEther() {
+    console.log('Sending ethers' + this.amount + ' to ' + this.receiver);
+
+    this.setStatus('Initiating transaction... (please wait)');
+    try {
+      const transaction = await this.web3Service.web3.eth.sendTransaction({from: this.account, to: this.receiver, value: this.amount * ether});
+
+      if (!transaction) {
+        this.setStatus('Transaction failed!');
+      } else {
+        this.setStatus('Transaction complete!');
+      }
+    } catch (e) {
+      console.log(e);
+      this.setStatus('Error sending ether; see log.');
+    }
+  }
   async sendCoin() {
     console.log('Sending tokens' + this.amount + ' to ' + this.receiver);
 
     this.setStatus('Initiating transaction... (please wait)');
     try {
-      const transaction = await this.contracts.ExperimentalTokenInstance.transfer.sendTransaction(this.receiver, this.amount, {from: this.account});
+      const transaction = await this.contracts.ExperimentalTokenInstance.transfer.sendTransaction(this.receiver, this.amount * ether, {from: this.account});
 
       if (!transaction) {
         this.setStatus('Transaction failed!');

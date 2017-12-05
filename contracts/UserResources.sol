@@ -85,7 +85,7 @@ contract UserResources is NoOwner {
 	mapping (address => Resources) public usersResources;
 
 	// Mapping of user -> last payout block (keeps track of the last block where the user was paid).
-	mapping (address => uint) usersPayoutBlock;
+	mapping (address => uint) public usersPayoutBlock;
 
 	UserVillage userVillage;
 	BuildingsQueue buildingsQueue;
@@ -184,9 +184,10 @@ contract UserResources is NoOwner {
 		payoutResources(_user);
 		require(usersResources[_user].gold >= _price);
 		usersResources[_user].gold = SafeMath.sub(usersResources[_user].gold, _price);
-		return true;
 
 		ConsumeGold(_user, _price);
+
+		return true;
 	}
 
 	/*
@@ -200,9 +201,10 @@ contract UserResources is NoOwner {
 		payoutResources(_user);
 		require(usersResources[_user].crystal >= _price);
 		usersResources[_user].crystal = SafeMath.sub(usersResources[_user].crystal, _price);
-		return true;
 
 		ConsumeCrystal(_user, _price);
+
+		return true;
 	}
 
 	/*
@@ -215,9 +217,10 @@ contract UserResources is NoOwner {
 		require(msg.sender == address(buildingsQueue));
 		require(usersResources[_user].quantumDust >= _price);
 		usersResources[_user].quantumDust = SafeMath.sub(usersResources[_user].quantumDust, _price);
-		return true;
 
 		ConsumeQuantum(_user, _price);
+
+		return true;
 	}
 
 	/*
@@ -264,11 +267,13 @@ contract UserResources is NoOwner {
    */
 	function payoutResources(address _user) public {
 	  uint256 diff = SafeMath.sub(block.number, usersPayoutBlock[_user]);
+
 		if (diff > 0) {
-			uint goldRate;
-			uint crystalRate;
+			uint goldRate = 0;
+			uint crystalRate = 0;
 
 			(goldRate, crystalRate) = userBuildings.getUserRates(_user);
+
 			if (goldRate > 0) {
 				usersResources[_user].gold = SafeMath.add(
 					usersResources[_user].gold, SafeMath.mul(goldRate, diff)
@@ -280,8 +285,8 @@ contract UserResources is NoOwner {
 				);
 			}
 
-			uint gold ;
-			uint crystal;
+			uint gold = 0;
+			uint crystal = 0;
 
 			(gold, crystal) = buildingsQueue.getUserQueueResources(_user);
 

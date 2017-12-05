@@ -38,7 +38,7 @@ contract('Buildings Queue Test', (accounts) => {
     await userResources.setUserBuildings(userBuildings.address);
     await userBuildings.setUserResources(userResources.address);
     await userBuildings.setBuildingsQueue(buildingsQueue.address);
-    // await userBuildings.setBuildingsData(buildingsData.address);
+    await userBuildings.setBuildingsData(buildingsData.address);
     await buildingsData.addBuilding(buildingsMock.initialBuildings[0].id,
       buildingsMock.initialBuildings[0].name,
       buildingsMock.initialBuildings[0].stats);
@@ -57,6 +57,27 @@ contract('Buildings Queue Test', (accounts) => {
     await buildingsData.addBuilding(buildingsMock.initialBuildings[5].id,
       buildingsMock.initialBuildings[5].name,
       buildingsMock.initialBuildings[5].stats);
+    await buildingsData.addBuilding(buildingsMock.initialBuildings[6].id,
+      buildingsMock.initialBuildings[6].name,
+      buildingsMock.initialBuildings[6].stats);
+    await buildingsData.addBuilding(buildingsMock.initialBuildings[7].id,
+      buildingsMock.initialBuildings[7].name,
+      buildingsMock.initialBuildings[7].stats);
+    await buildingsData.addBuilding(buildingsMock.initialBuildings[8].id,
+      buildingsMock.initialBuildings[8].name,
+      buildingsMock.initialBuildings[8].stats);
+    await buildingsData.addBuilding(buildingsMock.initialBuildings[9].id,
+      buildingsMock.initialBuildings[9].name,
+      buildingsMock.initialBuildings[9].stats);
+    await buildingsData.addBuilding(buildingsMock.initialBuildings[10].id,
+      buildingsMock.initialBuildings[10].name,
+      buildingsMock.initialBuildings[10].stats);
+    await buildingsData.addBuilding(buildingsMock.initialBuildings[11].id,
+      buildingsMock.initialBuildings[11].name,
+      buildingsMock.initialBuildings[11].stats);
+    await buildingsData.addBuilding(buildingsMock.initialBuildings[12].id,
+      buildingsMock.initialBuildings[12].name,
+      buildingsMock.initialBuildings[12].stats);
   })
 
   it('Add building to queue with no resources', async () => {
@@ -78,26 +99,60 @@ contract('Buildings Queue Test', (accounts) => {
       assert.equal(200, quantumDust.toNumber(), 'quantumDust');
     })
 
-    it('Add gold mine to queue', async () => {
-      await buildingsQueue.addNewBuildingToQueue(2);
+    it('Add gold factory to queue', async () => {
+      let goldFactory = buildingsMock.initialBuildings[7];
+
+      await buildingsQueue.addNewBuildingToQueue(goldFactory.id);
 
       const [id, startBlock, endBlock, queueId] = await buildingsQueue.getLastUserBuilding.call(Alice);
 
-      assert.equal(id.toNumber(), 2);
+      assert.equal(id.toNumber(), goldFactory.id);
     })
 
-    it('Add crystal mine to queue', async () => {
-      await buildingsQueue.addNewBuildingToQueue(3);
+    it('Add crystal factory to queue', async () => {
+      let crystalFactory = buildingsMock.initialBuildings[8];
+      await buildingsQueue.addNewBuildingToQueue(crystalFactory.id);
 
       const [id, startBlock, endBlock, queueId] = await buildingsQueue.getLastUserBuilding.call(Alice);
 
-      assert.equal(id.toNumber(), 3);
+      assert.equal(id.toNumber(), crystalFactory.id);
+    })
+
+    it('Add portal to queue (consume quantum)', async () => {
+      await buildingsQueue.addNewBuildingToQueue(4);
+
+      const [id, startBlock, endBlock, queueId] = await buildingsQueue.getLastUserBuilding.call(Alice);
+
+      assert.equal(id.toNumber(), 4);
     })
 
     it('Upgrade gold mine from user buildings', async () => {
-      let building = buildingsMock.initialBuildings[1];
+      let goldMine = buildingsMock.initialBuildings[1];
 
       const buildings = await userBuildings.getUserBuildings.call(Alice);
+      let index = -1;
+      buildings.forEach((id, i) => {
+        if (id.toNumber() == goldMine.id) {
+          index = i;
+        }
+      });
+
+      await buildingsQueue.upgradeBuilding(goldMine.id, 2002, index);
+
+      const [id, isActive] = await userBuildings.getUserBuildingIdAndStatus.call(Alice, index);
+
+      assert.equal(false, isActive);
+    })
+
+    it('Upgrade gold factory from buildings queue', async () => {
+      let building = buildingsMock.initialBuildings[7];
+
+      const initialBuildings = await userBuildings.getUserBuildings.call(Alice);
+
+      await buildingsQueue.addNewBuildingToQueue(building.id);
+
+      const buildings = await userBuildings.getUserBuildings.call(Alice);
+
       let index = -1;
       buildings.forEach((id, i) => {
         if (id.toNumber() == building.id) {
@@ -105,23 +160,53 @@ contract('Buildings Queue Test', (accounts) => {
         }
       });
 
-      await buildingsQueue.upgradeBuilding(building.id, building.stats[stat.nextLevelId], index);
+      for (var i = 0; i < building.stats[stat.blocks] + 1; i++) {
+        await web3.currentProvider.send({jsonrpc: "2.0", method: "evm_mine", params: [], id: 0});
+      }
 
-      const [id, isActive] = await userBuildings.getUserBuildingIdAndStatus.call(Alice, index);
+      let nextLevelId = 2000 + building.id;
+
+      await buildingsQueue.upgradeBuilding(building.id, nextLevelId, index);
+
+      for (var i = 0; i < building.stats[stat.blocks]; i++) {
+        await web3.currentProvider.send({jsonrpc: "2.0", method: "evm_mine", params: [], id: 0});
+      }
+
+      let [id, isActive] = await userBuildings.getUserBuildingIdAndStatus.call(Alice, index);
 
       assert.equal(false, isActive);
+
+      const buildingsInQueue =  await buildingsQueue.getBuildingsInQueue.call(Alice);
+
+      assert.equal(buildingsInQueue.toString(), nextLevelId.toString());
+
+      await buildingsQueue.updateQueue(Alice);
+
+      const finalBuildings = await userBuildings.getUserBuildings.call(Alice);
+      const expectedBuildings = [initialBuildings.toString(), nextLevelId.toString()].join();
+      const [lastBuildingId, lastBuildingStatus] = await userBuildings.getUserBuildingIdAndStatus.call(Alice, index);
+
+      assert.equal(lastBuildingId.toNumber(), nextLevelId);
+      assert.equal(lastBuildingStatus, true);
+      assert.equal(finalBuildings.toString(), expectedBuildings);
     })
 
     it('Try to upgrade gold mine passing wrong upgrade ID', async () => {
       let building = buildingsMock.initialBuildings[2];
       return assertRevert(async () => {
-        await buildingsQueue.upgradeBuilding(building.id, building.stats[stat.nextLevelId] + 420, 0); // Add to wrong upgrade id
+        await buildingsQueue.upgradeBuilding(building.id, 2002 + 420, 0); // Add to wrong upgrade id
       })
     })
 
     it('Add non-existing building to queue', async () => {
       return assertRevert(async () => {
         await buildingsQueue.addNewBuildingToQueue(678);
+      })
+    })
+
+    it('Try to create another gold mine (same building type)', async () => {
+      return assertRevert(async () => {
+        await buildingsQueue.addNewBuildingToQueue(2);
       })
     })
 
@@ -133,28 +218,47 @@ contract('Buildings Queue Test', (accounts) => {
       assert.equal(isActive, false);
     })
 
+    it('Update queue when none building is ready', async () => {
+      await buildingsQueue.addNewBuildingToQueue(5);
+
+      const txData = await buildingsQueue.updateQueue(Alice);
+
+      assert.equal(txData.logs[0].args._ids.toString(), '');
+    })
+
+    it('Remove building in queue', async () => {
+      const txData = await buildingsQueue.addNewBuildingToQueue(5);
+      await buildingsQueue.addNewBuildingToQueue(6);
+      const data = txData.logs[0].args;
+
+      await buildingsQueue.removeBuilding(data._id.toNumber(), data._index.toNumber());
+
+      const [ids, indexes] =  await buildingsQueue.getBuildingsIdAndIndex.call(Alice);
+      const [id, isActive] = await userBuildings.getUserBuildingIdAndStatus.call(Alice, data._index.toNumber());
+
+      assert.equal(ids.toString(), '6');
+      assert.equal(isActive, false);
+    })
 
     context('Buildings added to construction queue period', async () => {
       beforeEach(async () => {
-        await buildingsQueue.addNewBuildingToQueue(1);
-        await buildingsQueue.addNewBuildingToQueue(2);
-        await buildingsQueue.addNewBuildingToQueue(3);
+        await buildingsQueue.addNewBuildingToQueue(5);
+        await buildingsQueue.addNewBuildingToQueue(6);
       })
 
       it('Check user buildings queue', async () => {
-        let expectedBuildings = '1,2,3';
+        let expectedBuildings = '5,6';
         const buildings = await buildingsQueue.getBuildingsInQueue.call(Alice);
 
         assert.equal(buildings.toString(), expectedBuildings);
       })
 
-      it('Make first two buildings be ready and removed from BuildingsQueue and transferred to UserBuildings', async () => {
+      it('Make first building be ready and removed from BuildingsQueue and transferred to UserBuildings', async () => {
         let [building_one_id, building_one_endBlock] = await buildingsQueue.getBuildingIdAndEndBlock.call(Alice, 0);
-        let [building_two_id, building_two_endBlock] = await buildingsQueue.getBuildingIdAndEndBlock.call(Alice, 1);
         let blocksToSkip = 0;
 
-        if ((await web3.eth.blockNumber) < building_two_endBlock) {
-          blocksToSkip = Math.abs((await web3.eth.blockNumber) - building_two_endBlock.toNumber());
+        if ((await web3.eth.blockNumber) < building_one_endBlock) {
+          blocksToSkip = Math.abs((await web3.eth.blockNumber) - building_one_endBlock.toNumber());
         }
 
         for (var i = 0; i < blocksToSkip; i++) {
@@ -165,12 +269,12 @@ contract('Buildings Queue Test', (accounts) => {
 
         const buildingsInQueue = await buildingsQueue.getBuildingsInQueue.call(Alice);
 
-        assert.equal(buildingsInQueue.toString(), '3');
+        assert.equal(buildingsInQueue.toString(), '6');
       })
 
       it('UpdateQueue of non existent user', async () => {
         return assertRevert(async () => {
-          const finishedBuildings = await buildingsQueue.updateQueue.call(Bob);
+          await buildingsQueue.updateQueue(Bob);
         })
       })
 
@@ -181,80 +285,121 @@ contract('Buildings Queue Test', (accounts) => {
       })
 
       it('Cancel new building in queue', async () => {
-        const [id, queueId] = await buildingsQueue.getBuildingIndex.call(Alice, 1);
+        const [id, index] = await buildingsQueue.getBuildingIndex.call(Alice, 1);
 
-        // await buildingsQueue.cancelNewBuilding(Alice, id, queueId);
-        await buildingsQueue.removeBuilding(id, queueId);
+        await buildingsQueue.removeBuilding(id, index);
 
         const buildings = await buildingsQueue.getBuildingsInQueue.call(Alice);
 
-        assert.equal(buildings, '1,3', 'The second initial building should be removed from queue, but is not');
+        assert.equal(buildings.toString(), '5', 'The second initial building should be removed from queue, but is not');
       })
 
-      it('Return resources to user when building canceled', async () => {
-        const [id, index] = await buildingsQueue.getBuildingIndex.call(Alice, 1);
+      it('Return gold resources to user when building canceled', async () => {
+        const [id, index] = await buildingsQueue.getBuildingIndex.call(Alice, 0);
         const [initialUserGold, initialUserCrystal, initialUserQuantum] = await userResources.getUserResources.call(Alice);
 
         const previousPayoutBlock = await userResources.getUserPayoutBlock.call(Alice);
-        // await buildingsQueue.cancelNewBuilding(Alice, id, index);
+
+        let [goldRate, crystalRate] = await userBuildings.getUserRates.call(Alice);
+        let [queueGold, queueCrystal] = await buildingsQueue.getUserQueueResources.call(Alice);
+
         await buildingsQueue.removeBuilding(id, index);
 
         let blocksDiff = web3.eth.blockNumber - previousPayoutBlock.toNumber();
-        let [goldRate, crystalRate] = await userBuildings.getUserRates.call(Alice);
-        let [queueGold, queueCrystal] = await buildingsQueue.getUserQueueResources.call(Alice);
         let generatedGold =  goldRate.toNumber() * blocksDiff + queueGold.toNumber();
 
         const [finalUserGold, finalUserCrystal, finalUserQuantum] = await userResources.getUserResources.call(Alice);
         const [price, resourceType, blocksToBuild] = await buildingsData.getBuildingData.call(id);
+        assert.equal(0, resourceType.toNumber());
 
         let total = initialUserGold.toNumber() + price.toNumber()*60/100 + generatedGold;
         assert.equal(finalUserGold.toNumber(), total);
       })
 
-      it('Remove building in queue', async () => {
-        const txData = await buildingsQueue.addNewBuildingToQueue(3);
-        const data = txData.logs[0].args;
+      it('Return crystal resources to user when building canceled', async () => {
+        const [id, index] = await buildingsQueue.getBuildingIndex.call(Alice, 1);
+        const [initialUserGold, initialUserCrystal, initialUserQuantum] = await userResources.getUserResources.call(Alice);
 
-        await buildingsQueue.removeBuilding(data._id.toNumber(), data._index.toNumber());
+        const previousPayoutBlock = await userResources.getUserPayoutBlock.call(Alice);
 
-        const [ids, indexes] =  await buildingsQueue.getBuildingsIdAndIndex.call(Alice);
-        const [id, isActive] = await userBuildings.getUserBuildingIdAndStatus.call(Alice, data._index.toNumber());
+        let [goldRate, crystalRate] = await userBuildings.getUserRates.call(Alice);
+        let [queueGold, queueCrystal] = await buildingsQueue.getUserQueueResources.call(Alice);
 
-        // the ids of the buildings added in the beforeEach.
-        assert.equal(ids.toString(), '1,2,3');
-        assert.equal(isActive, false);
+        await buildingsQueue.removeBuilding(id, index);
+
+        let blocksDiff = web3.eth.blockNumber - previousPayoutBlock.toNumber();
+        let generatedCrystal =  crystalRate.toNumber() * blocksDiff + queueCrystal.toNumber();
+
+        const [finalUserGold, finalUserCrystal, finalUserQuantum] = await userResources.getUserResources.call(Alice);
+        const [price, resourceType, blocksToBuild] = await buildingsData.getBuildingData.call(id);
+        assert.equal(1, resourceType.toNumber());
+
+        let total = initialUserCrystal.toNumber() + price.toNumber()*60/100 + generatedCrystal;
+        assert.equal(finalUserCrystal.toNumber(), total);
       })
 
       it('Check updateQueueBlocks before removed building starts', async () => {
-        await buildingsQueue.addNewBuildingToQueue(2);
-        await buildingsQueue.addNewBuildingToQueue(2);
+        let crystalFactory = buildingsMock.initialBuildings[8];
+        let goldStorage = buildingsMock.initialBuildings[11];
+        let crystalStorage = buildingsMock.initialBuildings[12];
+
+        await buildingsQueue.addNewBuildingToQueue(goldStorage.id);
+        await buildingsQueue.addNewBuildingToQueue(crystalStorage.id);
+
+        const buildings = await userBuildings.getUserBuildings.call(Alice);
+
+        let index = -1;
+        buildings.forEach((id, i) => {
+          if (id.toNumber() == crystalFactory.id) {
+            index = i;
+          }
+        });
+
+        let [exists, indexInQueue] = await buildingsQueue.findBuildingInQueue.call(Alice, crystalFactory.id, index);
 
         const [initialIds, initialStartBlocks, initialEndBlocks] = await buildingsQueue.getIdAndBlocks.call(Alice);
 
-        await buildingsQueue.removeBuilding(3, 5);
+        await buildingsQueue.removeBuilding(crystalFactory.id, index);
 
         const [finalIds, finalStartBlocks, finalEndBlocks] = await buildingsQueue.getIdAndBlocks.call(Alice);
 
-        const blocksA = initialEndBlocks[3].toNumber() - initialStartBlocks[3].toNumber();
-        assert.equal(finalIds[2].toNumber(), initialIds[3].toNumber());
-        assert.equal(finalStartBlocks[2].toNumber(), initialStartBlocks[2].toNumber());
-        assert.equal(finalEndBlocks[2].toNumber(), finalStartBlocks[2].toNumber() + blocksA);
+        indexInQueue = indexInQueue.toNumber();
+        const blocksA = initialEndBlocks[initialEndBlocks.length - 1].toNumber() - initialStartBlocks[initialStartBlocks.length - 1].toNumber();
+        assert.equal(finalIds[finalIds.length - 1].toNumber(), initialIds[finalIds.length].toNumber());
+        assert.equal(finalStartBlocks[indexInQueue].toNumber(), initialStartBlocks[indexInQueue].toNumber());
+        assert.equal(finalEndBlocks[finalEndBlocks.length - 1].toNumber(), finalStartBlocks[finalStartBlocks.length - 1].toNumber() + blocksA);
       })
 
       it('Check updateQueueBlocks after removed building starts', async () => {
-        await buildingsQueue.addNewBuildingToQueue(2);
-        await buildingsQueue.addNewBuildingToQueue(2);
+        let crystalFactory = buildingsMock.initialBuildings[7];
+        let goldStorage = buildingsMock.initialBuildings[11];
+        let crystalStorage = buildingsMock.initialBuildings[12];
+
+        await buildingsQueue.addNewBuildingToQueue(goldStorage.id);
+        await buildingsQueue.addNewBuildingToQueue(crystalStorage.id);
+
+        const buildings = await userBuildings.getUserBuildings.call(Alice);
+
+        let index = -1;
+        buildings.forEach((id, i) => {
+          if (id.toNumber() == crystalFactory.id) {
+            index = i;
+          }
+        });
+
+        let [exists, indexInQueue] = await buildingsQueue.findBuildingInQueue.call(Alice, crystalFactory.id, index);
 
         const [initialIds, initialStartBlocks, initialEndBlocks] = await buildingsQueue.getIdAndBlocks.call(Alice);
 
-        await buildingsQueue.removeBuilding(2, 4);
+        await buildingsQueue.removeBuilding(crystalFactory.id, index);
 
         const [finalIds, finalStartBlocks, finalEndBlocks] = await buildingsQueue.getIdAndBlocks.call(Alice);
 
-        const blocksA = initialEndBlocks[2].toNumber() - initialStartBlocks[2].toNumber();
-        assert.equal(finalIds[1].toNumber(), initialIds[2].toNumber());
-        assert.equal(finalStartBlocks[1].toNumber(), web3.eth.blockNumber);
-        assert.equal(finalEndBlocks[1].toNumber(), finalStartBlocks[1].toNumber() + blocksA);
+        indexInQueue = indexInQueue.toNumber();
+        const blocksA = initialEndBlocks[indexInQueue + 1].toNumber() - initialStartBlocks[indexInQueue + 1].toNumber();
+        assert.equal(finalIds[indexInQueue].toNumber(), initialIds[indexInQueue + 1].toNumber());
+        assert.equal(finalStartBlocks[indexInQueue].toNumber(), web3.eth.blockNumber);
+        assert.equal(finalEndBlocks[indexInQueue].toNumber(), finalStartBlocks[indexInQueue].toNumber() + blocksA);
       })
 
       it('Remove building passing wrong index', async () => {
@@ -268,7 +413,6 @@ contract('Buildings Queue Test', (accounts) => {
           await buildingsQueue.removeBuilding(854, 5);
         })
       })
-
 
     })
   })

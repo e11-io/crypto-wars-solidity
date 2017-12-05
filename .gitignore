@@ -29,6 +29,7 @@
 /connect.lock
 /libpeerconnection.log
 npm-debug.log
+.node-xmlhttprequest*
 testem.log
 /typings
 
@@ -51,3 +52,9 @@ Thumbs.db
 /coverageEnv
 scTopics
 allFiredEvents
+
+# ETH
+e11.json
+signer.json
+signer.pass
+.datadir

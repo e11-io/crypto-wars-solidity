@@ -5,13 +5,13 @@
     "stats": [
       "health", "defense", "attack",
       "goldCapacity", "crystalEnergyCapacity", "goldRate", "crystalRate",
-      "price", "resource", "blocks", "previousLevelId", "nextLevelId"
+      "price", "resource", "blocks", "previousLevelId", "typeId"
     ]
   },
   "stats": {
     "health": 0, "defense": 1, "attack": 2,
     "goldCapacity": 3, "crystalEnergyCapacity": 4, "goldRate": 5, "crystalRate": 6,
-    "price": 7, "resource": 8, "blocks": 9, "previousLevelId": 10, "nextLevelId": 11
+    "price": 7, "resource": 8, "blocks": 9, "previousLevelId": 10, "typeId": 11
   },
   "initialBuildings": [{
     "id": 1,
@@ -19,7 +19,7 @@
     "stats": [
       1500, 50, 0,
       3000, 4000, 0, 0,
-      0, 0, 1, 0, 2001
+      0, 0, 1, 0, 1
     ]
   },{
     "id": 2,
@@ -27,7 +27,7 @@
     "stats": [
       500, 20, 0,
       500, 0, 50, 0,
-      200, 0, 5, 0, 2002
+      200, 0, 5, 0, 2
     ]
   },{
     "id": 3,
@@ -35,7 +35,7 @@
     "stats": [
       500, 20, 0,
       0, 400, 0, 60,
-      200, 1, 2, 0, 2003
+      200, 1, 2, 0, 3
     ]
   },{
     "id": 2001,
@@ -43,7 +43,7 @@
     "stats": [
       3000, 100, 0,
       5000, 6000, 0, 0,
-      0, 0, 1, 1, 3001
+      0, 0, 1, 1, 1
     ]
   },{
     "id": 2002,
@@ -51,7 +51,7 @@
     "stats": [
       800, 40, 0,
       1000, 0, 100, 0,
-      300, 0, 10, 2, 3002
+      300, 0, 10, 2, 2
     ]
   },{
     "id": 2003,
@@ -59,7 +59,63 @@
     "stats": [
       1000, 40, 0,
       0, 800, 0, 120,
-      400, 1, 4, 3, 3003
+      400, 1, 4, 3, 3
     ]
-    }]
+  },{
+    "id": 4,
+    "name": "Portal",
+    "stats": [
+      2000, 50, 0,
+      0, 0, 0, 0,
+      100, 2, 20, 0, 4
+    ]
+  },{
+    "id": 5,
+    "name": "Gold Factory",
+    "stats": [
+      2000, 50, 0,
+      0, 0, 100, 0,
+      300, 0, 10, 0, 5
+    ]
+  },{
+    "id": 6,
+    "name": "Crystal Factory",
+    "stats": [
+      2000, 50, 0,
+      0, 0, 0, 100,
+      300, 1, 10, 0, 6
+    ]
+  },{
+    "id": 2005,
+    "name": "Gold Factory",
+    "stats": [
+      2000, 50, 0,
+      0, 0, 200, 0,
+      300, 0, 10, 5, 5
+    ]
+  },{
+    "id": 2006,
+    "name": "Crystal Factory",
+    "stats": [
+      2000, 50, 0,
+      0, 0, 0, 200,
+      300, 1, 10, 6, 6
+    ]
+  },{
+    "id": 7,
+    "name": "Gold Storage",
+    "stats": [
+      2000, 50, 0,
+      500, 0, 0, 0,
+      300, 0, 5, 0, 7
+    ]
+  },{
+    "id": 8,
+    "name": "Crystal Storage",
+    "stats": [
+      2000, 50, 0,
+      0, 500, 0, 0,
+      400, 1, 5, 0, 8
+    ]
+  }]
 }

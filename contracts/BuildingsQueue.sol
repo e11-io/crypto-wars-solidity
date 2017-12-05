@@ -28,6 +28,17 @@ contract BuildingsQueue is NoOwner {
                            uint _endBlock);
 
  /*
+  * @dev Event for Updating the buildings queue. Buildings that are ready will be
+  * tranfered to the user buildings contract, and removed from the queue.
+  * @param _user the address of the user's queue to be updated. (address)
+  * @param _ids The ids of the finished buldings. (uint[])
+  * @param _indexes The indexes of the finished buldings. (uint[])
+  */
+  event UpdateQueue(address _user,
+                           uint[] _ids,
+                           uint[] _indexes);
+
+ /*
   * @dev Event for upgrading a building to the queue system logging.
   * @param _idOfUpgrade the id of the building to be added.
   * @param _index the index of the building to be added.
@@ -40,7 +51,6 @@ contract BuildingsQueue is NoOwner {
   *
   */
   event RemoveBuilding(address _user, uint _id, uint _index);
-
 
   struct Build {
     uint32 id;
@@ -91,6 +101,10 @@ contract BuildingsQueue is NoOwner {
   function addNewBuildingToQueue(uint _id) external {
     require(buildingsData.checkBuildingExist(_id));
 
+    uint typeId = buildingsData.getBuildingTypeId(_id);
+
+    require(userBuildings.buildingTypeIsUnique(msg.sender, typeId));
+
     uint price;
     uint resourceType;
     uint blocks;
@@ -125,7 +139,7 @@ contract BuildingsQueue is NoOwner {
    * @param _user the address of the user's queue to be updated. (address)
    * @return an array of the finished buildings ids. (uint[])
    */
-  function updateQueue(address _user) public returns (uint[]) {
+  function updateQueue(address _user) public {
     require(_user != address(0));
     require(userBuildingsQueue[_user].length > 0);
 
@@ -140,7 +154,8 @@ contract BuildingsQueue is NoOwner {
     uint[] memory finishedIndexes = new uint[](i);
 
     if (i == 0) {
-      return finishedIds;
+      UpdateQueue(_user, finishedIds, finishedIndexes);
+      return;
     }
 
     for (uint j = 0; j < i; j++) {
@@ -153,29 +168,7 @@ contract BuildingsQueue is NoOwner {
 
     require(shiftUserBuildings(_user, i));
 
-    return finishedIds;
-  }
-
-  /*
-   * @title Cancel New Building.
-   * @dev Function to update the user buildings queue. Finished buildings
-   *  will be send to the User Buildings contract and removed from the construction
-   *  queue. Queue will be resized and updated with only the unfinished buildings.
-   * @param _user the address of the user's queue to be updated. (address)
-   * @return an array of the finished buildings ids. (uint[])
-   */
-  function cancelNewBuilding(address _user, uint _id, uint _index) external {
-    require(_user != address(0));
-    require(_id >= 0);
-    require(_index >= 0);
-    require(buildingsData.checkBuildingExist(_id));
-
-    for (uint i = 0; i < userBuildingsQueue[_user].length; i++) {
-      if (userBuildingsQueue[_user][i].index == _index && userBuildingsQueue[_user][i].id == _id) {
-        require(shiftOneUserBuilding(_user, i));
-        require(returnResourcesToUser(_user, _id));
-      }
-    }
+    UpdateQueue(_user, finishedIds, finishedIndexes);
   }
 
   /*
@@ -193,27 +186,28 @@ contract BuildingsQueue is NoOwner {
 
     bool buildingIsInQueue;
     uint buildingIndexInQueue;
-
     (buildingIsInQueue, buildingIndexInQueue) = findBuildingInQueue(msg.sender, _id, _index);
 
     if (buildingIsInQueue) {
       updateQueue(msg.sender);
     }
-
+    
     require(userBuildings.upgradeBuilding(msg.sender, _id, _index));
 
+    require(userBuildings.upgradeBuilding(msg.sender, _id, _index));
+    
     uint price;
     uint resourceType;
     uint blocks;
     (price, resourceType, blocks) = buildingsData.getBuildingData(_id);
-
     consumeResources(msg.sender, price, resourceType);
+
     uint startBlock = getStartBlock(msg.sender);
     uint endBlock = startBlock.add(blocks);
 
     userBuildingsQueue[msg.sender].push(Build(
       uint32(_idOfUpgrade), uint32(_index), uint64(startBlock), uint64(endBlock)
-      ));
+    ));
 
     UpgradeBuilding(_idOfUpgrade, _index, startBlock, endBlock);
   }
@@ -484,34 +478,6 @@ contract BuildingsQueue is NoOwner {
   }
 
   /*
-   * @notice Return Resources To User.
-   * @dev Function to return 60% of the buildings price to the user when a building is removed.
-   * @param _user The address of the user to give the resources. (address)
-   * @param _id The id of the building to be removed. (uint)
-   * @return A boolean that indicates if the operation was successful.
-   */
-  function returnResourcesToUser(address _user, uint _id) internal returns (bool) {
-    uint price;
-    uint resourceType;
-    uint blocks;
-    (price, resourceType, blocks) = buildingsData.getBuildingData(_id);
-    if (price > 0) {
-      /* TODO: set return percentage variable */
-      price = (price * 60 / 100);
-      if (resourceType == 0) {
-        userResources.giveResourcesToUser(_user, price, 0, 0);
-      }
-      if (resourceType == 1) {
-        userResources.giveResourcesToUser(_user, 0, price, 0);
-      }
-      if (resourceType == 2) {
-        userResources.giveResourcesToUser(_user, 0, 0, price);
-      }
-    }
-    return true;
-  }
-
-  /*
    * @notice Get User Queue Resources.
    * @dev Function to get the amount of gold and crystal produced in the buildings Queue
    * since the last payout to the user.
@@ -523,9 +489,10 @@ contract BuildingsQueue is NoOwner {
     uint goldRate;
     uint crystalRate;
     uint diff;
-    uint payoutBlock = block.number + 1; //userResources.getUserPayoutBlock(_user);
+    uint payoutBlock = userResources.usersPayoutBlock(_user);
 
-		for (uint i = 0; i > userBuildingsQueue[_user].length; i++) {
+
+		for (uint i = 0; i < userBuildingsQueue[_user].length; i++) {
       if (userBuildingsQueue[_user][i].endBlock < block.number) {
         (goldRate, crystalRate) = buildingsData.getGoldAndCrystalRates(userBuildingsQueue[_user][i].id);
 
@@ -534,6 +501,7 @@ contract BuildingsQueue is NoOwner {
         } else {
           diff = SafeMath.sub(block.number, payoutBlock);
         }
+
 
         if (diff > 0) {
           if (goldRate > 0) {
@@ -544,7 +512,6 @@ contract BuildingsQueue is NoOwner {
             queueCrystal = SafeMath.add(queueCrystal, SafeMath.mul(crystalRate, diff));
           }
         }
-
       }
     }
 

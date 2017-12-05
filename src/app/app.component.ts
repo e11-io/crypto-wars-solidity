@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/skip';
+import 'rxjs/add/observable/combineLatest';
 
 import { ContractsService } from './services/contracts.service';
 import { Web3Service } from './services/web3.service';
@@ -24,15 +27,26 @@ export class AppComponent {
   }
 
   ngOnInit(): void {
-    this.contracts.init(() => {
+    this.contracts.init((error: string) => {
+      if (error) {
+        console.log('contract init error');
+        console.log(error);
+        return;
+      }
       this.watchAccount();
     });
   }
 
   watchAccount() {
-    this.web3Service.accountsObservable.subscribe((accounts) => {
+    Observable.combineLatest(
+      this.web3Service.accounts$.skip(1),
+      this.web3Service.lastBlock$.skip(1)
+    ).subscribe((data) => {
+      let accounts = data[0];
+      let lastBlock = data[1];
       this.accounts = accounts;
       this.account = accounts[0];
+      console.log('lastBlock:' + lastBlock);
       this.refreshBalance();
     });
   }
