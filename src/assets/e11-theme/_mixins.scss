@@ -1,0 +1,9 @@
+@mixin setButtonBackground($baseColor) {
+  background-color: $baseColor;
+  &:hover {
+    background-color: lighten($baseColor, 10%);
+  }
+  &:active {
+    background-color: darken($baseColor, 10%);
+  }
+}

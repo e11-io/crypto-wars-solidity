@@ -1,16 +1,17 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.4.18;
 
 import 'zeppelin-solidity/contracts/math/SafeMath.sol';
 import 'zeppelin-solidity/contracts/ownership/NoOwner.sol';
 import './UserBuildings.sol';
 import './BuildingsData.sol';
 import './UserResources.sol';
+import './Versioned.sol';
 
 /*
  * @title BuildingsQueue (WIP)
  * @dev Issue: * https://github.com/e11-io/crypto-wars-solidity/issues/4
  */
-contract BuildingsQueue is NoOwner {
+contract BuildingsQueue is NoOwner, Versioned {
   using SafeMath for uint;
 
   /*
@@ -22,10 +23,10 @@ contract BuildingsQueue is NoOwner {
 	 * @param _endBlock the number of the block where the construction is gonna be ready.
    */
   event AddNewBuildingToQueue(address _user,
-                           uint _id,
-                           uint _index,
-                           uint _startBlock,
-                           uint _endBlock);
+                              uint _id,
+                              uint _index,
+                              uint _startBlock,
+                              uint _endBlock);
 
  /*
   * @dev Event for Updating the buildings queue. Buildings that are ready will be
@@ -35,8 +36,8 @@ contract BuildingsQueue is NoOwner {
   * @param _indexes The indexes of the finished buldings. (uint[])
   */
   event UpdateQueue(address _user,
-                           uint[] _ids,
-                           uint[] _indexes);
+                    uint[] _ids,
+                    uint[] _indexes);
 
  /*
   * @dev Event for upgrading a building to the queue system logging.
@@ -59,20 +60,50 @@ contract BuildingsQueue is NoOwner {
     uint64 endBlock;
   }
 
-  UserBuildings userBuildings;
   BuildingsData buildingsData;
+  BuildingsQueue previousBuildingsQueue;
+  UserBuildings userBuildings;
   UserResources userResources;
 
   // Mapping of user -> build struct array (keeps track of buildings in construction queue)
   mapping (address => Build[]) public userBuildingsQueue;
 
   /*
+   * @notice Constructor: Instantiate Buildings Queue contract.
+   * @dev Constructor function to provide User Buildings address and instantiate it.
+   */
+  function BuildingsQueue() public {
+  }
+
+  /*
+   * @notice Makes the contract type verifiable.
+   * @dev Function to prove the contract is Buildings Queue.
+   */
+  function isBuildingsQueue() external pure returns (bool) {
+    return true;
+  }
+
+  /*
+   * @notice Sets the contract's version and instantiates the previous version contract.
+   * @dev Function to set the contract version and instantiate the previous Buildings Queue.
+   * @param _previousBuildingsQueue the address of previous Buildings Queue contract. (address)
+   * @param _version the current contract version number. (uint)
+   */
+  function setBuildingsQueueVersion(BuildingsQueue _previousBuildingsQueue, uint _version) external onlyOwner {
+    require(_previousBuildingsQueue.isBuildingsQueue());
+    require(_version > _previousBuildingsQueue.version());
+    previousBuildingsQueue =_previousBuildingsQueue;
+    setVersion(_version);
+  }
+
+  /*
    * @title Instantiate User Buildings contract.
    * @dev Function to provide User Buildings address and instantiate it.
    * @param _userBuildings the address of User Buildings contract. (address)
    */
-  function setUserBuildings(address _userBuildings) external onlyOwner {
-    userBuildings = UserBuildings(_userBuildings);
+  function setUserBuildings(UserBuildings _userBuildings) external onlyOwner {
+    require(_userBuildings.isUserBuildings());
+    userBuildings = _userBuildings;
   }
 
   /*
@@ -80,8 +111,9 @@ contract BuildingsQueue is NoOwner {
    * @dev Function to provide Buildings Data address and instantiate it.
    * @param _buildingsData the address of Buildings Data contract. (address)
    */
-  function setBuildingsData(address _buildingsData) external onlyOwner {
-    buildingsData = BuildingsData(_buildingsData);
+  function setBuildingsData(BuildingsData _buildingsData) external onlyOwner {
+    require(_buildingsData.isBuildingsData());
+    buildingsData = _buildingsData;
   }
 
   /*
@@ -89,44 +121,51 @@ contract BuildingsQueue is NoOwner {
    * @dev Function to provide User Resources address and instantiate it.
    * @param _userResources the address of User Resources contract. (address)
    */
-  function setUserResources(address _userResources) external onlyOwner {
-    userResources = UserResources(_userResources);
+  function setUserResources(UserResources _userResources) external onlyOwner {
+    require(_userResources.isUserResources());
+    userResources = _userResources;
   }
 
   /*
    * @notice Add New Building To Queue.
    * @dev Function to add a new building to the construction queue of the user.
+      index -2: building type is not unique and the builiding cant be created.
+      index -1: building type is unique and the building can be created. Must be initialized.
+      index >= 0: building was deleted and must be created again. Modifing it's active variable to true.
    * @param _id of the building to add to the queue. (uint)
    */
   function addNewBuildingToQueue(uint _id) external {
     require(buildingsData.checkBuildingExist(_id));
 
     uint typeId = buildingsData.getBuildingTypeId(_id);
+    int index = userBuildings.buildingTypeIsUnique(msg.sender, typeId, _id);
 
-    require(userBuildings.buildingTypeIsUnique(msg.sender, typeId));
+    require(index > -2);
 
     uint price;
     uint resourceType;
     uint blocks;
     (price, resourceType, blocks) = buildingsData.getBuildingData(_id);
 
-
     consumeResources(msg.sender, price, resourceType);
 
+    if  (index == -1) {
+      index = int(userBuildings.initNewBuilding(msg.sender, _id));
+    }
+
     uint startBlock = getStartBlock(msg.sender);
-    uint index = userBuildings.initNewBuilding(msg.sender, _id);
     uint endBlock = startBlock.add(blocks);
 
     userBuildingsQueue[msg.sender].push(Build(
       uint32(_id),
-      uint32(index),
+      uint32(uint(index)),
       uint64(startBlock),
       uint64(endBlock)
     ));
 
     AddNewBuildingToQueue(msg.sender,
                           _id,
-                          index,
+                          uint(index),
                           startBlock,
                           endBlock);
   }
@@ -188,19 +227,19 @@ contract BuildingsQueue is NoOwner {
     uint buildingIndexInQueue;
     (buildingIsInQueue, buildingIndexInQueue) = findBuildingInQueue(msg.sender, _id, _index);
 
-    if (buildingIsInQueue) {
-      updateQueue(msg.sender);
-    }
-    
-    require(userBuildings.upgradeBuilding(msg.sender, _id, _index));
-
-    require(userBuildings.upgradeBuilding(msg.sender, _id, _index));
-    
     uint price;
     uint resourceType;
     uint blocks;
-    (price, resourceType, blocks) = buildingsData.getBuildingData(_id);
+    (price, resourceType, blocks) = buildingsData.getBuildingData(_idOfUpgrade);
+
     consumeResources(msg.sender, price, resourceType);
+
+    if (buildingIsInQueue) {
+      require(userBuildingsQueue[msg.sender][buildingIndexInQueue].endBlock <= block.number);
+      updateQueue(msg.sender);
+    }
+
+    require(userBuildings.upgradeBuilding(msg.sender, _id, _index));
 
     uint startBlock = getStartBlock(msg.sender);
     uint endBlock = startBlock.add(blocks);
@@ -213,42 +252,6 @@ contract BuildingsQueue is NoOwner {
   }
 
   /*
-   * @title Remove Building.
-   * @dev Function to cancel/remove building from queue. The building is set
-   * to Active false in User Buildings.
-   * @param _id The id of the building to be removed. (uint)
-   * @param _index The Index of the building to be removed. (uint)
-   */
-  function removeBuilding(uint _id, uint _index) external {
-    require(buildingsData.checkBuildingExist(_id));
-
-    bool buildingIsInQueue;
-    uint buildingIndexInQueue;
-
-    (buildingIsInQueue, buildingIndexInQueue) = findBuildingInQueue(msg.sender, _id, _index);
-
-    userResources.payoutResources(msg.sender);
-
-    if (buildingIsInQueue) {
-      if (userBuildingsQueue[msg.sender][buildingIndexInQueue].endBlock > block.number) {
-          updateQueueBlocks(msg.sender, buildingIndexInQueue);
-      }
-      require(shiftOneUserBuilding(msg.sender, buildingIndexInQueue));
-    }
-
-    uint[] memory ids = new uint[](1);
-    uint[] memory indexes = new uint[](1);
-
-    ids[0] = _id;
-    indexes[0] = _index;
-
-    userBuildings.removeUserBuildings(msg.sender, ids, indexes);
-
-    RemoveBuilding(msg.sender, _id, _index);
-
-  }
-
-  /*
    * @title Find Building In Queue.
    * @dev Function to find a building in queue.
    * @param _user The address of the user. (address)
@@ -258,7 +261,6 @@ contract BuildingsQueue is NoOwner {
    * and a uint representing the index/position of the building in the queue.
    */
   function findBuildingInQueue(address _user, uint _id, uint _index) public view returns (bool exists, uint indexInQueue) {
-    require(_index >= 0);
     for (uint i = 0; i < userBuildingsQueue[_user].length; i++) {
       if (_index == userBuildingsQueue[_user][i].index && _id == userBuildingsQueue[_user][i].id) {
         return (true, i);
@@ -303,7 +305,7 @@ contract BuildingsQueue is NoOwner {
    * @param _amount of buildings to be shifted from the array. (uint)
    * @return A boolean that indicates if the operation was successful.
    */
-  function shiftUserBuildings(address _user, uint _amount) internal constant returns (bool) {
+  function shiftUserBuildings(address _user, uint _amount) internal returns (bool) {
         require(_amount <= userBuildingsQueue[_user].length);
 
         for (uint i = _amount; i < userBuildingsQueue[_user].length; i++){
@@ -339,7 +341,7 @@ contract BuildingsQueue is NoOwner {
    * @notice Get the last building in the construction queue of the user.
    * @param _user . (address)
    */
-  function getLastUserBuilding(address _user) external returns (uint id,
+  function getLastUserBuilding(address _user) external view returns (uint id,
                                                                 uint startBlock,
                                                                 uint endBlock) {
     require(_user != address(0));
@@ -380,7 +382,7 @@ contract BuildingsQueue is NoOwner {
    *  added in the queue.
    * @param _user the address of the user (address)
    */
-  function getStartBlock(address _user) internal returns (uint) {
+  function getStartBlock(address _user) internal view returns (uint) {
     uint length = userBuildingsQueue[_user].length;
     uint startBlock = block.number;
     if (length > 0) {
@@ -397,7 +399,7 @@ contract BuildingsQueue is NoOwner {
    * @dev Function to check the ids of all the user's buildings in queue.
    * @param _user the address of the user's queue to be shown. (address)
    */
-  function getBuildingsInQueue(address _user) external returns (uint[]) {
+  function getBuildingsInQueue(address _user) external view returns (uint[]) {
     require(_user != address(0));
 
     uint length = userBuildingsQueue[_user].length;
@@ -409,44 +411,27 @@ contract BuildingsQueue is NoOwner {
   }
 
   /*
-   * @notice Get Buildings Id and Index.
-   * @dev Function to get the ids and indexes of all the buildings in queue.
-   * @param _user the address of the user. (address)
-   * @return two uint arrays representiong the ids and the indexes of the building.
-   */
-  function getBuildingsIdAndIndex(address _user) external returns (uint[], uint[]) {
-    require(_user != address(0));
-
-    uint length = userBuildingsQueue[_user].length;
-    uint[] memory ids = new uint[](length);
-    uint[] memory indexes = new uint[](length);
-    for (uint i = 0; i < length; i++) {
-      ids[i] = userBuildingsQueue[_user][i].id;
-      indexes[i] = userBuildingsQueue[_user][i].index;
-    }
-    return (ids, indexes);
-  }
-
-  /*
    * @notice Get Ids and Blocks.
    * @dev Function to get the ids, start block and end block of all buildings in queue.
    * Used only for testing.
    * @param _user the address of the user. (address)
-   * @return three uint arrays representiong the ids, startBlock and endBlock of heach building.
+   * @return four uint arrays representiong the id, startBlock, endBlock and index of each building.
    */
-  function getIdAndBlocks(address _user) external returns (uint[], uint[], uint[]) {
+  function getBuildings(address _user) external view returns (uint[], uint[], uint[], uint[]) {
     require(_user != address(0));
 
     uint length = userBuildingsQueue[_user].length;
     uint[] memory ids = new uint[](length);
     uint[] memory startBlocks = new uint[](length);
     uint[] memory endBlocks = new uint[](length);
+    uint[] memory indexes = new uint[](length);
     for (uint i = 0; i < length; i++) {
       ids[i] = userBuildingsQueue[_user][i].id;
       startBlocks[i] = userBuildingsQueue[_user][i].startBlock;
       endBlocks[i] = userBuildingsQueue[_user][i].endBlock;
+      indexes[i] = userBuildingsQueue[_user][i].index;
     }
-    return (ids, startBlocks, endBlocks);
+    return (ids, startBlocks, endBlocks, indexes);
   }
 
   /*
@@ -456,10 +441,9 @@ contract BuildingsQueue is NoOwner {
    * @param _user The address of the user's queue to search in. (address)
    * @param _index The index of the element to return in the array. (uint)
    */
-  function getBuildingIdAndEndBlock(address _user, uint _index) external returns (uint id, uint endBlock) {
-    require(_index >= 0);
-    require(userBuildingsQueue[_user].length >= _index);
-    return (userBuildingsQueue[_user][_index].id, userBuildingsQueue[_user][_index].endBlock);
+  function getBuildingIdAndEndBlock(address _user, uint _indexInQueue) external view returns (uint id, uint endBlock) {
+    require(userBuildingsQueue[_user].length > _indexInQueue);
+    return (userBuildingsQueue[_user][_indexInQueue].id, userBuildingsQueue[_user][_indexInQueue].endBlock);
   }
 
   /*
@@ -470,7 +454,7 @@ contract BuildingsQueue is NoOwner {
    * @param _indexInQueue The index in queue of the building. (uint)
    * @return Two uints representiong the id and index of a building.
    */
-  function getBuildingIndex(address _user, uint _indexInQueue) external returns (uint id, uint index) {
+  function getBuildingIndex(address _user, uint _indexInQueue) external view returns (uint id, uint index) {
     require(_user != address(0));
     require(_indexInQueue < userBuildingsQueue[_user].length);
 
@@ -485,7 +469,7 @@ contract BuildingsQueue is NoOwner {
    * @param _payoutBlock The block where was the last payout to the user. (uint)
    * @return Two uints representing the gold and crystal produced in the queue system.
    */
-  function getUserQueueResources(address _user) external returns (uint queueGold, uint queueCrystal) {
+  function getUserQueueResources(address _user) external view returns (uint queueGold, uint queueCrystal) {
     uint goldRate;
     uint crystalRate;
     uint diff;
@@ -517,4 +501,78 @@ contract BuildingsQueue is NoOwner {
 
     return (queueGold, queueCrystal);
 	}
+
+  /*
+   * @title Get Buildings Queue Length
+   * @dev Get the length of the buildings Queue.
+   * @param _user The address of the user. (address)
+   */
+  function getBuildingsQueueLength(address _user) external view returns (uint length) {
+    return userBuildingsQueue[_user].length;
+  }
+
+  /*
+   * @title Cancel Building.
+   * @dev Function to cancel/remove building from queue. The building is set
+   * to Active false in User Buildings.
+   * @param _id The id of the building to be removed. (uint)
+   * @param _index The Index of the building to be removed. (uint)
+   */
+  function cancelBuilding(uint _id, uint _index) external {
+    require(buildingsData.checkBuildingExist(_id));
+
+    bool buildingIsInQueue;
+    uint buildingIndexInQueue;
+
+    (buildingIsInQueue, buildingIndexInQueue) = findBuildingInQueue(msg.sender, _id, _index);
+
+    require(buildingIsInQueue);
+    require(userBuildingsQueue[msg.sender][buildingIndexInQueue].endBlock > block.number);
+
+    userResources.payoutResources(msg.sender);
+    updateQueueBlocks(msg.sender, buildingIndexInQueue);
+    require(shiftOneUserBuilding(msg.sender, buildingIndexInQueue));
+
+    require(userBuildings.updateBuildingStatus(msg.sender, _id, _index));
+
+    RemoveBuilding(msg.sender, _id, _index);
+
+  }
+
+  /*
+   * @title Get User Resources Capacity.
+   * @dev Function to get the resources capacity of the buildings in queue.
+   * @param _user The address of the user. (address)
+   * @return Two uints representing the gold and crystal capacity of the buildings in queue.
+   */
+  function getUserResourcesCapacity(address _user) external view returns (uint totalGoldCapacity, uint totalCrystalCapacity) {
+    uint goldCapacity;
+    uint crystalCapacity;
+
+		for (uint i = 0; i < userBuildingsQueue[_user].length; i++) {
+      uint buildingId = 0;
+      if (userBuildingsQueue[_user][i].endBlock < block.number) {
+        buildingId = userBuildingsQueue[_user][i].id;
+      }
+      if (userBuildingsQueue[_user][i].endBlock >= block.number &&
+         ((userBuildingsQueue[_user][i].id - userBuildingsQueue[_user][i].id % 1000) / 1000) > 1) {
+        buildingId = userBuildingsQueue[_user][i].id - 1000;
+      }
+
+      if (buildingId > 0) {
+        (goldCapacity, crystalCapacity) = buildingsData.getGoldAndCrystalCapacity(buildingId);
+
+        if (goldCapacity > 0) {
+          totalGoldCapacity = SafeMath.add(totalGoldCapacity, goldCapacity);
+        }
+
+        if (crystalCapacity > 0) {
+          totalCrystalCapacity = SafeMath.add(totalCrystalCapacity, crystalCapacity);
+        }
+      }
+    }
+
+    return (totalGoldCapacity, totalCrystalCapacity);
+  }
+
 }

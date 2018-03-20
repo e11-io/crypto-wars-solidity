@@ -1,0 +1,53 @@
+@import 'src/assets/e11-theme/variables';
+
+:host {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+}
+
+.errors-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 10vh;
+
+  .logo-simple {
+    width: 48rem;
+    max-width: $app-errors-container-max-width;
+    margin-bottom: 7rem;
+  }
+
+  .e11-box-container {
+    width: 45rem;
+    flex-shrink: 0;
+    max-width: $app-errors-container-max-width * 2;
+    margin-bottom: 10vh;
+
+    .box-content {
+      padding: 4rem 5.4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .metamask-logo {
+        height: 10rem;
+        margin-bottom: 3rem;
+      }
+
+      .metamask-desc {
+        margin: 3rem 0;
+        text-align: center;
+        color: $color-text-grey;
+        font-size: 1.4rem;
+      }
+
+      .e11-button {
+        width: 100%;
+      }
+    }
+  }
+
+}

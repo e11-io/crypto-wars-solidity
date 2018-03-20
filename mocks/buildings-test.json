@@ -1,0 +1,129 @@
+{
+  "buildingProperties":{
+    "id": 0,
+    "name": "x",
+    "stats": [
+      "health", "defense", "attack",
+      "goldCapacity", "crystalCapacity", "goldRate", "crystalRate",
+      "price", "resource", "blocks", "previousLevelId", "typeId"
+    ]
+  },
+  "stats": {
+    "health": 0, "defense": 1, "attack": 2,
+    "goldCapacity": 3, "crystalCapacity": 4, "goldRate": 5, "crystalRate": 6,
+    "price": 7, "resource": 8, "blocks": 9, "previousLevelId": 10, "typeId": 11
+  },
+  "initialBuildings": [{
+    "id": 1001,
+    "name": "city_center_1",
+    "stats": [
+      1500, 50, 0,
+      3000, 4000, 0, 0,
+      0, 0, 1, 0, 1
+    ]
+  },{
+    "id": 1002,
+    "name": "gold_mine_1",
+    "stats": [
+      500, 20, 0,
+      500, 0, 50, 0,
+      200, 0, 5, 0, 2
+    ]
+  },{
+    "id": 1003,
+    "name": "crystal_mine_1",
+    "stats": [
+      500, 20, 0,
+      0, 400, 0, 60,
+      200, 1, 2, 0, 3
+    ]
+  },{
+    "id": 2001,
+    "name": "city_center_2",
+    "stats": [
+      3000, 100, 0,
+      5000, 6000, 0, 0,
+      0, 0, 1, 1001, 1
+    ]
+  },{
+    "id": 2002,
+    "name": "gold_mine_2",
+    "stats": [
+      800, 40, 0,
+      1000, 0, 100, 0,
+      300, 0, 10, 1002, 2
+    ]
+  },{
+    "id": 2003,
+    "name": "crystal_mine_2",
+    "stats": [
+      1000, 40, 0,
+      0, 800, 0, 120,
+      400, 1, 4, 1003, 3
+    ]
+  },{
+    "id": 1004,
+    "name": "portal_1",
+    "stats": [
+      2000, 50, 0,
+      0, 0, 0, 0,
+      100, 2, 20, 0, 4
+    ]
+  },{
+    "id": 1005,
+    "name": "gold_factory_1",
+    "stats": [
+      2000, 50, 0,
+      0, 0, 100, 0,
+      300, 0, 10, 0, 5
+    ]
+  },{
+    "id": 1006,
+    "name": "crystal_factory_1",
+    "stats": [
+      2000, 50, 0,
+      0, 0, 0, 100,
+      300, 1, 10, 0, 6
+    ]
+  },{
+    "id": 2005,
+    "name": "gold_factory_2",
+    "stats": [
+      2000, 50, 0,
+      0, 0, 200, 0,
+      300, 0, 10, 1005, 5
+    ]
+  },{
+    "id": 2006,
+    "name": "crystal_factory_2",
+    "stats": [
+      2000, 50, 0,
+      0, 0, 0, 200,
+      300, 1, 10, 1006, 6
+    ]
+  },{
+    "id": 1007,
+    "name": "gold_storage_1",
+    "stats": [
+      2000, 50, 0,
+      5000, 0, 0, 0,
+      300, 0, 5, 0, 7
+    ]
+  },{
+    "id": 1008,
+    "name": "crystal_storage_1",
+    "stats": [
+      2000, 50, 0,
+      0, 5000, 0, 0,
+      400, 1, 5, 0, 8
+    ]
+  },{
+    "id": 1099,
+    "name": "experiment_1",
+    "stats": [
+      2000, 50, 0,
+      0, 500, 0, 0,
+      400, 8, 5, 0, 99
+    ]
+  }]
+}

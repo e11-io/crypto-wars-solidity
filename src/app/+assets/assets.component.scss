@@ -1,0 +1,26 @@
+:host {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.assets-container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+
+  .e11-segments {
+    justify-content: center;
+    margin-top: 3rem;
+  }
+
+  /deep/ {
+    .buildings-container,
+    .defense-container,
+    .research-container,
+    .units-container {
+      padding: 0 13vw;
+    }
+  }
+}

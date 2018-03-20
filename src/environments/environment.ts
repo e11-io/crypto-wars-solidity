@@ -4,5 +4,20 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  production: false
+  blockTime: 10,
+  production: false,
+  remoteContracts: true,
+
+  /* LATEST MIGRATION TO e11 311 */
+  contracts: {
+    Migrations:         null,
+    ExperimentalToken:  null,
+    SimpleToken:        null,
+    UserVault:          null,
+    UserResources:      null,
+    BuildingsData:      null,
+    UserBuildings:      null,
+    UserVillage:        null,
+    BuildingsQueue:     null,
+  },
 };

@@ -1,0 +1,142 @@
+@import 'src/assets/e11-theme/variables';
+@import 'src/assets/e11-theme/mixins';
+
+.village-info-container {
+  display: flex;
+  flex-direction: column;
+  margin: 0 3rem;
+
+  .village-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 5rem;
+
+    .status {
+      display: flex;
+      align-items: center;
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: $color-text-grey;
+
+      .bullet {
+        width: .8rem;
+        height: .8rem;
+        margin-right: 5px;
+      }
+      &.online .bullet {
+        background: $color-success;
+      }
+      &.offline .bullet {
+        background: $color-error;
+      }
+    }
+  }
+
+  .village-stats {
+    padding: 15px;
+
+    .village-resources {
+      display: flex;
+      flex-direction: column;
+      $resource-margin: 14px;
+
+      > .flex {
+        margin-bottom: $resource-margin;
+      }
+
+      .village-resource {
+        padding: 1.8rem 2.3rem;
+        // height: 12rem;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+        border-radius: $app-default-radius;
+        flex: 1;
+
+        &:first-child {
+          margin-right: $resource-margin;
+        }
+
+        &.gold {
+          background-image: url('/assets/img/bg_resource_gold.png');
+          .e11-progress-bar .bar {
+            background: linear-gradient(90deg, #FFBB00 4.29%, #F8CF5D 100%);
+          }
+        }
+        &.crystal {
+          background-color: $color-resource-crystal;
+          background-image: url('/assets/img/bg_resource_crystal.png');
+          .e11-progress-bar .bar {
+            background: linear-gradient(90deg, #1574BD 0%, #208EE3 100%);
+          }
+        }
+        &.e11 {
+          background-color: $color-resource-e11;
+          background-image: url('/assets/img/bg_resource_e11.png');
+        }
+        &.quantum {
+          background-color: $color-resource-quantum;
+          background-image: url('/assets/img/bg_resource_quantum.png');
+        }
+
+        .title {
+          font-size: 1.2rem;
+          line-height: 1.4rem;
+          font-weight: bold;
+          text-transform: uppercase;
+          color: rgba(255, 255, 255, .7);
+
+          .rate {
+            font-size: 1.2rem;
+            color: $color-text;
+            margin-left: .3rem;
+          }
+        }
+        .qty {
+          white-space: nowrap;
+
+          .capacity {
+            font-size: 1.4rem;
+            line-height: 1.6rem;
+          }
+        }
+        .e11-progress-bar {
+          margin-top: 1.5rem;
+        }
+      }
+
+    }
+
+    .village-extra {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .stat {
+        display: flex;
+        flex-direction: column;
+        color: $color-text-grey;
+        padding-right: 2rem;
+        margin-right: 2rem;
+        position: relative;
+
+        &:last-child:after {
+          content: none;
+        }
+
+        &:after {
+          content: '';
+          position: absolute;
+          background: $color-border;
+          width: 1px;
+          height: 2rem;
+          right: 0;
+          top: 50%;
+          transform: translateY(-50%);
+        }
+      }
+    }
+  }
+
+}

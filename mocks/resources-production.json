@@ -1,0 +1,12 @@
+{
+  "initialResources": [
+    350,
+    350,
+    0
+  ],
+  "initialResourcesNames": [
+    "gold",
+    "crystal",
+    "quantumDust"
+  ]
+}

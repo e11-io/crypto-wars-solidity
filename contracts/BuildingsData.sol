@@ -1,6 +1,7 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.4.18;
 
 import 'zeppelin-solidity/contracts/ownership/NoOwner.sol';
+import './Versioned.sol';
 
 /**
  * @title BuildingsData (WIP)
@@ -8,7 +9,7 @@ import 'zeppelin-solidity/contracts/ownership/NoOwner.sol';
  * @dev You can add buildings and update them
  * @dev Issue: * https://github.com/e11-io/crypto-wars-solidity/issues/5
  */
-contract BuildingsData is NoOwner {
+contract BuildingsData is NoOwner, Versioned {
 
   /**
    * @dev event for adding building to contract logging
@@ -30,7 +31,7 @@ contract BuildingsData is NoOwner {
     int32 defense;
     int32 attack;
     int32 goldCapacity;
-    int32 crystalEnergyCapacity;
+    int32 crystalCapacity;
     int32 goldRate;
     int32 crystalRate;
     int32 price;
@@ -42,15 +43,43 @@ contract BuildingsData is NoOwner {
 
   // Mapping of id -> building struct.
   mapping (uint => Building) public buildings;
+
   uint[] public buildingIds;
 
-  function BuildingsData() {
+  BuildingsData previousBuildingsData;
+
+  /*
+   * @notice Constructor: Instantiate Buildings Data contract.
+   * @dev Constructor function.
+   */
+  function BuildingsData() public {
+  }
+
+  /*
+   * @notice Makes the contract type verifiable.
+   * @dev Function to prove the contract is Buildings Data.
+   */
+  function isBuildingsData() external pure returns (bool) {
+    return true;
+  }
+
+  /*
+   * @notice Sets the contract's version and instantiates the previous version contract.
+   * @dev Function to set the contract version and instantiate the previous Buildings Data.
+   * @param _previousBuildingsData the address of previous Buildings Data contract. (address)
+   * @param _version the current contract version number. (uint)
+   */
+  function setBuildingsDataVersion(BuildingsData _previousBuildingsData, uint _version) external onlyOwner {
+    require(_previousBuildingsData.isBuildingsData());
+    require(_version > _previousBuildingsData.version());
+    previousBuildingsData = _previousBuildingsData;
+    setVersion(_version);
   }
 
   /*
    * @notice Get the amount of existing buildings.
    */
-  function getBuildingIdsLength() public constant returns(uint) {
+  function getBuildingIdsLength() external view returns(uint) {
     return buildingIds.length;
   }
 
@@ -64,7 +93,7 @@ contract BuildingsData is NoOwner {
    *      defense (int)
    *      attack (int)
    *      goldCapacity (int)
-   *      crystalEnergyCapacity (int)
+   *      crystalCapacity (int)
    *      price (int)
    *      resource (int)
    *      blocks (int)
@@ -75,14 +104,13 @@ contract BuildingsData is NoOwner {
                        string name,
                        int32[] stats) external onlyOwner {
 
-    require(id >= 0);
     require(keccak256(buildings[id].name) == keccak256(""));
     require(keccak256(name) != keccak256(""));
     require(stats[0] >= 0); //"health"
     require(stats[1] >= 0); //"defense"
     require(stats[2] >= 0); //"attack"
     require(stats[3] >= 0); //"goldCapacity"
-    require(stats[4] >= 0); //"crystalEnergyCapacity"
+    require(stats[4] >= 0); //"crystalCapacity"
     require(stats[5] >= 0); //"goldRate"
     require(stats[6] >= 0); //"crystalRate"
     require(stats[7] >= 0); //"price"
@@ -117,7 +145,7 @@ contract BuildingsData is NoOwner {
    *      defense (int)
    *      attack (int)
    *      goldCapacity (int)
-   *      crystalEnergyCapacity (int)
+   *      crystalCapacity (int)
    *      price (int)
    *      resource (int)
    *      blocks (int)
@@ -127,7 +155,6 @@ contract BuildingsData is NoOwner {
   function updateBuilding(uint id,
                           string name,
                           int32[] stats) external onlyOwner {
-    require(id >= 0);
     require(keccak256(buildings[id].name) != keccak256(""));
 
     updateBuildingBasicsA(id, name, stats);
@@ -147,7 +174,7 @@ contract BuildingsData is NoOwner {
    *      defense (int)
    *      attack (int)
    *      goldCapacity (int)
-   *      crystalEnergyCapacity (int)
+   *      crystalCapacity (int)
    *      price (int)
    *      resource (int)
    *      blocks (int)
@@ -183,7 +210,7 @@ contract BuildingsData is NoOwner {
    *      defense (int)
    *      attack (int)
    *      goldCapacity (int)
-   *      crystalEnergyCapacity (int)
+   *      crystalCapacity (int)
    *      price (int)
    *      resource (int)
    *      blocks (int)
@@ -191,8 +218,8 @@ contract BuildingsData is NoOwner {
    *      typeId (int)
    */
   function updateBuildingBasicsB(uint id, int32[] stats) internal {
-      if (stats[4] >= 0 && buildings[id].crystalEnergyCapacity != stats[4]) {
-        buildings[id].crystalEnergyCapacity = stats[4];
+      if (stats[4] >= 0 && buildings[id].crystalCapacity != stats[4]) {
+        buildings[id].crystalCapacity = stats[4];
       }
       if (stats[5] >= 0 && buildings[id].goldRate != stats[5]) {
         buildings[id].goldRate = stats[5];
@@ -223,8 +250,7 @@ contract BuildingsData is NoOwner {
    * @param _id The id of the building to check. (uint)
    * @return A boolean that indicates if the building exists or not.
    */
-  function checkBuildingExist(uint _id) external returns (bool) {
-    require(_id >= 0);
+  function checkBuildingExist(uint _id) external view returns (bool) {
     require(keccak256(buildings[_id].name) != keccak256(""));
     return true;
   }
@@ -236,7 +262,7 @@ contract BuildingsData is NoOwner {
    * @param _idOfUpgrade The id of the upgrade. (uint)
    * @return A boolean that indicates if the ids match or not.
    */
-  function checkUpgrade(uint _id, uint _idOfUpgrade) external returns (bool) {
+  function checkUpgrade(uint _id, uint _idOfUpgrade) external view returns (bool) {
     require(buildings[_idOfUpgrade].previousLevelId == int32(_id));
 
     return true;
@@ -248,10 +274,9 @@ contract BuildingsData is NoOwner {
    * @param _id The id of the building. (uint)
    * @return An three uints.
    */
-  function getBuildingData(uint _id) external returns (uint price,
-                                                       uint resource,
-                                                       uint blocks) {
-    require(_id >= 0);
+  function getBuildingData(uint _id) external view returns (uint price,
+                                                            uint resource,
+                                                            uint blocks) {
     require(keccak256(buildings[_id].name) != keccak256(""));
     return (
       uint(buildings[_id].price),
@@ -266,15 +291,28 @@ contract BuildingsData is NoOwner {
    * @param _id The id of the building. (uint)
    * @return An two uints.
    */
-  function getGoldAndCrystalRates(uint _id) external returns (uint goldRate,
-                                                              uint crystalRate) {
-    require(_id >= 0);
+  function getGoldAndCrystalRates(uint _id) external view returns (uint goldRate,
+                                                                   uint crystalRate) {
     require(keccak256(buildings[_id].name) != keccak256(""));
     return (uint(buildings[_id].goldRate), uint(buildings[_id].crystalRate));
   }
 
-  function getBuildingTypeId(uint _id) external returns (uint) {
+  /*
+   * @title Get Building Type Id
+   * @dev Get the type id of a building.
+   */
+  function getBuildingTypeId(uint _id) external view returns (uint) {
     return uint(buildings[_id].typeId);
+  }
+
+  /*
+   * @title Get Gold and Crystal Capacity
+   * @dev Get the gold a crystal capacity of a building.
+   */
+  function getGoldAndCrystalCapacity(uint _id) external view returns (uint goldCapacity,
+                                                                      uint crystalCapacity) {
+    require(keccak256(buildings[_id].name) != keccak256(""));
+    return (uint(buildings[_id].goldCapacity), uint(buildings[_id].crystalCapacity));
   }
 
 }

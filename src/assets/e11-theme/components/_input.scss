@@ -1,0 +1,23 @@
+@mixin e11-input() {
+
+    .e11-input {
+      border: 0;
+      background: transparent;
+      border-bottom: 2px solid $color-border;
+      font-size: 1.6rem;
+      padding: 2px 0;
+      color: $color-text-grey;
+      font-family: $app-default-font-family;
+      transition: border-color $app-default-animation;
+
+      &:focus {
+        outline: none;
+        border-color: $color-primary;
+      }
+      &::placeholder {
+        color: $color-text-grey;
+        opacity: .5;
+      }
+    }
+
+}

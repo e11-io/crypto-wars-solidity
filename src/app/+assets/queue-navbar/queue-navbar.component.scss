@@ -1,0 +1,84 @@
+@import 'src/assets/e11-theme/variables';
+
+.queue-navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 3rem;
+
+  .queue-navbar {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    padding: 0 2.5rem;
+    height: 7rem;
+    flex: 1;
+
+    .v-separator {
+      height: 1.4rem;
+      margin: 0 1.5rem;
+      width: 1px;
+      background: $color-text-grey;
+    }
+    span {
+      color: $color-text-grey;
+      font-size: 1.4rem;
+    }
+
+    .queue-items {
+      display: flex;
+      flex: 1;
+
+      .item {
+        width: 5rem;
+        height: 5rem;
+        margin-left: -1.4rem;
+        position: relative;
+
+        &[tooltip]:before {
+          white-space: nowrap;
+        }
+        &:hover {
+          .hover-action {
+            display: flex;
+          }
+        }
+        &:first-child {
+          margin-left: 0;
+        }
+
+        & > * {
+          border-radius: 100%;
+        }
+
+        .item-image {
+          border: 5px solid $color-light-alt;
+          background-position: center;
+          background-size: cover;
+          width: 100%;
+          height: 100%;
+        }
+
+        .hover-action, .ready {
+          position: absolute;
+          top: 0;
+        }
+
+        .hover-action {
+          font-size: 1.6rem;
+        }
+        .ready {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.6rem;
+          background-color: rgba($color-success, .3);
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+
+  }
+
+}

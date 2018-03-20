@@ -1,12 +1,15 @@
 const BuildingsData = artifacts.require('BuildingsData');
 
-var buildingsMock = require('../mocks/buildings');
 const { assertRevert } = require('./helpers/assertThrow');
+const { isVersioned } = require('./helpers/isVersioned');
+const { setContracts } = require('./helpers/setContracts');
 
+const buildingsMock = require('../mocks/buildings-test');
 const stat = buildingsMock.stats;
 
+
 contract('Buildings Data Test', accounts => {
-  let buildingsData = {};
+  let buildingsData;
   const Alice = accounts[0];
   const Bob = accounts[1];
 
@@ -14,11 +17,19 @@ contract('Buildings Data Test', accounts => {
     buildingsData = await BuildingsData.new();
   })
 
+  it('Is Versioned', async () => {
+    assert.isTrue(await isVersioned(buildingsData, BuildingsData));
+  })
+
+  it('Set Contracts', async () => {
+    assert.isTrue(await setContracts(buildingsData));
+  })
+
   it('Building creation', async () => {
     let building = buildingsMock.initialBuildings[0];
     await buildingsData.addBuilding(building.id, building.name, building.stats);
 
-    const [price, resource, blocks] = await buildingsData.getBuildingData.call(1);
+    const [price, resource, blocks] = await buildingsData.getBuildingData.call(1001);
 
     assert.equal(building.stats[stat.price], price.toNumber());
     assert.equal(building.stats[stat.resource], resource.toNumber());
@@ -31,15 +42,93 @@ contract('Buildings Data Test', accounts => {
     })
   })
 
-  it('Add Building with negative Health', async () => {
+  it('Add Building with negative health', async () => {
     return assertRevert(async () => {
       await buildingsData.addBuilding(44, 'Wall', [-20, 50, 0, 3000, 4000, 0, 0, 2, 0, 0, 0, 0]);
+    })
+  })
+
+  it('Add Building with negative defense', async () => {
+    return assertRevert(async () => {
+      await buildingsData.addBuilding(44, 'Wall', [20, -50, 0, 3000, 4000, 0, 0, 2, 0, 0, 0, 0]);
+    })
+  })
+
+  it('Add Building with negative attack', async () => {
+    return assertRevert(async () => {
+      await buildingsData.addBuilding(44, 'Wall', [20, 50, -5, 3000, 4000, 0, 0, 2, 0, 0, 0, 0]);
+    })
+  })
+
+  it('Add Building with negative gold capacity', async () => {
+    return assertRevert(async () => {
+      await buildingsData.addBuilding(44, 'Wall', [20, 50, 5, -3000, 4000, 0, 0, 2, 0, 0, 0, 0]);
+    })
+  })
+
+  it('Add Building with negative crystal capacity', async () => {
+    return assertRevert(async () => {
+      await buildingsData.addBuilding(44, 'Wall', [20, 50, 5, 3000, -4000, 0, 0, 2, 0, 0, 0, 0]);
+    })
+  })
+
+  it('Add Building with negative gold rate', async () => {
+    return assertRevert(async () => {
+      await buildingsData.addBuilding(44, 'Wall', [20, 50, 5, 3000, 4000, -5, 0, 2, 0, 0, 0, 0]);
+    })
+  })
+
+  it('Add Building with negative crystal rate', async () => {
+    return assertRevert(async () => {
+      await buildingsData.addBuilding(44, 'Wall', [20, 50, 5, 3000, 4000, 5, -5, 2, 0, 0, 0, 0]);
+    })
+  })
+
+  it('Add Building with negative price', async () => {
+    return assertRevert(async () => {
+      await buildingsData.addBuilding(44, 'Wall', [20, 50, 5, 3000, 4000, 5, 5, -2, 0, 0, 0, 0]);
+    })
+  })
+
+  it('Add Building with negative resource', async () => {
+    return assertRevert(async () => {
+      await buildingsData.addBuilding(44, 'Wall', [20, 50, 5, 3000, 4000, 5, 5, 2, -5, 0, 0, 0]);
+    })
+  })
+
+  it('Add Building with negative blocks', async () => {
+    return assertRevert(async () => {
+      await buildingsData.addBuilding(44, 'Wall', [20, 50, 5, 3000, 4000, 5, 5, 2, 5, -5, 0, 0]);
+    })
+  })
+
+  it('Add Building with negative previos level id', async () => {
+    return assertRevert(async () => {
+      await buildingsData.addBuilding(44, 'Wall', [20, 50, 5, 3000, 4000, 5, 5, 2, 5, 5, -5, 0]);
+    })
+  })
+
+  it('Add Building with negative type id', async () => {
+    return assertRevert(async () => {
+      await buildingsData.addBuilding(44, 'Wall', [20, 50, 5, 3000, 4000, 5, 5, 2, 5, 5, 5, -5]);
     })
   })
 
   it('Add Building with negative Health and empty name', async () => {
     return assertRevert(async () => {
       await buildingsData.addBuilding(2, '', [-20, 50, 0, 3000, 4000, 0, 0, 2, 0, 0, 0, 0]);
+    })
+  })
+
+  it('Get non existan building data', async () => {
+    return assertRevert(async () => {
+      const [price, resources, blocks] = await buildingsData.getBuildingData.call(865);
+    })
+  })
+
+  it('Get gold and crystal rates of non existan building', async () => {
+    return assertRevert(async () => {
+      const [goldRate, crystalRate] = await buildingsData.getGoldAndCrystalRates.call(865);
     })
   })
 
@@ -70,7 +159,7 @@ contract('Buildings Data Test', accounts => {
       assert.equal(data[2].toNumber(), building.stats[stat.defense], 'defense');
       assert.equal(data[3].toNumber(), building.stats[stat.attack], 'attack');
       assert.equal(data[4].toNumber(), building.stats[stat.goldCapacity], 'goldCapacity');
-      assert.equal(data[5].toNumber(), building.stats[stat.crystalEnergyCapacity], 'crystalEnergyCapacity');
+      assert.equal(data[5].toNumber(), building.stats[stat.crystalCapacity], 'crystalCapacity');
       assert.equal(data[6].toNumber(), building.stats[stat.goldRate], 'goldRate');
       assert.equal(data[7].toNumber(), building.stats[stat.crystalRate], 'crystalRate');
       assert.equal(data[8].toNumber(), building.stats[stat.price], 'price');
@@ -94,7 +183,7 @@ contract('Buildings Data Test', accounts => {
       assert.equal(data[2].toNumber(), building.stats[stat.defense], 'defense');
       assert.equal(data[3].toNumber(), building.stats[stat.attack], 'attack');
       assert.equal(data[4].toNumber(), building.stats[stat.goldCapacity], 'goldCapacity');
-      assert.equal(data[5].toNumber(), building.stats[stat.crystalEnergyCapacity], 'crystalEnergyCapacity');
+      assert.equal(data[5].toNumber(), building.stats[stat.crystalCapacity], 'crystalCapacity');
       assert.equal(data[6].toNumber(), building.stats[stat.goldRate], 'goldRate');
       assert.equal(data[7].toNumber(), building.stats[stat.crystalRate], 'crystalRate');
       assert.equal(data[8].toNumber(), building.stats[stat.price], 'price');
@@ -118,7 +207,7 @@ contract('Buildings Data Test', accounts => {
       assert.equal(data[2].toNumber(), 6000, 'defense');
       assert.equal(data[3].toNumber(), building.stats[stat.attack], 'attack');
       assert.equal(data[4].toNumber(), building.stats[stat.goldCapacity], 'goldCapacity');
-      assert.equal(data[5].toNumber(), building.stats[stat.crystalEnergyCapacity], 'crystalEnergyCapacity');
+      assert.equal(data[5].toNumber(), building.stats[stat.crystalCapacity], 'crystalCapacity');
       assert.equal(data[6].toNumber(), building.stats[stat.goldRate], 'goldRate');
       assert.equal(data[7].toNumber(), building.stats[stat.crystalRate], 'crystalRate');
       assert.equal(data[8].toNumber(), building.stats[stat.price], 'price');
@@ -142,7 +231,7 @@ contract('Buildings Data Test', accounts => {
       assert.equal(data[2].toNumber(), building.stats[stat.defense], 'defense');
       assert.equal(data[3].toNumber(), 6000, 'attack');
       assert.equal(data[4].toNumber(), building.stats[stat.goldCapacity], 'goldCapacity');
-      assert.equal(data[5].toNumber(), building.stats[stat.crystalEnergyCapacity], 'crystalEnergyCapacity');
+      assert.equal(data[5].toNumber(), building.stats[stat.crystalCapacity], 'crystalCapacity');
       assert.equal(data[6].toNumber(), building.stats[stat.goldRate], 'goldRate');
       assert.equal(data[7].toNumber(), building.stats[stat.crystalRate], 'crystalRate');
       assert.equal(data[8].toNumber(), building.stats[stat.price], 'price');
@@ -166,7 +255,7 @@ contract('Buildings Data Test', accounts => {
       assert.equal(data[2].toNumber(), building.stats[stat.defense], 'defense');
       assert.equal(data[3].toNumber(), building.stats[stat.attack], 'attack');
       assert.equal(data[4].toNumber(), 6000, 'goldCapacity');
-      assert.equal(data[5].toNumber(), building.stats[stat.crystalEnergyCapacity], 'crystalEnergyCapacity');
+      assert.equal(data[5].toNumber(), building.stats[stat.crystalCapacity], 'crystalCapacity');
       assert.equal(data[6].toNumber(), building.stats[stat.goldRate], 'goldRate');
       assert.equal(data[7].toNumber(), building.stats[stat.crystalRate], 'crystalRate');
       assert.equal(data[8].toNumber(), building.stats[stat.price], 'price');
@@ -190,7 +279,7 @@ contract('Buildings Data Test', accounts => {
       assert.equal(data[2].toNumber(), building.stats[stat.defense], 'defense');
       assert.equal(data[3].toNumber(), building.stats[stat.attack], 'attack');
       assert.equal(data[4].toNumber(), building.stats[stat.goldCapacity], 'goldCapacity');
-      assert.equal(data[5].toNumber(), 6000, 'crystalEnergyCapacity');
+      assert.equal(data[5].toNumber(), 6000, 'crystalCapacity');
       assert.equal(data[6].toNumber(), building.stats[stat.goldRate], 'goldRate');
       assert.equal(data[7].toNumber(), building.stats[stat.crystalRate], 'crystalRate');
       assert.equal(data[8].toNumber(), building.stats[stat.price], 'price');
@@ -214,7 +303,7 @@ contract('Buildings Data Test', accounts => {
       assert.equal(data[2].toNumber(), building.stats[stat.defense], 'defense');
       assert.equal(data[3].toNumber(), building.stats[stat.attack], 'attack');
       assert.equal(data[4].toNumber(), building.stats[stat.goldCapacity], 'goldCapacity');
-      assert.equal(data[5].toNumber(), building.stats[stat.crystalEnergyCapacity], 'crystalEnergyCapacity');
+      assert.equal(data[5].toNumber(), building.stats[stat.crystalCapacity], 'crystalCapacity');
       assert.equal(data[6].toNumber(), 6000, 'goldRate');
       assert.equal(data[7].toNumber(), building.stats[stat.crystalRate], 'crystalRate');
       assert.equal(data[8].toNumber(), building.stats[stat.price], 'price');
@@ -238,7 +327,7 @@ contract('Buildings Data Test', accounts => {
       assert.equal(data[2].toNumber(), building.stats[stat.defense], 'defense');
       assert.equal(data[3].toNumber(), building.stats[stat.attack], 'attack');
       assert.equal(data[4].toNumber(), building.stats[stat.goldCapacity], 'goldCapacity');
-      assert.equal(data[5].toNumber(), building.stats[stat.crystalEnergyCapacity], 'crystalEnergyCapacity');
+      assert.equal(data[5].toNumber(), building.stats[stat.crystalCapacity], 'crystalCapacity');
       assert.equal(data[6].toNumber(), building.stats[stat.goldRate], 'goldRate');
       assert.equal(data[7].toNumber(), 6000, 'crystalRate');
       assert.equal(data[8].toNumber(), building.stats[stat.price], 'price');
@@ -262,7 +351,7 @@ contract('Buildings Data Test', accounts => {
       assert.equal(data[2].toNumber(), building.stats[stat.defense], 'defense');
       assert.equal(data[3].toNumber(), building.stats[stat.attack], 'attack');
       assert.equal(data[4].toNumber(), building.stats[stat.goldCapacity], 'goldCapacity');
-      assert.equal(data[5].toNumber(), building.stats[stat.crystalEnergyCapacity], 'crystalEnergyCapacity');
+      assert.equal(data[5].toNumber(), building.stats[stat.crystalCapacity], 'crystalCapacity');
       assert.equal(data[6].toNumber(), building.stats[stat.goldRate], 'goldRate');
       assert.equal(data[7].toNumber(), building.stats[stat.crystalRate], 'crystalRate');
       assert.equal(data[8].toNumber(), 6000, 'price');
@@ -286,7 +375,7 @@ contract('Buildings Data Test', accounts => {
       assert.equal(data[2].toNumber(), building.stats[stat.defense], 'defense');
       assert.equal(data[3].toNumber(), building.stats[stat.attack], 'attack');
       assert.equal(data[4].toNumber(), building.stats[stat.goldCapacity], 'goldCapacity');
-      assert.equal(data[5].toNumber(), building.stats[stat.crystalEnergyCapacity], 'crystalEnergyCapacity');
+      assert.equal(data[5].toNumber(), building.stats[stat.crystalCapacity], 'crystalCapacity');
       assert.equal(data[6].toNumber(), building.stats[stat.goldRate], 'goldRate');
       assert.equal(data[7].toNumber(), building.stats[stat.crystalRate], 'crystalRate');
       assert.equal(data[8].toNumber(), building.stats[stat.price], 'price');
@@ -310,7 +399,7 @@ contract('Buildings Data Test', accounts => {
       assert.equal(data[2].toNumber(), building.stats[stat.defense], 'defense');
       assert.equal(data[3].toNumber(), building.stats[stat.attack], 'attack');
       assert.equal(data[4].toNumber(), building.stats[stat.goldCapacity], 'goldCapacity');
-      assert.equal(data[5].toNumber(), building.stats[stat.crystalEnergyCapacity], 'crystalEnergyCapacity');
+      assert.equal(data[5].toNumber(), building.stats[stat.crystalCapacity], 'crystalCapacity');
       assert.equal(data[6].toNumber(), building.stats[stat.goldRate], 'goldRate');
       assert.equal(data[7].toNumber(), building.stats[stat.crystalRate], 'crystalRate');
       assert.equal(data[8].toNumber(), building.stats[stat.price], 'price');
@@ -334,7 +423,7 @@ contract('Buildings Data Test', accounts => {
       assert.equal(data[2].toNumber(), building.stats[stat.defense], 'defense');
       assert.equal(data[3].toNumber(), building.stats[stat.attack], 'attack');
       assert.equal(data[4].toNumber(), building.stats[stat.goldCapacity], 'goldCapacity');
-      assert.equal(data[5].toNumber(), building.stats[stat.crystalEnergyCapacity], 'crystalEnergyCapacity');
+      assert.equal(data[5].toNumber(), building.stats[stat.crystalCapacity], 'crystalCapacity');
       assert.equal(data[6].toNumber(), building.stats[stat.goldRate], 'goldRate');
       assert.equal(data[7].toNumber(), building.stats[stat.crystalRate], 'crystalRate');
       assert.equal(data[8].toNumber(), building.stats[stat.price], 'price');
@@ -358,7 +447,7 @@ contract('Buildings Data Test', accounts => {
       assert.equal(data[2].toNumber(), building.stats[stat.defense], 'defense');
       assert.equal(data[3].toNumber(), building.stats[stat.attack], 'attack');
       assert.equal(data[4].toNumber(), building.stats[stat.goldCapacity], 'goldCapacity');
-      assert.equal(data[5].toNumber(), building.stats[stat.crystalEnergyCapacity], 'crystalEnergyCapacity');
+      assert.equal(data[5].toNumber(), building.stats[stat.crystalCapacity], 'crystalCapacity');
       assert.equal(data[6].toNumber(), building.stats[stat.goldRate], 'goldRate');
       assert.equal(data[7].toNumber(), building.stats[stat.crystalRate], 'crystalRate');
       assert.equal(data[8].toNumber(), building.stats[stat.price], 'price');

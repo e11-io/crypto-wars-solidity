@@ -1,0 +1,69 @@
+<div class="admin-container">
+
+  <button type="button" (click)="stopPull()">Stop pull</button>
+  <br>
+
+  <h3>Experimental Token Contract - <a href="#">gh-issue</a></h3>
+  <br>
+  <label for="amount">Amount:</label>
+  <input #amount type="text" placeholder="e.g., 95">
+  <label for="receiver">To Address:</label>
+  <input #receiver type="text" id="receiver" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae">
+  <button (click)="sendCoin(receiver.value, amount.value)">Send ExperimentalToken</button>
+  <br><br>
+
+  <br><br>
+  <h3>User Vault Contract - <a href="#">gh-issue</a></h3>
+  <br>
+  <button (click)="getVaultAllowance()">Get Vault Allowance</button>
+  <br><br>
+  <input #allowanceAmount type="text" placeholder="Approve Amount">
+  <button (click)="approve(allowanceAmount.value)">approve</button>
+  <br><br>
+
+  <br><br>
+  <h3>User Village Contract - <a href="#">gh-issue</a></h3>
+  <br>
+  <button (click)="getVillage()">Get Village</button>
+  <br><br>
+  <input #villageName type="text" placeholder="Village Name">
+  <input #userName type="text" placeholder="User Name">
+  <button (click)="createVillage(villageName.value, userName.value)">Create Village</button>
+  <br><br>
+
+  <br><br>
+  <h3>User Resources Contract - <a href="#">gh-issue</a></h3>
+  <br>
+  <button (click)="getLastPayoutBlock()">Get User Last Payout Block</button>
+  <br><br>
+
+  <br><br>
+  <h3>User Buildings Contract - <a href="#">gh-issue</a></h3>
+  <br>
+  <button (click)="getUserBuildings()">Get User Buildings</button>
+  <br><br>
+
+  <br><br>
+  <h3>Buildings Data Contract - <a href="#">gh-issue</a></h3>
+  <br>
+  <button (click)="getExistingBuildingsLength()">Get Existing Buildings Length</button>
+  <br><br>
+
+  <br><br>
+  <h3>Buildings Queue Contract - <a href="#">gh-issue</a></h3>
+  <br>
+  <button type="button" (click)="getUserBuildingsQueue()">Get User Buildings Queue</button>
+  <button type="button" (click)="getBuildingsInQueueTest()">Get User Buildings Queue2</button>
+  <br>
+  <select #building>
+    <option value=1005>Gold Factory</option>
+    <option value=1006>Crystal Factory</option>
+    <option value=1007>Gold Storage</option>
+    <option value=1008>Crystal Storage</option>
+  </select>
+  <button type="button" (click)="addBuildingToQueue(building.value)">Buy Building</button>
+  <br>
+  <button type="button" (click)="checkTransaction()">Cehck transaction</button>
+  <br><br>
+
+</div>

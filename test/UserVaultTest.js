@@ -1,13 +1,15 @@
 const ExperimentalToken = artifacts.require('ExperimentalToken');
-const UserVault = artifacts.require('UserVault');
-const UserVillage = artifacts.require('UserVillage');
 const SimpleToken = artifacts.require('SimpleToken');
 const UserResources = artifacts.require('UserResources');
+const UserVault = artifacts.require('UserVault');
+const UserVillage = artifacts.require('UserVillage');
 
 const { assertRevert } = require('./helpers/assertThrow')
+const { isVersioned } = require('./helpers/isVersioned');
+const { setContracts } = require('./helpers/setContracts');
 
 contract('User Vault Test', accounts => {
-  let experimentalToken, userVault, userVillage, simpleToken, userResources = {};
+  let experimentalToken, userVault, userVillage, simpleToken, userResources;
 
   const Alice = accounts[0];
   const Bob = accounts[1];
@@ -18,11 +20,20 @@ contract('User Vault Test', accounts => {
   beforeEach(async () =>  {
     experimentalToken = await ExperimentalToken.new();
     simpleToken = await SimpleToken.new();
-    userVault = await UserVault.new(experimentalToken.address);
     userResources = await UserResources.new();
-
-    // We deployed this one because we don't need to get a new instance of it every time
+    userVault = await UserVault.new();
+    // We use the deployed UserVillage because we don't need to get a new instance of it every time
     userVillage = await UserVillage.deployed();
+
+    await userVault.setExperimentalToken(experimentalToken.address);
+  })
+
+  it('Is Versioned', async () => {
+    assert.isTrue(await isVersioned(userVault, UserVault));
+  })
+
+  it('Set Contracts', async () => {
+    assert.isTrue(await setContracts(userVault));
   })
 
   it('Reclaim token != experimentalToken', async () => {
@@ -78,6 +89,7 @@ contract('User Vault Test', accounts => {
 
     it('Add tokens from account with e11', async () => {
       let amount = 1 * ether;
+
       await userVault.add(Bob, amount);
 
       let balance = await userVault.balanceOf.call(Bob);

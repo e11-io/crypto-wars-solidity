@@ -1,0 +1,67 @@
+<div class="new-user-container">
+
+  <img class="logo-simple" src="/assets/img/logo-simple.png" alt="CryptoWars">
+
+  <div class="e11-box-container user-information" *ngIf="step === 'userCreation'">
+    <div class="box-content">
+      <div class="box-option input">
+        <h3 class="input-title">
+          {{'ONBOARDING.NEWUSER.OPTIONS.USERNAME.title' | translate}} *
+        </h3>
+        <input class="e11-input"
+               type="text"
+               maxlength="25"
+               [placeholder]="'ONBOARDING.NEWUSER.OPTIONS.USERNAME.placeholder' | translate"
+               [(ngModel)]="username">
+      </div>
+
+      <div class="box-option input">
+        <h3 class="input-title">
+          {{'ONBOARDING.NEWUSER.OPTIONS.VILLAGENAME.title' | translate}} *
+        </h3>
+        <input class="e11-input"
+               type="text"
+               maxlength="25"
+               [placeholder]="'ONBOARDING.NEWUSER.OPTIONS.VILLAGENAME.placeholder' | translate"
+               [(ngModel)]="villageName">
+      </div>
+
+      <!--
+      <div class="box-option input">
+        <h3 class="input-title">
+          {{'ONBOARDING.NEWUSER.OPTIONS.EMAIL.title' | translate}}
+        </h3>
+        <input class="e11-input"
+               type="email"
+               [placeholder]="'ONBOARDING.NEWUSER.OPTIONS.EMAIL.placeholder' | translate"
+               [(ngModel)]="email">
+      </div>
+      -->
+
+      <div class="box-option">
+        <button class="e11-button" type="button" name="button" (click)="emitNewVillage()">
+          {{'ONBOARDING.NEWUSER.OPTIONS.create' | translate}}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="creating-village" *ngIf="step !== 'userCreation'">
+    <div class="loading-bar"
+         [class.pending]="step === 'creatingVillage'"
+         [class.failed]="step === 'failedCreation'">
+        <ng-template [ngIf]="step === 'creatingVillage'">
+          {{'ONBOARDING.NEWUSER.LOADING.creating' | translate}}
+        </ng-template>
+        <ng-template [ngIf]="step === 'failedCreation'">
+          {{'ONBOARDING.NEWUSER.LOADING.failed' | translate}}
+          <span class="underline" (click)="tryAgain()">
+            {{'ONBOARDING.NEWUSER.LOADING.tryagain' | translate}}
+          </span>
+        </ng-template>
+    </div>
+    <span>{{'ONBOARDING.NEWUSER.disclaimer' | translate}}</span>
+    <span *ngIf="step === 'creatingVillage'">{{'ONBOARDING.NEWUSER.taking-long' | translate}}</span>
+  </div>
+
+</div>

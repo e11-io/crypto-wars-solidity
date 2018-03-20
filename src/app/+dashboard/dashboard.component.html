@@ -1,0 +1,18 @@
+<div class="dashboard-container">
+
+  <e11-village-logs></e11-village-logs>
+  <div class="village-info flex-col">
+    <e11-village-info [villageName]="villageName"
+                      [userBalance]="userBalance"
+                      [userBuildings]="userBuildings"
+                      [userResources]="userResources"
+                      (goToBuildings)='goToBuildings()'>
+    </e11-village-info>
+    <e11-village-queues [buildingsQueue]="buildingsInQueue"
+                        (goToBuildings)="goToBuildings()">
+    </e11-village-queues>
+  </div>
+  <e11-village-extras></e11-village-extras>
+
+
+</div>

@@ -1,10 +1,12 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.4.18;
 
 import 'zeppelin-solidity/contracts/token/ERC20Basic.sol';
 import 'zeppelin-solidity/contracts/ownership/NoOwner.sol';
 import './UserBuildings.sol';
 import './UserResources.sol';
 import './UserVault.sol';
+import './BuildingsData.sol';
+import './Versioned.sol';
 
 /**
  * @title UserVillage (WIP)
@@ -13,7 +15,7 @@ import './UserVault.sol';
  * transferred to another user, paused and un-paused.
  * @dev Issue: * https://github.com/e11-io/crypto-wars-solidity/issues/1
  */
-contract UserVillage is NoOwner {
+contract UserVillage is NoOwner, Versioned {
 
 	/**
    * @dev event for village creation logging
@@ -29,23 +31,83 @@ contract UserVillage is NoOwner {
 	mapping(bytes32 => address) public addresses;
 
 	// Vault contract used to store in-game currency.
-	UserVault userVault;
-	UserResources userResources;
-	UserBuildings userBuildings;
-	uint[] initialBuildingsIds = [uint(1),uint(2), uint(3)] ;
+	uint[] initialBuildingsIds;
 
+	BuildingsData buildingsData;
+	UserVillage previousUserVillage;
+	UserBuildings userBuildings;
+	UserResources userResources;
+	UserVault userVault;
 
 	/**
-   * @dev UserVillage Constructor
-   * @param _userVault The address of the vault used to track user token balances.
+   * @dev UserVillage Constructor: Instantiate User Village contract.
    */
-	function UserVillage(address _userVault,
-											 address _userResources,
-											 address _userBuildings) {
-		userVault = UserVault(_userVault);
-		userResources = UserResources(_userResources);
-		userBuildings = UserBuildings(_userBuildings);
+	function UserVillage() public {
 	}
+
+	/**
+	 * @notice Makes the contract type verifiable.
+	 * @dev Function to prove the contract is User Village.
+	 */
+	function isUserVillage() external pure returns (bool) {
+		return true;
+	}
+
+	/**
+	 * @notice Sets the contract's version and instantiates the previous version contract.
+	 * @dev Function to set the contract version and instantiate the previous User Buildings.
+	 * @param _previousUserVillage the address of previous User Village contract. (address)
+	 * @param _version the current contract version number. (uint)
+	 */
+	function setUserVillageVersion(UserVillage _previousUserVillage, uint _version) external onlyOwner {
+		require(_previousUserVillage.isUserVillage());
+		require(_version > _previousUserVillage.version());
+		previousUserVillage = _previousUserVillage;
+		setVersion(_version);
+	}
+
+	/**
+   * @notice Instantiate Buildings Data contract.
+   * @dev Function to provide Buildings Data address and instantiate it.
+   * @param _buildingsData the address of Buildings Data contract. (address)
+   */
+  function setBuildingsData(BuildingsData _buildingsData) external onlyOwner {
+		require(_buildingsData.isBuildingsData());
+    buildingsData = _buildingsData;
+  }
+
+	/*
+   * @title Instantiate User Buildings contract.
+   * @dev Function to provide User Buildings address and instantiate it.
+   * @param _userBuildings the address of User Buildings contract. (address)
+   */
+	function setUserBuildings(UserBuildings _userBuildings) external onlyOwner {
+		require(_userBuildings.isUserBuildings());
+		userBuildings = _userBuildings;
+	}
+
+	/**
+   * @notice Instantiate User Resources contract.
+   * @dev Function to provide User Resources address and instantiate it.
+   * @param _userResources the address of User Resources contract. (address)
+   */
+  function setUserResources(UserResources _userResources) external onlyOwner {
+    require(_userResources.isUserResources());
+    userResources = _userResources;
+  }
+
+	/**
+   * @notice Instantiate User Vault contract.
+   * @dev Function to provide User Vault address and instantiate it.
+   * @param _userVault the address of User Vault contract. (address)
+   */
+  function setUserVault(UserVault _userVault) external onlyOwner {
+    require(_userVault.isUserVault());
+    userVault = _userVault;
+  }
+
+
+
 
 	/**
    * @notice Creates a new village
@@ -62,12 +124,27 @@ contract UserVillage is NoOwner {
 		// Check and Transfer user's token.
 		require(userVault.add(msg.sender, 1 ether)); // 'could_not_transfer_tokens'
 		require(userResources.initUserResources(msg.sender));
-		require(userResources.initPayoutBlock(msg.sender));
+		userResources.initPayoutBlock(msg.sender);
 		require(userBuildings.addInitialBuildings(msg.sender, initialBuildingsIds));
 
 		villages[msg.sender] = _name;
 		addresses[keccak256(_username)] = msg.sender;
 		VillageCreated(msg.sender, _name, _username);
   }
+
+	/**
+   * @notice Set Initial Buildings
+   * @dev Function to set the array with the initial buildings ids.
+   * @param _ids The ids of the buildings (uint[])
+   */
+	function setInitialBuildings(uint[] _ids) external onlyOwner {
+		if (_ids.length > 0) {
+			for (uint i = 0; i < _ids.length; i++) {
+				require(buildingsData.checkBuildingExist(_ids[i]));
+			}
+		}
+
+		initialBuildingsIds = _ids;
+	}
 
 }

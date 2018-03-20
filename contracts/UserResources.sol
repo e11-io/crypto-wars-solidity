@@ -1,10 +1,11 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.4.18;
 
 import 'zeppelin-solidity/contracts/math/SafeMath.sol';
 import 'zeppelin-solidity/contracts/ownership/NoOwner.sol';
 import './BuildingsQueue.sol';
 import './UserBuildings.sol';
 import './UserVillage.sol';
+import './Versioned.sol';
 
 /*
  * @title UserResources (WIP)
@@ -13,7 +14,7 @@ import './UserVillage.sol';
  * Additional functionality might be added to ...
  * @dev Issue: * https://github.com/e11-io/crypto-wars-solidity/issues/6
  */
-contract UserResources is NoOwner {
+contract UserResources is NoOwner, Versioned {
 
 	/*
    * @event Event for initializing user resources.
@@ -60,7 +61,12 @@ contract UserResources is NoOwner {
 	 */
   event ConsumeQuantum(address _user, uint _price);
 
-	event PayoutResources(uint _goldRate, uint _crystalRate, uint _queueGold, uint _queueCrystal);
+	/*
+	 * @event Event for paying out resources to user.
+	 * @param _gold The amount of gold the user generated and will receive.
+	 * @param _crystal The amount of crystal the user generated and will receive.
+	 */
+	event PayoutResources(uint _gold, uint _crystal);
 
 	/*
 	 * @event Event for seting initial resources of user.
@@ -87,17 +93,47 @@ contract UserResources is NoOwner {
 	// Mapping of user -> last payout block (keeps track of the last block where the user was paid).
 	mapping (address => uint) public usersPayoutBlock;
 
-	UserVillage userVillage;
 	BuildingsQueue buildingsQueue;
+	UserResources previousUserResources;
 	UserBuildings userBuildings;
+	UserVillage userVillage;
+
+	/**
+	 * @notice Constructor: Instantiate User Resources contract.
+	 * @dev Constructor function.
+	 */
+	function UserResources() public {
+	}
+
+	/**
+	 * @notice Makes the contract type verifiable.
+	 * @dev Function to prove the contract is User Resources.
+	 */
+	function isUserResources() external pure returns (bool) {
+		return true;
+	}
+
+	/**
+	 * @notice Sets the contract's version and instantiates the previous version contract.
+	 * @dev Function to set the contract version and instantiate the previous User Resources.
+	 * @param _previousUserResources the address of previous User Resources contract. (address)
+	 * @param _version the current contract version number. (uint)
+	 */
+	function setUserResourcesVersion(UserResources _previousUserResources, uint _version) external onlyOwner {
+		require(_previousUserResources.isUserResources());
+		require(_version > _previousUserResources.version());
+		previousUserResources = _previousUserResources;
+		setVersion(_version);
+	}
 
 	/*
    * @title Instantiate User Village contract.
    * @dev Function to provide User Village address and instantiate it.
    * @param _userVillage the address of User Village contract. (address)
    */
-	function setUserVillage(address _userVillage) external onlyOwner {
-		userVillage = UserVillage(_userVillage);
+	function setUserVillage(UserVillage _userVillage) external onlyOwner {
+		require(_userVillage.isUserVillage());
+		userVillage = _userVillage;
 	}
 
 	/*
@@ -105,8 +141,9 @@ contract UserResources is NoOwner {
    * @dev Function to provide Buildings Queue address and instantiate it.
    * @param _buildingsQueue the address of Buildings Queue contract. (address)
    */
-	function setBuildingsQueue(address _buildingsQueue) external onlyOwner {
-		buildingsQueue = BuildingsQueue(_buildingsQueue);
+	function setBuildingsQueue(BuildingsQueue _buildingsQueue) external onlyOwner {
+		require(_buildingsQueue.isBuildingsQueue());
+		buildingsQueue = _buildingsQueue;
 	}
 
 	/*
@@ -114,8 +151,9 @@ contract UserResources is NoOwner {
    * @dev Function to provide User Buildings address and instantiate it.
    * @param _userBuildings the address of User Buildings contract. (address)
    */
-	function setUserBuildings(address _userBuildings) external onlyOwner {
-		userBuildings = UserBuildings(_userBuildings);
+	function setUserBuildings(UserBuildings _userBuildings) external onlyOwner {
+		require(_userBuildings.isUserBuildings());
+		userBuildings = _userBuildings;
 	}
 
 	/*
@@ -125,7 +163,7 @@ contract UserResources is NoOwner {
 	 * @return A boolean that indicates if the operation was successful.
    */
 	function initUserResources(address _user) external returns (bool) {
-		require(msg.sender == address(userVillage));
+		require(msg.sender == address(userVillage) || msg.sender == owner);
 		require(!usersResources[_user].initialized);
 
 		usersResources[_user].initialized = true;
@@ -142,9 +180,9 @@ contract UserResources is NoOwner {
    * @dev Function that returns the user resources amount.
    * @param _user address of the user to give the resources. (address)
    */
-	function getUserResources(address _user) external returns (uint gold,
-																														 uint crystal,
-																														 uint quantumDust) {
+	function getUserResources(address _user) external view returns (uint gold,
+																																	uint crystal,
+																																	uint quantumDust) {
 		return (usersResources[_user].gold,
 						usersResources[_user].crystal,
 						usersResources[_user].quantumDust);
@@ -180,7 +218,7 @@ contract UserResources is NoOwner {
    * @param _price the amount of gold to be consumed. (uint)
    */
 	function consumeGold(address _user, uint _price) external returns (bool) {
-		require(msg.sender == address(buildingsQueue));
+		require(msg.sender == address(buildingsQueue) || msg.sender == owner);
 		payoutResources(_user);
 		require(usersResources[_user].gold >= _price);
 		usersResources[_user].gold = SafeMath.sub(usersResources[_user].gold, _price);
@@ -197,7 +235,7 @@ contract UserResources is NoOwner {
    * @param _price the amount of crystal to be consumed. (uint)
    */
 	function consumeCrystal(address _user, uint _price) external returns (bool) {
-		require(msg.sender == address(buildingsQueue));
+		require(msg.sender == address(buildingsQueue) || msg.sender == owner);
 		payoutResources(_user);
 		require(usersResources[_user].crystal >= _price);
 		usersResources[_user].crystal = SafeMath.sub(usersResources[_user].crystal, _price);
@@ -214,7 +252,7 @@ contract UserResources is NoOwner {
    * @param _price the amount of quantum dust to be consumed. (uint)
    */
 	function consumeQuantumDust(address _user, uint _price) external returns (bool) {
-		require(msg.sender == address(buildingsQueue));
+		require(msg.sender == address(buildingsQueue) || msg.sender == owner);
 		require(usersResources[_user].quantumDust >= _price);
 		usersResources[_user].quantumDust = SafeMath.sub(usersResources[_user].quantumDust, _price);
 
@@ -238,9 +276,7 @@ contract UserResources is NoOwner {
 		require(msg.sender == owner ||
 						msg.sender == address(buildingsQueue) ||
 						msg.sender == address(userBuildings));
-		require(_gold >= 0);
-		require(_crystal >= 0);
-		require(_quantumDust >= 0);
+
 		usersResources[_user].gold += _gold;
 		usersResources[_user].crystal += _crystal;
 		usersResources[_user].quantumDust += _quantumDust;
@@ -254,10 +290,9 @@ contract UserResources is NoOwner {
 	 * Only callable from User Village contract.
 	 * @param _user The new user.
    */
-	function initPayoutBlock(address _user) external returns (bool) {
-		require(msg.sender == address(userVillage));
+	function initPayoutBlock(address _user) external {
+		require(msg.sender == address(userVillage) || msg.sender == owner);
 		usersPayoutBlock[_user] = block.number;
-		return true;
 	}
 
 	/*
@@ -269,42 +304,86 @@ contract UserResources is NoOwner {
 	  uint256 diff = SafeMath.sub(block.number, usersPayoutBlock[_user]);
 
 		if (diff > 0) {
+			uint gold = 0;
+			uint crystal = 0;
+			uint goldCapacity = 0;
+			uint crystalCapacity = 0;
+
+			(gold, crystal) = calculateUserResources(_user);
+
+			(goldCapacity, crystalCapacity) = calculateUserResourcesCapacity(_user);
+
+			if (gold > 0) {
+				if (goldCapacity <= SafeMath.add(usersResources[_user].gold, gold)) {
+					usersResources[_user].gold = goldCapacity;
+				}
+				if (goldCapacity > SafeMath.add(usersResources[_user].gold, gold)) {
+					usersResources[_user].gold = SafeMath.add(
+						usersResources[_user].gold, gold
+					);
+				}
+			}
+
+			if (crystal > 0) {
+				if (crystalCapacity <= SafeMath.add(usersResources[_user].crystal, crystal)) {
+					usersResources[_user].crystal = crystalCapacity;
+				}
+
+				if (crystalCapacity > SafeMath.add(usersResources[_user].crystal, crystal)) {
+					usersResources[_user].crystal = SafeMath.add(
+						usersResources[_user].crystal, crystal
+					);
+				}
+			}
+
+			usersPayoutBlock[_user] = block.number;
+
+			PayoutResources(gold, crystal);
+		}
+	}
+
+	/*
+   * @title Calculate User Resources.
+   * @dev Function to calculate the resources generated in buildings queue and user buildings.
+	 * @param _user The user to calculate the resources.
+   */
+
+	function calculateUserResources(address _user) public view returns (uint userGold, uint userCrystal) {
+		uint256 diff = SafeMath.sub(block.number, usersPayoutBlock[_user]);
+
+		if (diff > 0) {
 			uint goldRate = 0;
 			uint crystalRate = 0;
 
 			(goldRate, crystalRate) = userBuildings.getUserRates(_user);
 
-			if (goldRate > 0) {
-				usersResources[_user].gold = SafeMath.add(
-					usersResources[_user].gold, SafeMath.mul(goldRate, diff)
-					);
-			}
-			if (crystalRate > 0) {
-				usersResources[_user].crystal = SafeMath.add(
-					usersResources[_user].crystal, SafeMath.mul(crystalRate, diff)
-				);
-			}
+			(userGold, userCrystal) = buildingsQueue.getUserQueueResources(_user);
 
-			uint gold = 0;
-			uint crystal = 0;
-
-			(gold, crystal) = buildingsQueue.getUserQueueResources(_user);
-
-			if (gold > 0) {
-				usersResources[_user].gold = SafeMath.add(
-					usersResources[_user].gold, gold
-					);
-			}
-			if (crystal > 0) {
-				usersResources[_user].crystal = SafeMath.add(
-					usersResources[_user].crystal, crystal
-				);
-			}
-
-			usersPayoutBlock[_user] = block.number;
-
-			PayoutResources(goldRate, crystalRate, gold, crystal);
+			userGold = SafeMath.add(userGold, SafeMath.mul(goldRate, diff));
+			userCrystal = SafeMath.add(userCrystal, SafeMath.mul(crystalRate, diff));
 		}
+
+		return (userGold, userCrystal);
+	}
+
+	/*
+   * @title Calculate User Resources.
+   * @dev Function to calculate the resources generated in buildings queue and user buildings.
+	 * @param _user The user to calculate the resources.
+   */
+
+	function calculateUserResourcesCapacity(address _user) public view returns (uint goldCapacity, uint crystalCapacity) {
+		uint queueGoldCapacity = 0;
+		uint queueCyrstalCapacity = 0;
+
+		(goldCapacity, crystalCapacity) = userBuildings.getUserResourcesCapacity(_user);
+
+		(queueGoldCapacity, queueCyrstalCapacity) = buildingsQueue.getUserResourcesCapacity(_user);
+
+		goldCapacity = SafeMath.add(goldCapacity, queueGoldCapacity);
+		crystalCapacity = SafeMath.add(crystalCapacity, queueCyrstalCapacity);
+
+		return (goldCapacity, crystalCapacity);
 	}
 
 	/*
@@ -313,7 +392,7 @@ contract UserResources is NoOwner {
 	 * @param _user The user to calculate and receive the payout.
 	 * @return a uint representing the number of the block where the user was paid.
    */
-	function getUserPayoutBlock(address _user) external returns (uint) {
+	function getUserPayoutBlock(address _user) external view returns (uint) {
 		return usersPayoutBlock[_user];
 	}
 

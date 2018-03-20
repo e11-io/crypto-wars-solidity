@@ -1,0 +1,13 @@
+:host {
+  flex: 1;
+  display: flex;
+}
+
+.onboarding-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  overflow-y: auto;
+}

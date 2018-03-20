@@ -1,0 +1,209 @@
+@import 'variables';
+
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    margin: 0;
+}
+html {
+    font-size: 62.5%;
+    box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+body {
+    background: $color-dark;
+    color: $color-text;
+    font-family: "Roboto", sans-serif;
+}
+
+a {
+  &:visited {
+    color: inherit;
+  }
+}
+
+h1, h2, h3, p, span {
+    font-weight: normal;
+    margin: 0;
+}
+h1 {
+    font-size: 3.6rem;
+    line-height: 4.4rem;
+}
+h2 {
+    font-size: 2.4rem;
+    line-height: 3.2rem;
+}
+h3 {
+    font-size: 2rem;
+    line-height: 2.4rem;
+}
+
+p, span, strong {
+    font-size: 1.6rem;
+    line-height: 1.9rem;
+
+    &[size="small"] {
+        font-size: 1.2rem;
+        line-height: 1.6rem;
+    }
+}
+
+[color='e11'] {
+  color: $color-resource-e11;
+  &.bullet, .bullet {
+    background-color: $color-resource-e11;
+  }
+  &.bullet-outline, .bullet-outline {
+    border-color: $color-resource-e11;
+  }
+}
+[color='crystal'] {
+  color: $color-resource-crystal;
+  &.bullet, .bullet {
+    background-color: $color-resource-crystal;
+  }
+  &.bullet-outline, .bullet-outline {
+    border-color: $color-resource-crystal;
+  }
+}
+[color='gold'] {
+  color: $color-resource-gold;
+  &.bullet, .bullet {
+    background-color: $color-resource-gold;
+  }
+  &.bullet-outline, .bullet-outline {
+    border-color: $color-resource-gold;
+  }
+}
+[color='quantum'] {
+  color: $color-resource-quantum;
+  &.bullet, .bullet {
+    background-color: $color-resource-quantum;
+  }
+  &.bullet-outline, .bullet-outline {
+    border-color: $color-resource-quantum;
+  }
+}
+[color='success'] {
+  color: $color-success;
+  &.bullet, .bullet {
+    background-color: $color-success;
+  }
+  &.bullet-outline, .bullet-outline {
+    border-color: $color-success;
+  }
+}
+
+[tooltip] {
+    position: relative;
+    &:before {
+      position : absolute;
+      content : attr(tooltip);
+      opacity : 0;
+      padding: .5rem;
+      color: $color-text;
+      border-radius: .2rem;
+      border: 1px solid $color-border;
+      transition: all $app-default-animation;
+      top: -25px;
+    }
+    &:hover:before {
+      opacity: 1;
+      background: $color-light-alt;
+    }
+    &:not([tooltip-persistent]):before {
+      pointer-events: none;
+    }
+
+    &[tooltip-position='bottom']:before {
+      top: auto;
+      bottom: -25px;
+    }
+}
+
+.bullet {
+    width: 10px;
+    height: 10px;
+    background-color: $color-text;
+    display: inline-block;
+    border-radius: 100%;
+    flex-shrink: 0;
+}
+.bullet-outline {
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  border-radius: 100%;
+  flex-shrink: 0;
+  border: 2px solid $color-text;
+}
+
+.disabled {
+  cursor: default;
+  opacity: .7;
+  &:active {
+    pointer-events: none;
+  }
+}
+
+.scroll-y {
+  overflow-y: auto;
+}
+
+.fill, [fill] {
+    flex: 1;
+}
+
+.flex {
+    display: flex;
+}
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+.centered {
+    justify-content: center;
+    align-items: center;
+}
+.noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+    supported by Chrome and Opera */
+}
+.rounded {
+    border-radius: $app-default-radius;
+}
+.hover-action {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.38);
+  cursor: pointer;
+}
+.underline {
+  text-decoration: underline;
+}
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.app-version {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  color: $color-text-grey;
+}

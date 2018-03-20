@@ -1,0 +1,7 @@
+<div class="onboarding-container">
+  <e11-new-user *ngIf="missing === 'village'"
+                [step]="step"
+                (newVillageEmitter)="createUser($event)">
+  </e11-new-user>
+  <e11-private-beta *ngIf="missing === 'eth-balance' || missing === 'e11-balance'"></e11-private-beta>
+</div>

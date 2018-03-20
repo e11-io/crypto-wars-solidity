@@ -1,0 +1,36 @@
+@import 'src/assets/e11-theme/variables';
+
+.village-queues-container {
+  display: flex;
+  margin: 0 3rem;
+  margin-top: 3rem;
+
+  .e11-box-container {
+    margin: 0 1.5rem;
+    flex: 1;
+    min-height: 29rem;
+
+    &:first-child {
+      margin-left: 0;
+    }
+    &:last-child {
+      margin-right: 0;
+    }
+
+    .box-content {
+      .price {
+        opacity: 1;
+
+        .bullet-outline {
+          margin-left: 5px;
+          margin-right: 3px;
+        }
+      }
+
+      .empty-queue {
+        cursor: pointer;
+      }
+    }
+
+  }
+}

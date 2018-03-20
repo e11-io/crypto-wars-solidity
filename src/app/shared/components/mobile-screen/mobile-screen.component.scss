@@ -1,0 +1,42 @@
+@import 'src/assets/e11-theme/variables';
+
+.mobile-screen-container {
+  flex: 1;
+  padding: 1rem;
+  display: none !important;
+  flex-direction: column;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  background-color: $color-dark;
+
+  .e11-box-container {
+    max-width: 45rem;
+    flex-shrink: 0;
+    text-align: center;
+    margin: auto;
+
+    .box-content {
+      padding: 3rem 5.4rem 2rem 5.4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .desc {
+        margin: 2.5rem 0;
+        text-align: center;
+        color: $color-text-grey;
+        font-size: 1.4rem;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 875px ) {
+  .mobile-screen-container {
+    display: flex !important;
+  }
+}

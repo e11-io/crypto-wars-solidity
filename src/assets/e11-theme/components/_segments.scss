@@ -1,0 +1,59 @@
+@mixin e11-segments() {
+    $segment-radius: $app-default-radius;
+    $segment-border-color: $color-border;
+    $segment-default-width: 19rem;
+    $segment-default-padding: 1.4rem;
+    $segment-small-width: 13rem;
+    $segment-small-padding: .9rem 1.4rem;
+
+    .e11-segments {
+        @extend .noselect;
+        display: flex;
+        flex-shrink: 0;
+
+        &[size='small'] {
+            .e11-segment {
+                font-size: 1.2rem;
+                width: $segment-small-width;
+                padding: $segment-small-padding;
+            }
+        }
+
+        .e11-segment {
+            @extend .flex, .centered;
+            background: $color-dark-alt;
+            color: $color-light;
+            border: 1px solid $segment-border-color;
+            font-size: 1.4rem;
+            font-weight: bold;
+            width: 19rem;
+            outline: none;
+            text-transform: uppercase;
+            white-space: nowrap;
+            padding: $segment-default-padding;
+            cursor: pointer;
+
+
+            &.active {
+                color: $color-text;
+                background: $color-contrast;
+                border-color: $color-contrast-light;
+            }
+
+            &:first-child {
+                border-top-left-radius: $segment-radius;
+                border-bottom-left-radius: $segment-radius;
+            }
+            &:last-child {
+                border-top-right-radius: $segment-radius;
+                border-bottom-right-radius: $segment-radius;
+            }
+
+            .e11-icon {
+                font-size: 1.6rem;
+                margin-right: 1rem;
+            }
+
+        }
+    }
+}

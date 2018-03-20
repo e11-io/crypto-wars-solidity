@@ -1,0 +1,70 @@
+@import 'src/assets/e11-theme/variables';
+
+.new-user-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 10vh;
+
+  .logo-simple {
+    width: 48rem;
+    max-width: $app-errors-container-max-width;
+    margin-bottom: 7rem;
+  }
+
+  .e11-box-container {
+    width: 37rem;
+    flex-shrink: 0;
+    max-width: $app-errors-container-max-width * 2;
+    margin-bottom: 10vh;
+
+    .box-content {
+      .box-option {
+        padding: 1.4rem;
+        &.input {
+          padding: 2rem 2.6rem;
+        }
+      }
+    }
+  }
+
+  .creating-village {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .loading-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+      border-radius: $app-default-radius;
+      height: 6.3rem;
+      width: 60rem;
+      margin-bottom: 3rem;
+
+      &, span {
+        font-size: 2rem;
+        font-weight: bold;
+        color: $color-text;
+      }
+      span {
+        margin-left: 5px;
+        cursor: pointer;
+      }
+
+      &.pending {
+        background: $color-success;
+      }
+      &.failed {
+        background: $color-error;
+      }
+    }
+
+    span {
+      font-size: 1.4rem;
+      color: $color-text-grey;
+    }
+  }
+
+}

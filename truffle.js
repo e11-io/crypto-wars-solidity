@@ -3,21 +3,21 @@ module.exports = {
     development: {
       host: "localhost",
       port: 8545,
-      gas: 6718909,
+      gas: 7000000,
       network_id: "*"
     },
     e11: {
       host: "localhost",
       port: 8311,
-      gas: 6000000,
-      gasPrice: 18000000000,
+      gas: 7000000,
+      gasPrice: 1000000000,
       from: "0xdec8e61b1aabde916bd8248c97e152337a27b660",
       network_id: "311"
     },
     ganache: {
       host: "localhost",
       port: 7545,
-      gas: 6718909,
+      gas: 7000000,
       network_id: "*"
     },
     coverage: {

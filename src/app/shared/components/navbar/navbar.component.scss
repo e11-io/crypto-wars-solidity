@@ -1,0 +1,88 @@
+@import 'src/assets/e11-theme/global';
+
+$navbar-default-height: 7rem;
+$navbar-background: $color-light-alt;
+$navbar-color: $color-light;
+$navbar-padding-x: 3rem;
+$navbar-logo-size: 4.4rem;
+
+.navbar-container {
+    background: $navbar-background;
+    color: $color-light;
+    height: $navbar-default-height;
+    align-items: center;
+    padding: 0 $navbar-padding-x;
+
+    .navbar-logo {
+        display: flex;
+        font-size: 1.4rem;
+        font-weight: 500;
+        flex: 1;
+
+        .logo-image {
+            @extend .flex, .centered;
+            width: $navbar-logo-size;
+            height: $navbar-logo-size;
+            border: 1px solid $color-light;
+            border-radius: $app-default-radius;
+            flex-shrink: 0;
+
+            img {
+                width: $navbar-logo-size - 1.6rem;
+            }
+        }
+
+        .navbar-balance {
+            display: flex;
+            flex-direction: column;
+            margin-left: 2.5rem;
+            justify-content: center;
+
+            span {
+              font-size: 1.4rem;
+              line-height: 2rem;
+            }
+            .balance {
+                color: $color-contrast-light;
+            }
+        }
+
+    }
+
+    .navbar-resources {
+      display: flex;
+      align-items: center;
+      .resource {
+        margin-right: 1rem;
+        white-space: nowrap;
+
+        .bullet-outline {
+          margin-right: .5rem;
+        }
+      }
+    }
+
+    .navbar-actions {
+        display: flex;
+        justify-content: center;
+        flex: 2;
+
+        .navbar-action {
+
+        }
+    }
+    .navbar-user {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        flex: 1;
+        outline: none;
+
+        .picture {
+            border-radius: 100%;
+            overflow: hidden;
+            width: 48px;
+            height: 48px;
+        }
+    }
+}

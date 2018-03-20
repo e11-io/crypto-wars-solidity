@@ -1,0 +1,105 @@
+@mixin e11-box-container() {
+    $box-background: $color-light-alt;
+    $box-content-padding: 1rem;
+
+    .e11-box-container {
+        @extend .rounded;
+        display: flex;
+        flex-direction: column;
+        background: $box-background;
+        border: 1px solid $color-border;
+
+        .box-header {
+            display: flex;
+            align-items: center;
+            font-size: 1.6rem;
+            font-weight: bold;
+            padding: 2rem;
+
+            .e11-icon {
+              margin-right: 5px;
+            }
+        }
+
+        .box-content {
+            overflow: hidden;
+            overflow-y: auto;
+
+            .box-option {
+                display: flex;
+                align-items: center;
+                color: $color-light;
+                padding: $box-content-padding;
+
+                span, p, strong {
+                  font-size: 1.4rem;
+                  opacity: .6;
+                }
+                strong {
+                  opacity: 1;
+                }
+
+                .bullet, .bullet-outline {
+                    margin-right: 15px;
+                }
+
+                .e11-button {
+                  width: 100%;
+                }
+
+                &.input {
+                  display: flex;
+                  flex-direction: column;
+                  align-items: flex-start;
+
+                  &:last-child {
+                    .e11-input {
+                      margin-bottom: 0;
+                    }
+                  }
+                  h3 {
+                    color: $color-text;
+                    margin-bottom: 1rem;
+                  }
+                  .e11-input {
+                    width: 100%;
+                  }
+                }
+            }
+
+            &.stripe {
+              .box-option:nth-child(even) {
+                  background: $color-light-alt;
+              }
+              .box-option:nth-child(odd) {
+                  background: $color-dark;
+              }
+            }
+            &.define {
+              .box-option {
+                border-bottom: 1px solid $color-border;
+                &:last-child {
+                  border-bottom: none;
+                }
+              }
+            }
+            &.empty {
+              @extend .centered;
+              display: flex;
+              flex: 1;
+              margin: $box-content-padding;
+              margin-top: 0;
+              padding: $box-content-padding;
+              border: 1px solid $color-border;
+              background: $color-dark-alt;
+              color: $color-text-grey;
+              span {
+                font-size: 1.4rem;
+                line-height: 2rem;
+                text-align: center;
+              }
+            }
+        }
+
+    }
+}

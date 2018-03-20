@@ -1,0 +1,55 @@
+<div class="navbar-container flex">
+    <div class="navbar-logo">
+        <div class="logo-image">
+            <img src="assets/img/logo-small.png" alt="CryptoWars Logo">
+        </div>
+        <div class="navbar-balance">
+            <span>
+              {{'NAVBAR.wealth' | translate}}:
+              <span class="balance">{{(balance | number) || 0}} e11</span>
+            </span>
+            <div class="navbar-resources">
+              <span class="resource"
+                    [attr.color]="resource"
+                    [attr.tooltip]="userResources[resource+'Capacity'] ? userResources[resource] + '/' + userResources[resource+'Capacity'] : null"
+                    tooltip-position="bottom"
+                    *ngFor="let resource of ['gold', 'crystal', 'quantum']">
+                <div class="bullet-outline"
+                     [style.border-width]="(1 + 4 * (userResources[resource] / userResources[resource+'Capacity'])) / 10 + 'rem'">
+                </div>
+                {{userResources[resource] | number}}
+              </span>
+            </div>
+        </div>
+    </div>
+    <div class="navbar-actions" *ngIf="!childNavDisabled">
+        <div class="e11-segments" size="small">
+            <div class="e11-segment"
+                 routerLink="/assets"
+                 routerLinkActive="active">
+                <i class="e11-icon e11f-building"></i>
+                {{'NAVBAR.TABS.assets' | translate}}
+            </div>
+            <div class="e11-segment"
+                 routerLink="/dashboard"
+                 routerLinkActive="active">
+                <i class="e11-icon e11f-dashboard"></i>
+                {{'NAVBAR.TABS.dashboard' | translate}}
+            </div>
+            <div class="e11-segment disabled"
+                 routerLink="/trades"
+                 routerLinkActive="active"
+                 [attr.tooltip]="'APPWIDE.coming-soon' | translate"
+                 tooltip-position="bottom">
+                <i class="e11-icon e11f-trade"></i>
+                {{'NAVBAR.TABS.trades' | translate}}
+            </div>
+        </div>
+    </div>
+    <div routerLinkActive="active" class="navbar-user">
+      <div class="picture">
+        <angular-blockies *ngIf="blockiesOptions.seed" [options]="blockiesOptions">
+        </angular-blockies>
+      </div>
+    </div>
+</div>

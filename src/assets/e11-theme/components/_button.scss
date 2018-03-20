@@ -1,0 +1,29 @@
+@mixin e11-button() {
+
+    $button-default-background: $color-primary;
+    $button-default-color: $color-text;
+
+    .e11-button {
+      @extend .rounded;
+      @extend .noselect;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $button-default-color;
+      border: 0;
+      font-size: 1.4rem;
+      line-height: 2.1rem;
+      font-weight: 500;
+      padding: 8px 35px;
+      transition: background $app-default-animation;
+      cursor: pointer;
+
+      &:focus {
+        outline: none;
+      }
+
+      @include setButtonBackground($button-default-background);
+    }
+
+}

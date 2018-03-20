@@ -1,0 +1,79 @@
+<div class="village-info-container">
+
+  <div class="village-header">
+    <h2>{{villageName}}</h2>
+    <span class="status" [ngClass]="{'online': true,
+                                    'offline': false}">
+      <div class="bullet"></div> Online
+    </span>
+  </div>
+
+  <div class="village-stats e11-box-container">
+
+    <div class="village-resources">
+      <div class="flex">
+        <div class="village-resource gold">
+          <span class="title">
+            Gold <strong class="rate">+{{userResources.rates.gold | number}} RATE</strong>
+          </span>
+          <h1 class="qty">
+            {{userResources.gold | number}}
+            <span class="capacity"> / {{userResources.goldCapacity | number}}</span>
+          </h1>
+          <div class="e11-progress-bar">
+            <div class="bar" [style.width]="userResources.gold * 100 / userResources.goldCapacity + '%'">
+            </div>
+          </div>
+        </div>
+        <div class="village-resource crystal">
+          <span class="title">
+            Crystal <strong class="rate">+{{userResources.rates.crystal | number}} RATE</strong>
+          </span>
+          <h1 class="qty">
+            {{userResources.crystal | number}}
+            <span class="capacity"> / {{userResources.crystalCapacity | number}}</span>
+          </h1>
+          <div class="e11-progress-bar">
+            <div class="bar" [style.width]="userResources.crystal * 100 / userResources.crystalCapacity + '%'">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex">
+        <div class="village-resource e11">
+          <span class="title">E11 balance</span>
+          <h1 class="qty">{{userBalance | number}}</h1>
+        </div>
+        <div class="village-resource quantum">
+          <span class="title">Quantum dust</span>
+          <h1 class="qty">{{userResources.quantum | number}}</h1>
+        </div>
+      </div>
+    </div>
+
+    <div class="village-extra">
+      <div class="flex">
+        <div class="stat">
+          <span class="title">Buildings</span>
+          <span class="qty" size="small">Currently have: {{userBuildings.length}}</span>
+        </div>
+        <div class="stat">
+          <span class="title">Population</span>
+          <span class="qty" size="small">Currently living: 0</span>
+        </div>
+        <div class="stat">
+          <span class="title">Research</span>
+          <span class="qty" size="small">Currently researching: 0</span>
+        </div>
+      </div>
+      <!--
+      <button class="e11-button" type="button" (click)="goToBuildings.emit()">
+        Upgrade Village
+      </button>
+      -->
+    </div>
+
+  </div>
+
+
+</div>

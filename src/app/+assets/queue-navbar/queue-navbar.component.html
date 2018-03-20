@@ -1,0 +1,31 @@
+<div class="queue-navbar-container">
+  <div class="queue-navbar e11-box-container">
+
+    <h2>Queue</h2><div class="v-separator"></div>
+    <span>{{itemsInQueue.length}} In progress</span><div class="v-separator"></div>
+    <span>{{remainingBlocks}}
+      <span *ngIf="remainingBlocks == 1">Block </span>
+      <span *ngIf="remainingBlocks != 1">Blocks </span>
+      remaining
+    </span>
+    <div class="v-separator"></div>
+    <div class="queue-items">
+      <div class="item"
+           [class.ready]="!item.inProgress"
+           [attr.tooltip]="('DATA.' + queueType + '.' + item.name + '.name' | translate) + ' Lvl. ' + item.level"
+           *ngFor="let item of itemsInQueue; trackBy: trackByFn"
+           (click)="onItemClick(item)">
+        <div class="item-image"
+             [style.background-image]="'url(' + imagePathUrl + item.name + '.png)'">
+        </div>
+        <div class="ready" *ngIf="!item.inProgress">
+          <i class="e11-icon e11f-check"></i>
+        </div>
+        <div class="hover-action" *ngIf="item.inProgress">
+          <i class="e11-icon e11f-error"></i>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

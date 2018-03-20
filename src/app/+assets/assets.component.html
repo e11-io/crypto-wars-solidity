@@ -1,0 +1,28 @@
+<div class="assets-container">
+  <div class="e11-segments">
+      <div class="e11-segment" routerLink="/assets/buildings" routerLinkActive="active">
+          {{'ASSETS.TABS.buildings' | translate}}
+      </div>
+      <div class="e11-segment disabled"
+           routerLink="/assets/units"
+           routerLinkActive="active"
+           [attr.tooltip]="'APPWIDE.coming-soon' | translate">
+          {{'ASSETS.TABS.offense' | translate}}
+      </div>
+      <div class="e11-segment disabled"
+           routerLink="/assets/defense"
+           routerLinkActive="active"
+           [attr.tooltip]="'APPWIDE.coming-soon' | translate">
+          {{'ASSETS.TABS.defense' | translate}}
+      </div>
+      <div class="e11-segment disabled"
+           routerLink="/assets/research"
+           routerLinkActive="active"
+           [attr.tooltip]="'APPWIDE.coming-soon' | translate">
+          {{'ASSETS.TABS.research' | translate}}
+      </div>
+  </div>
+
+  <router-outlet></router-outlet>
+
+</div>

@@ -1,0 +1,74 @@
+<div class="village-queues-container">
+
+  <div class="e11-box-container buildings">
+    <div class="box-header">
+      <i class="e11-icon e11f-building"></i> Build
+    </div>
+    <div class="box-content define" [class.empty]="buildingsQueueIsEmpty">
+      <ng-container *ngFor="let building of buildingsQueue; trackBy: trackByFn">
+        <div class="box-option" *ngIf="building && building.inProgress">
+          <div class="e11-avatar">
+
+          </div>
+          <div class="flex-col">
+            <strong>
+              {{'DATA.buildings.' + [building.name] + '.name' | translate}} - Lv. {{building.level}}
+              <span class="price" [attr.color]="building.resource">
+                <div class="bullet-outline"></div>{{building.price}}
+              </span> 
+            </strong>
+            <span *ngIf="!building.finished">
+              {{ building.percent }}% Done
+              ({{building.remainingSeconds}} seconds left)
+            </span>
+            <span *ngIf="building.finished" color="success">
+              Finishing up...
+            </span>
+          </div>
+        </div>
+      </ng-container>
+      <span class="empty-queue" *ngIf="buildingsQueueIsEmpty" (click)="goToBuildings.emit()">
+        Your buildings queue is empty.
+        Start building!
+      </span>
+    </div>
+  </div>
+
+  <div class="e11-box-container">
+    <div class="box-header">
+      <i class="e11-icon e11f-sword"></i> Barracks
+    </div>
+    <div class="box-content define" [class.empty]="!barracksQueue.length">
+      <div class="box-option"
+           *ngFor="let unit of barracksQueue">
+         barrack
+      </div>
+      <!-- <span *ngIf="!barracksQueue.length">
+        Your barracks queue is empty
+        Start creating!
+      </span> -->
+      <span>
+        Coming soon
+      </span>
+    </div>
+  </div>
+
+  <div class="e11-box-container">
+    <div class="box-header">
+      <i class="e11-icon e11f-research"></i> Research
+    </div>
+    <div class="box-content define" [class.empty]="!researchQueue.length">
+      <div class="box-option" *ngFor="let research of researchQueue">
+         research
+      </div>
+      <!-- <span *ngIf="!barracksQueue.length">
+        Nothing researching now
+        Start now!
+      </span> -->
+      <span>
+        Coming soon
+      </span>
+    </div>
+  </div>
+
+</div>

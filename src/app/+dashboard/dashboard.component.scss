@@ -1,0 +1,18 @@
+:host {
+  flex: 1;
+  overflow-y: auto;
+}
+.dashboard-container {
+  display: flex;
+  justify-content: center;
+  padding: 3.3rem 8vw;
+  flex-wrap: wrap;
+
+  e11-village-logs,
+  e11-village-extras {
+    flex: 1;
+  }
+  .village-info {
+    flex: 4;
+  }
+}

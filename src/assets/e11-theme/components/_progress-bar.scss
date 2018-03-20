@@ -1,0 +1,16 @@
+@mixin e11-progress-bar() {
+    .e11-progress-bar {
+      display: flex;
+      height: .4rem;
+      width: 100%;
+      background: $color-border;
+      border-radius: 10px;
+
+      .bar {
+        background: $color-primary;
+        transition: width 1s ease-in-out;
+        width: 0;
+      }
+    }
+
+}

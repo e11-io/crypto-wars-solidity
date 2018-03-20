@@ -1,8 +1,10 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.4.18;
 
 import 'e11-contracts/contracts/ExperimentalToken.sol';
 import 'zeppelin-solidity/contracts/math/SafeMath.sol';
 import 'zeppelin-solidity/contracts/ownership/NoOwner.sol';
+import './UserVillage.sol';
+import './Versioned.sol';
 
  /**
   * @title UserVault (WIP)
@@ -11,7 +13,7 @@ import 'zeppelin-solidity/contracts/ownership/NoOwner.sol';
   * and enable internal transfers between users.
   * @dev Issue: * https://github.com/e11-io/crypto-wars-solidity/issues/2
   */
-contract UserVault is NoOwner {
+contract UserVault is NoOwner, Versioned {
   using SafeMath for uint256;
 
   /**
@@ -24,16 +26,56 @@ contract UserVault is NoOwner {
   // Mapping of user -> balance (keeps track of owned balance)
   mapping(address => uint256) public balances;
 
-	ExperimentalToken public experimentalToken;
+	ExperimentalToken experimentalToken;
+  UserVault previousUserVault;
+  UserVillage userVillage;
 
 
   /**
-   * @dev Constructor
-   * @param _experimentalToken The address of the tokens to be used as in-game currency.
+   * @dev Constructor: Instantiate User Vault contract.
    */
-	function UserVault(address _experimentalToken) {
-		experimentalToken = ExperimentalToken(_experimentalToken);
+	function UserVault() public {
 	}
+
+	/**
+	 * @notice Makes the contract type verifiable.
+	 * @dev Function to prove the contract is User Vault.
+	 */
+	function isUserVault() external pure returns (bool) {
+		return true;
+	}
+
+	/**
+	 * @notice Sets the contract's version and instantiates the previous version contract.
+	 * @dev Function to set the contract version and instantiate the previous User Buildings.
+	 * @param _previousUserVault the address of previous User Vault contract. (address)
+	 * @param _version the current contract version number. (uint)
+	 */
+	function setUserVaultVersion(UserVault _previousUserVault, uint _version) external onlyOwner {
+		require(_previousUserVault.isUserVault());
+		require(_version > _previousUserVault.version());
+		previousUserVault = _previousUserVault;
+    setVersion(_version);
+	}
+
+  /**
+   * @notice Instantiate Experimental Token contract.
+   * @dev Function to provide Experimental Token address and instantiate it.
+   * @param _experimentalToken the address of Experimental Token contract. (address)
+   */
+  function setExperimentalToken(ExperimentalToken _experimentalToken) external onlyOwner {
+    experimentalToken = _experimentalToken;
+  }
+
+  /**
+   * @notice Instantiate User Village contract.
+   * @dev Function to provide User Village address and instantiate it.
+   * @param _userVillage the address of User Village contract. (address)
+   */
+  function setUserVillage(UserVillage _userVillage) external onlyOwner {
+    require(_userVillage.isUserVillage());
+    userVillage = _userVillage;
+  }
 
   /**
    * @dev Function to add tokens
@@ -42,7 +84,7 @@ contract UserVault is NoOwner {
    * @return A boolean that indicates if the operation was successful.
    */
   function add(address _from, uint256 _amount) external returns(bool) {
-    require(_amount >= 0);
+    require(msg.sender == address(userVillage) || msg.sender == owner);
     require(experimentalToken.transferFrom(_from, this, _amount));
     balances[_from] = balances[_from].add(_amount);
 		VaultAdd(_from, _amount);

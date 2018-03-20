@@ -58,3 +58,6 @@ e11.json
 signer.json
 signer.pass
 .datadir
+
+# Scripts
+/scripts/contributors.json
