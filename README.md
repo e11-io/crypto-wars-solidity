@@ -61,21 +61,24 @@ Please check the [documentation](https://e11-io.github.io/crypto-wars-solidity/)
     ```
 
 9a. Run the web app locally.
-    ```shell
-    npm run start # to use your local RPC network
-    # Open http://localhost:4200 on your favorite web3 browser
-    ```
+  ```shell
+  npm run start # to use your local RPC network
+  # Open http://localhost:4200 on your favorite web3 browser
+  ```
 
 9b. To run the web app with the PoA e11 (311) network.
-    Console 1:
-    ```shell
-    ./script/full-node.sh # this will create a local full node of the e11 Proof of Authority chain (311)
-    ```
-    Console 2:
-    ```shell
-    npm run start:poa # this will start the angular server with the PoA environment.
-    ```
-    Lastly open http://localhost:4200 and on Metamask connect to http://localhost:8311
+
+  - Console 1:
+  ```shell
+  ./script/full-node.sh # this will create a local full node of the e11 Proof of Authority chain (311)
+  ```
+  
+  - Console 2:
+  ```shell
+  npm run start:poa # this will start the angular server with the PoA environment.
+  ```
+  
+  Lastly open http://localhost:4200 and on Metamask connect to http://localhost:8311
 
 
 ## How to migrate new contracts into e11 (311) PoA network
