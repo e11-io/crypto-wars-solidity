@@ -1,3 +1,4 @@
+const AssetsRequirements = artifacts.require('AssetsRequirements');
 const BuildingsData = artifacts.require('BuildingsData');
 const BuildingsQueue = artifacts.require('BuildingsQueue');
 const ExperimentalToken = artifacts.require('ExperimentalToken');
@@ -8,14 +9,15 @@ const UserVillage = artifacts.require('UserVillage');
 
 const { assertRevert } = require('./helpers/assertThrow');
 const { evmMine } = require('./helpers/evmMine');
+const { initializeContracts } = require('./helpers/initializeContracts');
 const { isVersioned } = require('./helpers/isVersioned');
-const { setContracts } = require('./helpers/setContracts');
+const { setContractsTest } = require('./helpers/setContractsTest');
 
 const buildingsMock = require('../mocks/buildings-test');
 const stat = buildingsMock.stats;
 
 contract('Buildings Queue Test', (accounts) => {
-  let buildingsQueue, buildingsData, userResources, userVillage, userVault, experimentalToken;
+  let assetsRequirements, buildingsQueue, buildingsData, userResources, userVillage, userVault, experimentalToken;
 
   const Alice = accounts[0];
   const Bob = accounts[1];
@@ -27,6 +29,7 @@ contract('Buildings Queue Test', (accounts) => {
   ];
 
   beforeEach(async () => {
+    assetsRequirements = await AssetsRequirements.new();
     buildingsData = await BuildingsData.new();
     buildingsQueue = await BuildingsQueue.new();
     experimentalToken = await ExperimentalToken.new();
@@ -35,69 +38,23 @@ contract('Buildings Queue Test', (accounts) => {
     userVault = await UserVault.new();
     userVillage = await UserVillage.new();
 
-    await buildingsQueue.setBuildingsData(buildingsData.address);
-    await buildingsQueue.setUserBuildings(userBuildings.address);
-    await buildingsQueue.setUserResources(userResources.address);
+    await initializeContracts({
+      assetsRequirements,
+      buildingsData,
+      buildingsQueue,
+      experimentalToken,
+      userBuildings,
+      userResources,
+      userVault,
+      userVillage,
+    });
 
-    await userBuildings.setBuildingsData(buildingsData.address);
-    await userBuildings.setBuildingsQueue(buildingsQueue.address);
-    await userBuildings.setUserResources(userResources.address);
-    await userBuildings.setUserVillage(userVillage.address);
+    for (var i = 0; i < buildingsMock.initialBuildings.length; i++) {
+      await buildingsData.addBuilding(buildingsMock.initialBuildings[i].id,
+        buildingsMock.initialBuildings[i].name,
+        buildingsMock.initialBuildings[i].stats);
+    }
 
-    await userResources.setBuildingsQueue(buildingsQueue.address);
-    await userResources.setUserBuildings(userBuildings.address);
-    await userResources.setUserVillage(userVillage.address);
-
-    await userVault.setExperimentalToken(experimentalToken.address);
-    await userVault.setUserVillage(userVillage.address);
-
-    await userVillage.setBuildingsData(buildingsData.address);
-    await userVillage.setUserBuildings(userBuildings.address);
-    await userVillage.setUserResources(userResources.address);
-    await userVillage.setUserVault(userVault.address);
-
-    await buildingsData.addBuilding(buildingsMock.initialBuildings[0].id,
-      buildingsMock.initialBuildings[0].name,
-      buildingsMock.initialBuildings[0].stats);
-    await buildingsData.addBuilding(buildingsMock.initialBuildings[1].id,
-      buildingsMock.initialBuildings[1].name,
-      buildingsMock.initialBuildings[1].stats);
-    await buildingsData.addBuilding(buildingsMock.initialBuildings[2].id,
-      buildingsMock.initialBuildings[2].name,
-      buildingsMock.initialBuildings[2].stats);
-    await buildingsData.addBuilding(buildingsMock.initialBuildings[3].id,
-      buildingsMock.initialBuildings[3].name,
-      buildingsMock.initialBuildings[3].stats);
-    await buildingsData.addBuilding(buildingsMock.initialBuildings[4].id,
-      buildingsMock.initialBuildings[4].name,
-      buildingsMock.initialBuildings[4].stats);
-    await buildingsData.addBuilding(buildingsMock.initialBuildings[5].id,
-      buildingsMock.initialBuildings[5].name,
-      buildingsMock.initialBuildings[5].stats);
-    await buildingsData.addBuilding(buildingsMock.initialBuildings[6].id,
-      buildingsMock.initialBuildings[6].name,
-      buildingsMock.initialBuildings[6].stats);
-    await buildingsData.addBuilding(buildingsMock.initialBuildings[7].id,
-      buildingsMock.initialBuildings[7].name,
-      buildingsMock.initialBuildings[7].stats);
-    await buildingsData.addBuilding(buildingsMock.initialBuildings[8].id,
-      buildingsMock.initialBuildings[8].name,
-      buildingsMock.initialBuildings[8].stats);
-    await buildingsData.addBuilding(buildingsMock.initialBuildings[9].id,
-      buildingsMock.initialBuildings[9].name,
-      buildingsMock.initialBuildings[9].stats);
-    await buildingsData.addBuilding(buildingsMock.initialBuildings[10].id,
-      buildingsMock.initialBuildings[10].name,
-      buildingsMock.initialBuildings[10].stats);
-    await buildingsData.addBuilding(buildingsMock.initialBuildings[11].id,
-      buildingsMock.initialBuildings[11].name,
-      buildingsMock.initialBuildings[11].stats);
-    await buildingsData.addBuilding(buildingsMock.initialBuildings[12].id,
-      buildingsMock.initialBuildings[12].name,
-      buildingsMock.initialBuildings[12].stats);
-    await buildingsData.addBuilding(buildingsMock.initialBuildings[13].id,
-      buildingsMock.initialBuildings[13].name,
-      buildingsMock.initialBuildings[13].stats);
     await userVillage.setInitialBuildings(initialUserBuildings);
   })
 
@@ -106,7 +63,7 @@ contract('Buildings Queue Test', (accounts) => {
   })
 
   it('Set Contracts', async () => {
-    assert.isTrue(await setContracts(buildingsQueue));
+    assert.isTrue(await setContractsTest(buildingsQueue));
   })
 
   it('Add building to queue with no resources', async () => {
@@ -546,6 +503,82 @@ contract('Buildings Queue Test', (accounts) => {
 
       assert.equal(init_gold_capacity.toNumber(), mid_gold_capacity.toNumber());
       assert.equal(init_gold_capacity.toNumber(), final_gold_capacity.toNumber());
+      })
+
+    it('Upgrade building with requirement city center lvl 2 when city center lvl 3 is in queue', async () => {
+      let cityCenter = buildingsMock.initialBuildings[0];
+      let cityCenterLvl2 = buildingsMock.initialBuildings[3];
+      let cityCenterLvl3 = buildingsMock.initialBuildings[14];
+
+      let crystalMine = buildingsMock.initialBuildings[2];
+      let crystalMineLvl2 = buildingsMock.initialBuildings[5];
+
+      await buildingsQueue.upgradeBuilding(cityCenter.id, cityCenterLvl2.id, 0);
+      await assetsRequirements.setAssetRequirements(crystalMineLvl2.id, [cityCenterLvl2.id]);
+
+      await buildingsQueue.upgradeBuilding(cityCenterLvl2.id, cityCenterLvl3.id, 0);
+
+      await buildingsQueue.upgradeBuilding(crystalMine.id, crystalMineLvl2.id, 2);
+    })
+
+    context('Set buildings requirements period', async () => {
+      beforeEach(async () => {
+        let goldFactory = buildingsMock.initialBuildings[7];
+        let cityCenterLvl2 = buildingsMock.initialBuildings[3];
+        let goldStorage = buildingsMock.initialBuildings[11];
+        await assetsRequirements.setAssetRequirements(goldFactory.id, goldFactory.requirements);
+        await assetsRequirements.setAssetRequirements(cityCenterLvl2.id, cityCenterLvl2.requirements);
+        await assetsRequirements.setAssetRequirements(goldStorage.id, goldStorage.requirements);
+      })
+
+      it('Create gold factory with requirements', async () => {
+        let goldFactory = buildingsMock.initialBuildings[7];
+        let req = await assetsRequirements.getRequirements(goldFactory.id);
+
+        assert.equal(req.toString(), goldFactory.requirements.toString());
+
+        await buildingsQueue.addNewBuildingToQueue(goldFactory.id);
+
+        let buildingsInQueue = await buildingsQueue.getBuildingsInQueue(Alice);
+
+        assert.equal(buildingsInQueue.toString(), [goldFactory.id].toString());
+      })
+
+      it('Upgrading building with requirements', async () => {
+        let goldMineLvl2 = buildingsMock.initialBuildings[4];
+        let crystalMineLvl2 = buildingsMock.initialBuildings[5];
+        let cityCenterLvl2 = buildingsMock.initialBuildings[3];
+
+        let req = await assetsRequirements.getRequirements(cityCenterLvl2.id);
+
+        await buildingsQueue.upgradeBuilding(goldMineLvl2.id - 1000, goldMineLvl2.id, 1);
+        await buildingsQueue.upgradeBuilding(crystalMineLvl2.id - 1000, crystalMineLvl2.id, 2);
+        let blocksAmount = goldMineLvl2.stats[stat.blocks] + crystalMineLvl2.stats[stat.blocks] + 1;
+
+        for (var i = 0; i < blocksAmount; i++) {
+          await web3.currentProvider.send({jsonrpc: "2.0", method: "evm_mine", params: [], id: 0});
+        }
+
+        await buildingsQueue.upgradeBuilding(cityCenterLvl2.id -1000, cityCenterLvl2.id, 0);
+
+      })
+
+      it('Trying to create new building without needed requirements', async () => {
+        let goldStorage = buildingsMock.initialBuildings[11];
+
+        return assertRevert(async () => {
+            await buildingsQueue.addNewBuildingToQueue(goldStorage.id);
+        })
+      })
+
+      it('Trying to upgrade building without needed requirements', async () => {
+        let cityCenter = buildingsMock.initialBuildings[0];
+        let cityCenterLvl2 = buildingsMock.initialBuildings[3];
+
+        return assertRevert(async () => {
+          await buildingsQueue.upgradeBuilding(cityCenter.id, cityCenterLvl2.id, 0);
+        })
+      })
     })
 
     context('Buildings added to construction queue period', async () => {

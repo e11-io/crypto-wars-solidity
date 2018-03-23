@@ -55,6 +55,10 @@ export class BuildingsComponent extends AbstractContainerComponent {
   }
 
   itemActionBuild(building: Building) {
+    if (building.missingRequirements.length) {
+      console.error("Missing requirements to create this asset");
+      return;
+    }
     if (this.userResources[building.resource] < building.price
         || building.maxLevel
         || building.inProgress) {

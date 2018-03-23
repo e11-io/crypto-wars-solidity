@@ -16,6 +16,9 @@
   "initialBuildings": [{
     "id": 1001,
     "name": "city_center_1",
+    "requirements": [
+
+    ],
     "stats": [
       500, 50, 0,
       1000, 1000, 2, 2,
@@ -24,6 +27,9 @@
   },{
     "id": 2001,
     "name": "city_center_2",
+    "requirements": [
+
+    ],
     "stats": [
       1000, 50, 0,
       2000, 2000, 2, 2,
@@ -32,6 +38,9 @@
   },{
     "id": 3001,
     "name": "city_center_3",
+    "requirements": [
+
+    ],
     "stats": [
       1500, 50, 0,
       3000, 3000, 2, 2,
@@ -40,6 +49,9 @@
   },{
     "id": 1002,
     "name": "gold_mine_1",
+    "requirements": [
+
+    ],
     "stats": [
       500, 20, 0,
       400, 0, 10, 0,
@@ -48,6 +60,9 @@
   },{
     "id": 2002,
     "name": "gold_mine_2",
+    "requirements": [
+
+    ],
     "stats": [
       500, 20, 0,
       800, 0, 21, 0,
@@ -56,6 +71,9 @@
   },{
     "id": 3002,
     "name": "gold_mine_3",
+    "requirements": [
+
+    ],
     "stats": [
       500, 20, 0,
       1200, 0, 44, 0,
@@ -64,6 +82,9 @@
   },{
     "id": 4002,
     "name": "gold_mine_4",
+    "requirements": [
+
+    ],
     "stats": [
       500, 20, 0,
       1600, 0, 93, 0,
@@ -72,6 +93,9 @@
   },{
     "id": 5002,
     "name": "gold_mine_5",
+    "requirements": [
+
+    ],
     "stats": [
       500, 20, 0,
       2000, 0, 194, 0,
@@ -80,6 +104,9 @@
   },{
     "id": 1003,
     "name": "crystal_mine_1",
+    "requirements": [
+
+    ],
     "stats": [
       500, 20, 0,
       0, 400, 0, 10,
@@ -88,6 +115,9 @@
   },{
     "id": 2003,
     "name": "crystal_mine_2",
+    "requirements": [
+
+    ],
     "stats": [
       500, 20, 0,
       0, 800, 0, 21,
@@ -96,6 +126,9 @@
   },{
     "id": 3003,
     "name": "crystal_mine_3",
+    "requirements": [
+
+    ],
     "stats": [
       500, 20, 0,
       0, 1200, 0, 44,
@@ -104,6 +137,9 @@
   },{
     "id": 4003,
     "name": "crystal_mine_4",
+    "requirements": [
+
+    ],
     "stats": [
       500, 20, 0,
       0, 1600, 0, 93,
@@ -112,6 +148,9 @@
   },{
     "id": 5003,
     "name": "crystal_mine_5",
+    "requirements": [
+
+    ],
     "stats": [
       500, 20, 0,
       0, 2000, 0, 194,
@@ -120,6 +159,9 @@
   },{
     "id": 1004,
     "name": "portal_1",
+    "requirements": [
+
+    ],
     "stats": [
       2000, 50, 0,
       0, 0, 0, 0,
@@ -128,6 +170,9 @@
   },{
     "id": 2004,
     "name": "portal_2",
+    "requirements": [
+
+    ],
     "stats": [
       2000, 50, 0,
       0, 0, 0, 0,
@@ -136,6 +181,9 @@
   },{
     "id": 3004,
     "name": "portal_3",
+    "requirements": [
+
+    ],
     "stats": [
       2000, 50, 0,
       0, 0, 0, 0,
@@ -144,6 +192,9 @@
   },{
     "id": 1005,
     "name": "gold_factory_1",
+    "requirements": [
+      2001, 4002
+    ],
     "stats": [
       2000, 50, 0,
       0, 0, 14, 0,
@@ -152,6 +203,9 @@
   },{
     "id": 2005,
     "name": "gold_factory_2",
+    "requirements": [
+
+    ],
     "stats": [
       2000, 50, 0,
       0, 0, 29, 0,
@@ -160,6 +214,9 @@
   },{
     "id": 3005,
     "name": "gold_factory_3",
+    "requirements": [
+
+    ],
     "stats": [
       2000, 50, 0,
       0, 0, 62, 0,
@@ -168,6 +225,9 @@
   },{
     "id": 4005,
     "name": "gold_factory_4",
+    "requirements": [
+
+    ],
     "stats": [
       2000, 50, 0,
       0, 0, 130, 0,
@@ -176,6 +236,9 @@
   },{
     "id": 5005,
     "name": "gold_factory_5",
+    "requirements": [
+
+    ],
     "stats": [
       2000, 50, 0,
       0, 0, 272, 0,
@@ -184,6 +247,9 @@
   },{
     "id": 1006,
     "name": "crystal_factory_1",
+    "requirements": [
+      2001, 4003
+    ],
     "stats": [
       2000, 50, 0,
       0, 0, 0, 14,
@@ -192,6 +258,9 @@
   },{
     "id": 2006,
     "name": "crystal_factory_2",
+    "requirements": [
+
+    ],
     "stats": [
       2000, 50, 0,
       0, 0, 0, 29,
@@ -200,6 +269,9 @@
   },{
     "id": 3006,
     "name": "crystal_factory_3",
+    "requirements": [
+
+    ],
     "stats": [
       2000, 50, 0,
       0, 0, 0, 62,
@@ -208,6 +280,9 @@
   },{
     "id": 4006,
     "name": "crystal_factory_4",
+    "requirements": [
+
+    ],
     "stats": [
       2000, 50, 0,
       0, 0, 0, 130,
@@ -216,6 +291,9 @@
   },{
     "id": 5006,
     "name": "crystal_factory_5",
+    "requirements": [
+
+    ],
     "stats": [
       2000, 50, 0,
       0, 0, 0, 272,
@@ -224,6 +302,9 @@
   },{
     "id": 1007,
     "name": "gold_storage_1",
+    "requirements": [
+
+    ],
     "stats": [
       2000, 50, 0,
       500, 0, 0, 0,
@@ -232,6 +313,9 @@
   },{
     "id": 2007,
     "name": "gold_storage_2",
+    "requirements": [
+
+    ],
     "stats": [
       2000, 50, 0,
       1000, 0, 0, 0,
@@ -240,6 +324,9 @@
   },{
     "id": 3007,
     "name": "gold_storage_3",
+    "requirements": [
+
+    ],
     "stats": [
       2000, 50, 0,
       1500, 0, 0, 0,
@@ -248,6 +335,9 @@
   },{
     "id": 1008,
     "name": "crystal_storage_1",
+    "requirements": [
+
+    ],
     "stats": [
       2000, 50, 0,
       0, 500, 0, 0,
@@ -256,6 +346,9 @@
   },{
     "id": 2008,
     "name": "crystal_storage_2",
+    "requirements": [
+
+    ],
     "stats": [
       2000, 50, 0,
       0, 1000, 0, 0,
@@ -264,6 +357,9 @@
   },{
     "id": 3008,
     "name": "crystal_storage_3",
+    "requirements": [
+
+    ],
     "stats": [
       2000, 50, 0,
       0, 1500, 0, 0,

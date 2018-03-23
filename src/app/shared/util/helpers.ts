@@ -1,6 +1,9 @@
 import { environment } from '../../../environments/environment';
 import { Store } from '@ngrx/store';
 
+import * as selectors from '../../app.selectors';
+import { Building } from '../../../core/buildings/building.model';
+
 export function convertBlocksToSeconds(blocks: number): number {
   return (blocks * environment.blockTime);
 }
@@ -27,4 +30,22 @@ export function getPercentBetweenBlocks(startBlock: number, endBlock: number, cu
   }
 
   return Math.round((currentBlock - startBlock) * 100 / (endBlock - startBlock));
+}
+
+export function getMissingRequirements(requirements: any, activeBuildings: Building[]) {
+  if (!requirements) {
+    return [];
+  }
+  let missingRequirements: any = [];
+  for (var i = 0; i < requirements.length; i++) {
+    let building = activeBuildings.find(build => {
+      if (build.typeId === requirements[i] % 1000) {
+        return true;
+      }
+    });
+    if (!building || building.level < (((requirements[i] - (requirements[i] % 1000)) / 1000) % 1000)) {
+      missingRequirements.push(requirements[i]);
+    }
+  }
+  return missingRequirements;
 }

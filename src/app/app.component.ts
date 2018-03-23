@@ -139,14 +139,17 @@ export class AppComponent  extends AbstractContainerComponent {
       this.store.select('userBuildingsState').map(s => s.buildings).distinctUntilChanged(),
       this.store.select('buildingsQueueState').map(s => s.buildings).distinctUntilChanged(),
       this.store.select('buildingsQueueState').map(s => s.localBuildings).distinctUntilChanged(),
-      this.store.select('web3State').map(s => s.lastBlock).distinctUntilChanged()
-    ).subscribe(data => {
+      this.store.select('web3State').map(s => s.lastBlock).distinctUntilChanged(),
+      this.store.select('assetsRequirementsState').map(s => s.requirements).distinctUntilChanged(),
+    )
+    .subscribe(data => {
       let obj = {
         buildingsData: Object.values(data[0]),
         userBuildings: data[1],
         buildingsQueue: data[2],
         localBuildings: data[3],
-        blockNumber: data[4]
+        blockNumber: data[4],
+        assetsRequirements: data[5]
       }
       if (!obj.buildingsData.length || !obj.userBuildings.length || !obj.blockNumber) {
         return;

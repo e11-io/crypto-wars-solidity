@@ -1,4 +1,5 @@
 const { assertRevert } = require('./assertThrow');
+const AssetsRequirements = artifacts.require('AssetsRequirements');
 const BuildingsData = artifacts.require('BuildingsData');
 const BuildingsQueue = artifacts.require('BuildingsQueue');
 const SimpleToken = artifacts.require('SimpleToken');
@@ -8,9 +9,10 @@ const UserVault = artifacts.require('UserVault');
 const UserVillage = artifacts.require('UserVillage');
 
 module.exports = {
-  setContracts: async (instance) => {
+  setContractsTest: async (instance) => {
     let simpleToken = await SimpleToken.new();
     let contracts = {
+      'AssetsRequirements': await AssetsRequirements.new(),
       'BuildingsData': await BuildingsData.new(),
       'BuildingsQueue': await BuildingsQueue.new(),
       'UserBuildings': await UserBuildings.new(),

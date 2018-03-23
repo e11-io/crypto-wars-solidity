@@ -10,6 +10,27 @@
     <div class="catalog-container">
       <div class="catalog-item" *ngFor="let building of availableUserBuildings; trackBy: trackByFn">
 
+        <div class="item-unavailable" *ngIf="building.missingRequirements.length">
+          <i class="e11-icon e11f-error"></i>
+          <h4 class="title">
+            <span class="name">
+              {{'DATA.buildings.' + [building.name] + '.name' | translate}} Lv. {{building.level}}
+            </span>
+            <br>
+            Unavailable
+          </h4>
+          <div class="requirements">
+            <span>
+              Requires
+              <ng-template ngFor let-requirement let-i="index" [ngForOf]="building.missingRequirements">
+                {{'DATA.buildings.' + buildingsMap[requirement].name + '.name' | translate}}
+                Lv. {{buildingsMap[requirement].level}}<!--comments cancel white space
+             --><ng-template [ngIf]="i + 1 < building.missingRequirements.length">,</ng-template>
+              </ng-template>
+            </span>
+          </div>
+        </div>
+
         <div class="hover-area">
           <div class="item-hover-info">
             <div class="item-title">

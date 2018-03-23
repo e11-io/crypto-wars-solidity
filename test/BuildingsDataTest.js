@@ -2,7 +2,7 @@ const BuildingsData = artifacts.require('BuildingsData');
 
 const { assertRevert } = require('./helpers/assertThrow');
 const { isVersioned } = require('./helpers/isVersioned');
-const { setContracts } = require('./helpers/setContracts');
+const { setContractsTest } = require('./helpers/setContractsTest');
 
 const buildingsMock = require('../mocks/buildings-test');
 const stat = buildingsMock.stats;
@@ -22,7 +22,7 @@ contract('Buildings Data Test', accounts => {
   })
 
   it('Set Contracts', async () => {
-    assert.isTrue(await setContracts(buildingsData));
+    assert.isTrue(await setContractsTest(buildingsData));
   })
 
   it('Building creation', async () => {

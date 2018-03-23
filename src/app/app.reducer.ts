@@ -5,7 +5,6 @@ import {combineReducers} from "@ngrx/store";
 import {compose} from '@ngrx/store';
 import {storeFreeze} from "ngrx-store-freeze";
 import {environment} from "../environments/environment";
-import { storeLogger } from 'ngrx-store-logger';
 
 //Reducers
 import { web3, Web3State } from '../core/web3/web3.reducer';
@@ -16,6 +15,7 @@ import { buildingsData, BuildingsDataState } from '../core/buildings-data/buildi
 import { userVillage, UserVillageState } from '../core/user-village/user-village.reducer';
 import { userBuildings, UserBuildingsState } from '../core/user-buildings/user-buildings.reducer';
 import { buildings, BuildingsState } from '../core/buildings/buildings.reducer';
+import { assetsRequirements , AssetsRequirementsState } from '../core/assets-requirements/assets-requirements.reducer';
 
 
 import {
@@ -35,6 +35,7 @@ export interface CryptoWarsState {
   userVillageState: UserVillageState,
   userBuildingsState: UserBuildingsState,
   buildingsState: BuildingsState
+  assetsRequirementsState: AssetsRequirementsState
 }
 
 export const AppReducers: ActionReducerMap<CryptoWarsState> = {
@@ -45,13 +46,9 @@ export const AppReducers: ActionReducerMap<CryptoWarsState> = {
   buildingsDataState: buildingsData,
   userVillageState: userVillage,
   userBuildingsState: userBuildings,
-  buildingsState: buildings
+  buildingsState: buildings,
+  assetsRequirementsState: assetsRequirements
 };
-
-export function logger(reducer: ActionReducer<CryptoWarsState>): any {
-  // default, no options
-  return storeLogger()(reducer);
-}
 
 /**
  * By default, @ngrx/store uses combineReducers with the reducer map to compose
@@ -59,5 +56,5 @@ export function logger(reducer: ActionReducer<CryptoWarsState>): any {
  * that will be composed to form the root meta-reducer.
  */
   export const metaReducers: MetaReducer<CryptoWarsState>[] = !environment.production
-  ? [storeFreeze, logger]
+  ? [storeFreeze]
   : [];

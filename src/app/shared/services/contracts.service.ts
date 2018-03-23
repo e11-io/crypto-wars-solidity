@@ -5,6 +5,8 @@ import { environment } from '../../../environments/environment';
 import { Web3Service } from './web3.service';
 import getWeb3 from '../util/get-web3';
 
+import AssetsRequirementsContract from '../../../assets/contracts/AssetsRequirements.json';
+import AssetsRequirementsContractLocal from '../../../../build/contracts/AssetsRequirements.json';
 import BuildingsDataContract from '../../../assets/contracts/BuildingsData.json';
 import BuildingsDataContractLocal from '../../../../build/contracts/BuildingsData.json';
 import BuildingsQueueContract from '../../../assets/contracts/BuildingsQueue.json';
@@ -27,6 +29,8 @@ export class ContractsService {
   public initialized = false;
   public error = '';
 
+  public AssetsRequirements: any;
+  public AssetsRequirementsInstance: any;
   public BuildingsData: any;
   public BuildingsDataInstance: any;
   public BuildingsQueue: any;
@@ -65,6 +69,7 @@ export class ContractsService {
     let error = null;
     try {
       const contracts = environment.remoteContracts ? [
+        AssetsRequirementsContract,
         BuildingsDataContract,
         BuildingsQueueContract,
         ExperimentalTokenContract,
@@ -73,6 +78,7 @@ export class ContractsService {
         UserVaultContract,
         UserVillageContract,
       ] : [
+        AssetsRequirementsContractLocal,
         BuildingsDataContractLocal,
         BuildingsQueueContractLocal,
         ExperimentalTokenContractLocal,
@@ -81,6 +87,7 @@ export class ContractsService {
         UserVaultContractLocal,
         UserVillageContractLocal,
       ];
+
       for (let i = 0; i < contracts.length; i++) {
         const name = contracts[i].contractName;
         await this.web3Service.artifactsToContract(contracts[i], environment.contracts[name])

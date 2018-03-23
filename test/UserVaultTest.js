@@ -6,7 +6,7 @@ const UserVillage = artifacts.require('UserVillage');
 
 const { assertRevert } = require('./helpers/assertThrow')
 const { isVersioned } = require('./helpers/isVersioned');
-const { setContracts } = require('./helpers/setContracts');
+const { setContractsTest } = require('./helpers/setContractsTest');
 
 contract('User Vault Test', accounts => {
   let experimentalToken, userVault, userVillage, simpleToken, userResources;
@@ -33,7 +33,7 @@ contract('User Vault Test', accounts => {
   })
 
   it('Set Contracts', async () => {
-    assert.isTrue(await setContracts(userVault));
+    assert.isTrue(await setContractsTest(userVault));
   })
 
   it('Reclaim token != experimentalToken', async () => {

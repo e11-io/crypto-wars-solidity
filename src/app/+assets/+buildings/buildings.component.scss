@@ -14,5 +14,10 @@
 
   .buildings-catalog {
     margin-top: 2rem;
+    .item-unavailable {
+      .title .name {
+        font-weight: bold;
+      }
+    }
   }
 }

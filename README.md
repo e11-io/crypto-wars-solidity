@@ -72,12 +72,12 @@ Please check the [documentation](https://e11-io.github.io/crypto-wars-solidity/)
   ```shell
   ./script/full-node.sh # this will create a local full node of the e11 Proof of Authority chain (311)
   ```
-  
+
   - Console 2:
   ```shell
   npm run start:poa # this will start the angular server with the PoA environment.
   ```
-  
+
   Lastly open http://localhost:4200 and on Metamask connect to http://localhost:8311
 
 
@@ -92,6 +92,8 @@ Please check the [documentation](https://e11-io.github.io/crypto-wars-solidity/)
   - `truffle migrate --network=e11` # Console 3
 
   - Update contract addresses on `src/environments/environment.poa`
+
+  - Update ExperimentalToken address on `scripts/send-testnet-tokens.js`
 
   - Copy `build/contracts` folder and paste it on `src/assets/contracts`
 

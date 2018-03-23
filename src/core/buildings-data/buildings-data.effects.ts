@@ -11,9 +11,6 @@ import { Web3Service } from '../../app/shared/services/web3.service';
 import { BuildingsDataService } from '../../app/shared/services/buildings-data.service';
 
 import { BuildingsDataActions } from './buildings-data.actions';
-import { BuildingsQueueActions } from '../buildings-queue/buildings-queue.actions';
-import { BuildingsActions } from '../buildings/buildings.actions';
-import { Web3Actions } from '../web3/web3.actions';
 
 
 @Injectable()

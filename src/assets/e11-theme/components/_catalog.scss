@@ -117,6 +117,44 @@
         z-index: 1;
       }
     }
+
+    .item-unavailable {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: $color-light-alt;
+      border: 1px solid $color-border;
+      opacity: 0.95;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      color: $color-text-grey;
+      z-index: 2;
+      padding: 2rem 4rem;
+      overflow: hidden;
+      overflow-y: auto;
+
+      .e11-icon {
+        font-size: 7rem;
+        margin-bottom: .5rem;
+        flex-shrink: 0;
+      }
+      .title {
+        margin: 2rem 0;
+      }
+      .title, .requirements {
+        font-size: 1.4rem;
+        line-height: 1.4rem;
+        font-weight: bold;
+        text-align: center;
+      }
+      strong {
+        text-decoration: underline;
+      }
+    }
   }
 
 }

@@ -255,10 +255,20 @@ contract UserBuildings is NoOwner, Versioned {
   }
 
   /*
+   * @title Get User Buildings Length
+   * @dev Function to get the buildings length of the specified address.
+   * @param _user The address to query the buildings length of. (address)
+   * @return A uint representing the array length of buildings owned by the user.
+   */
+  function getUserBuildingsLength(address _user) external view returns (uint length) {
+    return userBuildings[_user].length;
+  }
+
+  /*
    * @title Get User Buildings
    * @dev Function to get the buildings of the specified address.
    * @param _user The address to query the buildings of. (address)
-   * @return A uint[] representing the array of buildings owned by the passed address.
+   * @return A uint[] representing the array of buildings ids owned by the user.
    */
   function getUserBuildings(address _user) external view returns (uint[]) {
     uint length = userBuildings[_user].length;
@@ -271,10 +281,10 @@ contract UserBuildings is NoOwner, Versioned {
 
   /*
    * @title Get Building Id and Status
-   * @dev Function to get id and status of a building. Only used for for testing.
+   * @dev Function to get the id and status of a building.
    * @param _user The address to query the buildings of. (address)
-   * @param _index The index of the building. (address)
-   * @return A a uint representing the id and a bool representing if the building is active or not.
+   * @param _index The index of the building. (uint)
+   * @return A uint representing the id and a bool representing if the building is active or not.
    */
   function getUserBuildingIdAndStatus(address _user, uint _index) external view returns (uint id, bool active) {
     return (userBuildings[_user][_index].id, userBuildings[_user][_index].active);

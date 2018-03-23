@@ -63,22 +63,22 @@
   ],
   "bytecode": "0x6060604052336000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550610509806100536000396000f300606060405260043610610057576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806317ffc3201461005c5780638da5cb5b14610095578063f2fde38b146100ea575b600080fd5b341561006757600080fd5b610093600480803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610123565b005b34156100a057600080fd5b6100a8610290565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b34156100f557600080fd5b610121600480803573ffffffffffffffffffffffffffffffffffffffff169060200190919050506102b5565b005b60008060009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614151561018057600080fd5b8173ffffffffffffffffffffffffffffffffffffffff166370a08231306000604051602001526040518263ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001915050602060405180830381600087803b151561022357600080fd5b6102c65a03f1151561023457600080fd5b50505060405180519050905061028c6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff16828473ffffffffffffffffffffffffffffffffffffffff1661040a9092919063ffffffff16565b5050565b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614151561031057600080fd5b600073ffffffffffffffffffffffffffffffffffffffff168173ffffffffffffffffffffffffffffffffffffffff161415151561034c57600080fd5b8073ffffffffffffffffffffffffffffffffffffffff166000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff167f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e060405160405180910390a3806000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff16021790555050565b8273ffffffffffffffffffffffffffffffffffffffff1663a9059cbb83836000604051602001526040518363ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200182815260200192505050602060405180830381600087803b15156104b557600080fd5b6102c65a03f115156104c657600080fd5b5050506040518051905015156104d857fe5b5050505600a165627a7a72305820684435bfe257fa0f52e69350803d4222116166f54aab1f074ac172ae21207cfa0029",
   "deployedBytecode": "0x606060405260043610610057576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806317ffc3201461005c5780638da5cb5b14610095578063f2fde38b146100ea575b600080fd5b341561006757600080fd5b610093600480803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610123565b005b34156100a057600080fd5b6100a8610290565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b34156100f557600080fd5b610121600480803573ffffffffffffffffffffffffffffffffffffffff169060200190919050506102b5565b005b60008060009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614151561018057600080fd5b8173ffffffffffffffffffffffffffffffffffffffff166370a08231306000604051602001526040518263ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001915050602060405180830381600087803b151561022357600080fd5b6102c65a03f1151561023457600080fd5b50505060405180519050905061028c6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff16828473ffffffffffffffffffffffffffffffffffffffff1661040a9092919063ffffffff16565b5050565b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614151561031057600080fd5b600073ffffffffffffffffffffffffffffffffffffffff168173ffffffffffffffffffffffffffffffffffffffff161415151561034c57600080fd5b8073ffffffffffffffffffffffffffffffffffffffff166000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff167f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e060405160405180910390a3806000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff16021790555050565b8273ffffffffffffffffffffffffffffffffffffffff1663a9059cbb83836000604051602001526040518363ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200182815260200192505050602060405180830381600087803b15156104b557600080fd5b6102c65a03f115156104c657600080fd5b5050506040518051905015156104d857fe5b5050505600a165627a7a72305820684435bfe257fa0f52e69350803d4222116166f54aab1f074ac172ae21207cfa0029",
-  "sourceMap": "384:353:11:-;;;509:10:16;501:5;;:18;;;;;;;;;;;;;;;;;;384:353:11;;;;;;",
-  "deployedSourceMap": "384:353:11:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;585:149;;;;;;;;;;;;;;;;;;;;;;;;;;;;238:20:16;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;834:169;;;;;;;;;;;;;;;;;;;;;;;;;;;;585:149:11;650:15;654:5:16;;;;;;;;;;;640:19;;:10;:19;;;632:28;;;;;;;;668:5:11;:15;;;684:4;668:21;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;650:39;;695:34;714:5;;;;;;;;;;;721:7;695:5;:18;;;;:34;;;;;:::i;:::-;585:149;;:::o;238:20:16:-;;;;;;;;;;;;;:::o;834:169::-;654:5;;;;;;;;;;;640:19;;:10;:19;;;632:28;;;;;;;;930:1;910:22;;:8;:22;;;;902:31;;;;;;;;967:8;939:37;;960:5;;;;;;;;;;;939:37;;;;;;;;;;;;990:8;982:5;;:16;;;;;;;;;;;;;;;;;;834:169;:::o;367:120:20:-;456:5;:14;;;471:2;475:5;456:25;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;449:33;;;;;;367:120;;;:::o",
+  "sourceMap": "384:353:12:-;;;509:10:17;501:5;;:18;;;;;;;;;;;;;;;;;;384:353:12;;;;;;",
+  "deployedSourceMap": "384:353:12:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;585:149;;;;;;;;;;;;;;;;;;;;;;;;;;;;238:20:17;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;834:169;;;;;;;;;;;;;;;;;;;;;;;;;;;;585:149:12;650:15;654:5:17;;;;;;;;;;;640:19;;:10;:19;;;632:28;;;;;;;;668:5:12;:15;;;684:4;668:21;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;650:39;;695:34;714:5;;;;;;;;;;;721:7;695:5;:18;;;;:34;;;;;:::i;:::-;585:149;;:::o;238:20:17:-;;;;;;;;;;;;;:::o;834:169::-;654:5;;;;;;;;;;;640:19;;:10;:19;;;632:28;;;;;;;;930:1;910:22;;:8;:22;;;;902:31;;;;;;;;967:8;939:37;;960:5;;;;;;;;;;;939:37;;;;;;;;;;;;990:8;982:5;;:16;;;;;;;;;;;;;;;;;;834:169;:::o;367:120:21:-;456:5;:14;;;471:2;475:5;456:25;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;449:33;;;;;;367:120;;;:::o",
   "source": "pragma solidity ^0.4.18;\n\nimport \"./Ownable.sol\";\nimport \"../token/ERC20Basic.sol\";\nimport \"../token/SafeERC20.sol\";\n\n/**\n * @title Contracts that should be able to recover tokens\n * @author SylTi\n * @dev This allow a contract to recover any ERC20 token received in a contract by transferring the balance to the contract owner.\n * This will prevent any accidental loss of tokens.\n */\ncontract CanReclaimToken is Ownable {\n  using SafeERC20 for ERC20Basic;\n\n  /**\n   * @dev Reclaim all ERC20Basic compatible tokens\n   * @param token ERC20Basic The address of the token contract\n   */\n  function reclaimToken(ERC20Basic token) external onlyOwner {\n    uint256 balance = token.balanceOf(this);\n    token.safeTransfer(owner, balance);\n  }\n\n}\n",
   "sourcePath": "zeppelin-solidity/contracts/ownership/CanReclaimToken.sol",
   "ast": {
     "absolutePath": "zeppelin-solidity/contracts/ownership/CanReclaimToken.sol",
     "exportedSymbols": {
       "CanReclaimToken": [
-        5469
+        6473
       ]
     },
-    "id": 5470,
+    "id": 6474,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 5438,
+        "id": 6442,
         "literals": [
           "solidity",
           "^",
@@ -86,38 +86,38 @@
           ".18"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:24:11"
+        "src": "0:24:12"
       },
       {
         "absolutePath": "zeppelin-solidity/contracts/ownership/Ownable.sol",
         "file": "./Ownable.sol",
-        "id": 5439,
+        "id": 6443,
         "nodeType": "ImportDirective",
-        "scope": 5470,
-        "sourceUnit": 5624,
-        "src": "26:23:11",
+        "scope": 6474,
+        "sourceUnit": 6628,
+        "src": "26:23:12",
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
         "absolutePath": "zeppelin-solidity/contracts/token/ERC20Basic.sol",
         "file": "../token/ERC20Basic.sol",
-        "id": 5440,
+        "id": 6444,
         "nodeType": "ImportDirective",
-        "scope": 5470,
-        "sourceUnit": 5782,
-        "src": "50:33:11",
+        "scope": 6474,
+        "sourceUnit": 6786,
+        "src": "50:33:12",
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
         "absolutePath": "zeppelin-solidity/contracts/token/SafeERC20.sol",
         "file": "../token/SafeERC20.sol",
-        "id": 5441,
+        "id": 6445,
         "nodeType": "ImportDirective",
-        "scope": 5470,
-        "sourceUnit": 5844,
-        "src": "84:32:11",
+        "scope": 6474,
+        "sourceUnit": 6848,
+        "src": "84:32:12",
         "symbolAliases": [],
         "unitAlias": ""
       },
@@ -127,82 +127,82 @@
             "arguments": [],
             "baseName": {
               "contractScope": null,
-              "id": 5442,
+              "id": 6446,
               "name": "Ownable",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 5623,
-              "src": "412:7:11",
+              "referencedDeclaration": 6627,
+              "src": "412:7:12",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_Ownable_$5623",
+                "typeIdentifier": "t_contract$_Ownable_$6627",
                 "typeString": "contract Ownable"
               }
             },
-            "id": 5443,
+            "id": 6447,
             "nodeType": "InheritanceSpecifier",
-            "src": "412:7:11"
+            "src": "412:7:12"
           }
         ],
         "contractDependencies": [
-          5623
+          6627
         ],
         "contractKind": "contract",
         "documentation": "@title Contracts that should be able to recover tokens\n@author SylTi\n@dev This allow a contract to recover any ERC20 token received in a contract by transferring the balance to the contract owner.\nThis will prevent any accidental loss of tokens.",
         "fullyImplemented": true,
-        "id": 5469,
+        "id": 6473,
         "linearizedBaseContracts": [
-          5469,
-          5623
+          6473,
+          6627
         ],
         "name": "CanReclaimToken",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
-            "id": 5446,
+            "id": 6450,
             "libraryName": {
               "contractScope": null,
-              "id": 5444,
+              "id": 6448,
               "name": "SafeERC20",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 5843,
-              "src": "430:9:11",
+              "referencedDeclaration": 6847,
+              "src": "430:9:12",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_SafeERC20_$5843",
+                "typeIdentifier": "t_contract$_SafeERC20_$6847",
                 "typeString": "library SafeERC20"
               }
             },
             "nodeType": "UsingForDirective",
-            "src": "424:31:11",
+            "src": "424:31:12",
             "typeName": {
               "contractScope": null,
-              "id": 5445,
+              "id": 6449,
               "name": "ERC20Basic",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 5781,
-              "src": "444:10:11",
+              "referencedDeclaration": 6785,
+              "src": "444:10:12",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_ERC20Basic_$5781",
+                "typeIdentifier": "t_contract$_ERC20Basic_$6785",
                 "typeString": "contract ERC20Basic"
               }
             }
           },
           {
             "body": {
-              "id": 5467,
+              "id": 6471,
               "nodeType": "Block",
-              "src": "644:90:11",
+              "src": "644:90:12",
               "statements": [
                 {
                   "assignments": [
-                    5454
+                    6458
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 5454,
+                      "id": 6458,
                       "name": "balance",
                       "nodeType": "VariableDeclaration",
-                      "scope": 5468,
-                      "src": "650:15:11",
+                      "scope": 6472,
+                      "src": "650:15:12",
                       "stateVariable": false,
                       "storageLocation": "default",
                       "typeDescriptions": {
@@ -210,10 +210,10 @@
                         "typeString": "uint256"
                       },
                       "typeName": {
-                        "id": 5453,
+                        "id": 6457,
                         "name": "uint256",
                         "nodeType": "ElementaryTypeName",
-                        "src": "650:7:11",
+                        "src": "650:7:12",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
@@ -223,20 +223,20 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 5459,
+                  "id": 6463,
                   "initialValue": {
                     "argumentTypes": null,
                     "arguments": [
                       {
                         "argumentTypes": null,
-                        "id": 5457,
+                        "id": 6461,
                         "name": "this",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 6122,
-                        "src": "684:4:11",
+                        "referencedDeclaration": 7126,
+                        "src": "684:4:12",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_CanReclaimToken_$5469",
+                          "typeIdentifier": "t_contract$_CanReclaimToken_$6473",
                           "typeString": "contract CanReclaimToken"
                         }
                       }
@@ -244,38 +244,38 @@
                     "expression": {
                       "argumentTypes": [
                         {
-                          "typeIdentifier": "t_contract$_CanReclaimToken_$5469",
+                          "typeIdentifier": "t_contract$_CanReclaimToken_$6473",
                           "typeString": "contract CanReclaimToken"
                         }
                       ],
                       "expression": {
                         "argumentTypes": null,
-                        "id": 5455,
+                        "id": 6459,
                         "name": "token",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 5448,
-                        "src": "668:5:11",
+                        "referencedDeclaration": 6452,
+                        "src": "668:5:12",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_ERC20Basic_$5781",
+                          "typeIdentifier": "t_contract$_ERC20Basic_$6785",
                           "typeString": "contract ERC20Basic"
                         }
                       },
-                      "id": 5456,
+                      "id": 6460,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
                       "lValueRequested": false,
                       "memberName": "balanceOf",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 5763,
-                      "src": "668:15:11",
+                      "referencedDeclaration": 6767,
+                      "src": "668:15:12",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_external_view$_t_address_$returns$_t_uint256_$",
                         "typeString": "function (address) view external returns (uint256)"
                       }
                     },
-                    "id": 5458,
+                    "id": 6462,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -283,14 +283,14 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "668:21:11",
+                    "src": "668:21:12",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
                   "nodeType": "VariableDeclarationStatement",
-                  "src": "650:39:11"
+                  "src": "650:39:12"
                 },
                 {
                   "expression": {
@@ -298,12 +298,12 @@
                     "arguments": [
                       {
                         "argumentTypes": null,
-                        "id": 5463,
+                        "id": 6467,
                         "name": "owner",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 5571,
-                        "src": "714:5:11",
+                        "referencedDeclaration": 6575,
+                        "src": "714:5:12",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
                           "typeString": "address"
@@ -311,12 +311,12 @@
                       },
                       {
                         "argumentTypes": null,
-                        "id": 5464,
+                        "id": 6468,
                         "name": "balance",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 5454,
-                        "src": "721:7:11",
+                        "referencedDeclaration": 6458,
+                        "src": "721:7:12",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
@@ -336,32 +336,32 @@
                       ],
                       "expression": {
                         "argumentTypes": null,
-                        "id": 5460,
+                        "id": 6464,
                         "name": "token",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 5448,
-                        "src": "695:5:11",
+                        "referencedDeclaration": 6452,
+                        "src": "695:5:12",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_ERC20Basic_$5781",
+                          "typeIdentifier": "t_contract$_ERC20Basic_$6785",
                           "typeString": "contract ERC20Basic"
                         }
                       },
-                      "id": 5462,
+                      "id": 6466,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
                       "lValueRequested": false,
                       "memberName": "safeTransfer",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 5803,
-                      "src": "695:18:11",
+                      "referencedDeclaration": 6807,
+                      "src": "695:18:12",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_function_internal_nonpayable$_t_contract$_ERC20Basic_$5781_$_t_address_$_t_uint256_$returns$__$bound_to$_t_contract$_ERC20Basic_$5781_$",
+                        "typeIdentifier": "t_function_internal_nonpayable$_t_contract$_ERC20Basic_$6785_$_t_address_$_t_uint256_$returns$__$bound_to$_t_contract$_ERC20Basic_$6785_$",
                         "typeString": "function (contract ERC20Basic,address,uint256)"
                       }
                     },
-                    "id": 5465,
+                    "id": 6469,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -369,71 +369,71 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "695:34:11",
+                    "src": "695:34:12",
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 5466,
+                  "id": 6470,
                   "nodeType": "ExpressionStatement",
-                  "src": "695:34:11"
+                  "src": "695:34:12"
                 }
               ]
             },
-            "id": 5468,
+            "id": 6472,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": false,
             "modifiers": [
               {
                 "arguments": [],
-                "id": 5451,
+                "id": 6455,
                 "modifierName": {
                   "argumentTypes": null,
-                  "id": 5450,
+                  "id": 6454,
                   "name": "onlyOwner",
                   "nodeType": "Identifier",
                   "overloadedDeclarations": [],
-                  "referencedDeclaration": 5597,
-                  "src": "634:9:11",
+                  "referencedDeclaration": 6601,
+                  "src": "634:9:12",
                   "typeDescriptions": {
                     "typeIdentifier": "t_modifier$__$",
                     "typeString": "modifier ()"
                   }
                 },
                 "nodeType": "ModifierInvocation",
-                "src": "634:9:11"
+                "src": "634:9:12"
               }
             ],
             "name": "reclaimToken",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5449,
+              "id": 6453,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5448,
+                  "id": 6452,
                   "name": "token",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5468,
-                  "src": "607:16:11",
+                  "scope": 6472,
+                  "src": "607:16:12",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_ERC20Basic_$5781",
+                    "typeIdentifier": "t_contract$_ERC20Basic_$6785",
                     "typeString": "contract ERC20Basic"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 5447,
+                    "id": 6451,
                     "name": "ERC20Basic",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 5781,
-                    "src": "607:10:11",
+                    "referencedDeclaration": 6785,
+                    "src": "607:10:12",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_ERC20Basic_$5781",
+                      "typeIdentifier": "t_contract$_ERC20Basic_$6785",
                       "typeString": "contract ERC20Basic"
                     }
                   },
@@ -441,40 +441,40 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "606:18:11"
+              "src": "606:18:12"
             },
             "payable": false,
             "returnParameters": {
-              "id": 5452,
+              "id": 6456,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "644:0:11"
+              "src": "644:0:12"
             },
-            "scope": 5469,
-            "src": "585:149:11",
+            "scope": 6473,
+            "src": "585:149:12",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 5470,
-        "src": "384:353:11"
+        "scope": 6474,
+        "src": "384:353:12"
       }
     ],
-    "src": "0:738:11"
+    "src": "0:738:12"
   },
   "legacyAST": {
     "absolutePath": "zeppelin-solidity/contracts/ownership/CanReclaimToken.sol",
     "exportedSymbols": {
       "CanReclaimToken": [
-        5469
+        6473
       ]
     },
-    "id": 5470,
+    "id": 6474,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 5438,
+        "id": 6442,
         "literals": [
           "solidity",
           "^",
@@ -482,38 +482,38 @@
           ".18"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:24:11"
+        "src": "0:24:12"
       },
       {
         "absolutePath": "zeppelin-solidity/contracts/ownership/Ownable.sol",
         "file": "./Ownable.sol",
-        "id": 5439,
+        "id": 6443,
         "nodeType": "ImportDirective",
-        "scope": 5470,
-        "sourceUnit": 5624,
-        "src": "26:23:11",
+        "scope": 6474,
+        "sourceUnit": 6628,
+        "src": "26:23:12",
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
         "absolutePath": "zeppelin-solidity/contracts/token/ERC20Basic.sol",
         "file": "../token/ERC20Basic.sol",
-        "id": 5440,
+        "id": 6444,
         "nodeType": "ImportDirective",
-        "scope": 5470,
-        "sourceUnit": 5782,
-        "src": "50:33:11",
+        "scope": 6474,
+        "sourceUnit": 6786,
+        "src": "50:33:12",
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
         "absolutePath": "zeppelin-solidity/contracts/token/SafeERC20.sol",
         "file": "../token/SafeERC20.sol",
-        "id": 5441,
+        "id": 6445,
         "nodeType": "ImportDirective",
-        "scope": 5470,
-        "sourceUnit": 5844,
-        "src": "84:32:11",
+        "scope": 6474,
+        "sourceUnit": 6848,
+        "src": "84:32:12",
         "symbolAliases": [],
         "unitAlias": ""
       },
@@ -523,82 +523,82 @@
             "arguments": [],
             "baseName": {
               "contractScope": null,
-              "id": 5442,
+              "id": 6446,
               "name": "Ownable",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 5623,
-              "src": "412:7:11",
+              "referencedDeclaration": 6627,
+              "src": "412:7:12",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_Ownable_$5623",
+                "typeIdentifier": "t_contract$_Ownable_$6627",
                 "typeString": "contract Ownable"
               }
             },
-            "id": 5443,
+            "id": 6447,
             "nodeType": "InheritanceSpecifier",
-            "src": "412:7:11"
+            "src": "412:7:12"
           }
         ],
         "contractDependencies": [
-          5623
+          6627
         ],
         "contractKind": "contract",
         "documentation": "@title Contracts that should be able to recover tokens\n@author SylTi\n@dev This allow a contract to recover any ERC20 token received in a contract by transferring the balance to the contract owner.\nThis will prevent any accidental loss of tokens.",
         "fullyImplemented": true,
-        "id": 5469,
+        "id": 6473,
         "linearizedBaseContracts": [
-          5469,
-          5623
+          6473,
+          6627
         ],
         "name": "CanReclaimToken",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
-            "id": 5446,
+            "id": 6450,
             "libraryName": {
               "contractScope": null,
-              "id": 5444,
+              "id": 6448,
               "name": "SafeERC20",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 5843,
-              "src": "430:9:11",
+              "referencedDeclaration": 6847,
+              "src": "430:9:12",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_SafeERC20_$5843",
+                "typeIdentifier": "t_contract$_SafeERC20_$6847",
                 "typeString": "library SafeERC20"
               }
             },
             "nodeType": "UsingForDirective",
-            "src": "424:31:11",
+            "src": "424:31:12",
             "typeName": {
               "contractScope": null,
-              "id": 5445,
+              "id": 6449,
               "name": "ERC20Basic",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 5781,
-              "src": "444:10:11",
+              "referencedDeclaration": 6785,
+              "src": "444:10:12",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_ERC20Basic_$5781",
+                "typeIdentifier": "t_contract$_ERC20Basic_$6785",
                 "typeString": "contract ERC20Basic"
               }
             }
           },
           {
             "body": {
-              "id": 5467,
+              "id": 6471,
               "nodeType": "Block",
-              "src": "644:90:11",
+              "src": "644:90:12",
               "statements": [
                 {
                   "assignments": [
-                    5454
+                    6458
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 5454,
+                      "id": 6458,
                       "name": "balance",
                       "nodeType": "VariableDeclaration",
-                      "scope": 5468,
-                      "src": "650:15:11",
+                      "scope": 6472,
+                      "src": "650:15:12",
                       "stateVariable": false,
                       "storageLocation": "default",
                       "typeDescriptions": {
@@ -606,10 +606,10 @@
                         "typeString": "uint256"
                       },
                       "typeName": {
-                        "id": 5453,
+                        "id": 6457,
                         "name": "uint256",
                         "nodeType": "ElementaryTypeName",
-                        "src": "650:7:11",
+                        "src": "650:7:12",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
@@ -619,20 +619,20 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 5459,
+                  "id": 6463,
                   "initialValue": {
                     "argumentTypes": null,
                     "arguments": [
                       {
                         "argumentTypes": null,
-                        "id": 5457,
+                        "id": 6461,
                         "name": "this",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 6122,
-                        "src": "684:4:11",
+                        "referencedDeclaration": 7126,
+                        "src": "684:4:12",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_CanReclaimToken_$5469",
+                          "typeIdentifier": "t_contract$_CanReclaimToken_$6473",
                           "typeString": "contract CanReclaimToken"
                         }
                       }
@@ -640,38 +640,38 @@
                     "expression": {
                       "argumentTypes": [
                         {
-                          "typeIdentifier": "t_contract$_CanReclaimToken_$5469",
+                          "typeIdentifier": "t_contract$_CanReclaimToken_$6473",
                           "typeString": "contract CanReclaimToken"
                         }
                       ],
                       "expression": {
                         "argumentTypes": null,
-                        "id": 5455,
+                        "id": 6459,
                         "name": "token",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 5448,
-                        "src": "668:5:11",
+                        "referencedDeclaration": 6452,
+                        "src": "668:5:12",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_ERC20Basic_$5781",
+                          "typeIdentifier": "t_contract$_ERC20Basic_$6785",
                           "typeString": "contract ERC20Basic"
                         }
                       },
-                      "id": 5456,
+                      "id": 6460,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
                       "lValueRequested": false,
                       "memberName": "balanceOf",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 5763,
-                      "src": "668:15:11",
+                      "referencedDeclaration": 6767,
+                      "src": "668:15:12",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_external_view$_t_address_$returns$_t_uint256_$",
                         "typeString": "function (address) view external returns (uint256)"
                       }
                     },
-                    "id": 5458,
+                    "id": 6462,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -679,14 +679,14 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "668:21:11",
+                    "src": "668:21:12",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
                   "nodeType": "VariableDeclarationStatement",
-                  "src": "650:39:11"
+                  "src": "650:39:12"
                 },
                 {
                   "expression": {
@@ -694,12 +694,12 @@
                     "arguments": [
                       {
                         "argumentTypes": null,
-                        "id": 5463,
+                        "id": 6467,
                         "name": "owner",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 5571,
-                        "src": "714:5:11",
+                        "referencedDeclaration": 6575,
+                        "src": "714:5:12",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
                           "typeString": "address"
@@ -707,12 +707,12 @@
                       },
                       {
                         "argumentTypes": null,
-                        "id": 5464,
+                        "id": 6468,
                         "name": "balance",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 5454,
-                        "src": "721:7:11",
+                        "referencedDeclaration": 6458,
+                        "src": "721:7:12",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
@@ -732,32 +732,32 @@
                       ],
                       "expression": {
                         "argumentTypes": null,
-                        "id": 5460,
+                        "id": 6464,
                         "name": "token",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 5448,
-                        "src": "695:5:11",
+                        "referencedDeclaration": 6452,
+                        "src": "695:5:12",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_ERC20Basic_$5781",
+                          "typeIdentifier": "t_contract$_ERC20Basic_$6785",
                           "typeString": "contract ERC20Basic"
                         }
                       },
-                      "id": 5462,
+                      "id": 6466,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
                       "lValueRequested": false,
                       "memberName": "safeTransfer",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 5803,
-                      "src": "695:18:11",
+                      "referencedDeclaration": 6807,
+                      "src": "695:18:12",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_function_internal_nonpayable$_t_contract$_ERC20Basic_$5781_$_t_address_$_t_uint256_$returns$__$bound_to$_t_contract$_ERC20Basic_$5781_$",
+                        "typeIdentifier": "t_function_internal_nonpayable$_t_contract$_ERC20Basic_$6785_$_t_address_$_t_uint256_$returns$__$bound_to$_t_contract$_ERC20Basic_$6785_$",
                         "typeString": "function (contract ERC20Basic,address,uint256)"
                       }
                     },
-                    "id": 5465,
+                    "id": 6469,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -765,71 +765,71 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "695:34:11",
+                    "src": "695:34:12",
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 5466,
+                  "id": 6470,
                   "nodeType": "ExpressionStatement",
-                  "src": "695:34:11"
+                  "src": "695:34:12"
                 }
               ]
             },
-            "id": 5468,
+            "id": 6472,
             "implemented": true,
             "isConstructor": false,
             "isDeclaredConst": false,
             "modifiers": [
               {
                 "arguments": [],
-                "id": 5451,
+                "id": 6455,
                 "modifierName": {
                   "argumentTypes": null,
-                  "id": 5450,
+                  "id": 6454,
                   "name": "onlyOwner",
                   "nodeType": "Identifier",
                   "overloadedDeclarations": [],
-                  "referencedDeclaration": 5597,
-                  "src": "634:9:11",
+                  "referencedDeclaration": 6601,
+                  "src": "634:9:12",
                   "typeDescriptions": {
                     "typeIdentifier": "t_modifier$__$",
                     "typeString": "modifier ()"
                   }
                 },
                 "nodeType": "ModifierInvocation",
-                "src": "634:9:11"
+                "src": "634:9:12"
               }
             ],
             "name": "reclaimToken",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5449,
+              "id": 6453,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5448,
+                  "id": 6452,
                   "name": "token",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5468,
-                  "src": "607:16:11",
+                  "scope": 6472,
+                  "src": "607:16:12",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_ERC20Basic_$5781",
+                    "typeIdentifier": "t_contract$_ERC20Basic_$6785",
                     "typeString": "contract ERC20Basic"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 5447,
+                    "id": 6451,
                     "name": "ERC20Basic",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 5781,
-                    "src": "607:10:11",
+                    "referencedDeclaration": 6785,
+                    "src": "607:10:12",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_ERC20Basic_$5781",
+                      "typeIdentifier": "t_contract$_ERC20Basic_$6785",
                       "typeString": "contract ERC20Basic"
                     }
                   },
@@ -837,27 +837,27 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "606:18:11"
+              "src": "606:18:12"
             },
             "payable": false,
             "returnParameters": {
-              "id": 5452,
+              "id": 6456,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "644:0:11"
+              "src": "644:0:12"
             },
-            "scope": 5469,
-            "src": "585:149:11",
+            "scope": 6473,
+            "src": "585:149:12",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 5470,
-        "src": "384:353:11"
+        "scope": 6474,
+        "src": "384:353:12"
       }
     ],
-    "src": "0:738:11"
+    "src": "0:738:12"
   },
   "compiler": {
     "name": "solc",
@@ -865,5 +865,5 @@
   },
   "networks": {},
   "schemaVersion": "2.0.0",
-  "updatedAt": "2018-03-15T18:43:55.753Z"
+  "updatedAt": "2018-03-21T19:10:20.541Z"
 }

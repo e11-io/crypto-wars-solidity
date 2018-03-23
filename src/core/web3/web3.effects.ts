@@ -88,9 +88,9 @@ export class Web3Effects {
         hasVillage = !!userVillageState.villageName;
       })
       if (hasVillage) {
-        this.store.dispatch(new BuildingsQueueActions.GetBuildingsQueue(activeAccount));
         this.store.dispatch(new UserBuildingsActions.GetUserBuildingsLength());
         this.store.dispatch(new UserResourcesActions.GetUserResources());
+        this.store.dispatch(new BuildingsQueueActions.GetBuildingsQueue(activeAccount));
       }
       this.store.dispatch(new UserActions.GetEthBalance(activeAccount));
       this.store.dispatch(new UserActions.GetE11Balance(activeAccount));

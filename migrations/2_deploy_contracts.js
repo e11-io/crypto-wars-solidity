@@ -1,6 +1,7 @@
 const ExperimentalToken = artifacts.require('e11-contracts/contracts/ExperimentalToken.sol');
 const SimpleToken = artifacts.require('zeppelin-solidity/contracts/examples/SimpleToken.sol');
 
+const AssetsRequirements = artifacts.require('./AssetsRequirements.sol');
 const BuildingsData = artifacts.require('./BuildingsData.sol');
 const BuildingsQueue = artifacts.require('./BuildingsQueue.sol');
 const UserBuildings = artifacts.require('./UserBuildings.sol');
@@ -18,6 +19,7 @@ const initialUserBuildings = [
 module.exports = function(deployer) {
   deployer.deploy(ExperimentalToken).then(async () => {
     // Deploy contracts
+    await deployer.deploy(AssetsRequirements);
     await deployer.deploy(BuildingsData);
     await deployer.deploy(BuildingsQueue);
     await deployer.deploy(SimpleToken);
@@ -27,6 +29,7 @@ module.exports = function(deployer) {
     await deployer.deploy(UserVillage);
 
     // Setup deployed contracts
+    let assetsRequirements = await AssetsRequirements.deployed();
     let buildingsData = await BuildingsData.deployed();
     let buildingsQueue = await BuildingsQueue.deployed();
     let userBuildings = await UserBuildings.deployed();
@@ -34,6 +37,11 @@ module.exports = function(deployer) {
     let userVault = await UserVault.deployed();
     let userVillage = await UserVillage.deployed();
 
+    assetsRequirements.setBuildingsData(BuildingsData.address);
+    assetsRequirements.setBuildingsQueue(BuildingsQueue.address);
+    assetsRequirements.setUserBuildings(UserBuildings.address);
+
+    buildingsQueue.setAssetsRequirements(AssetsRequirements.address);
     buildingsQueue.setBuildingsData(BuildingsData.address);
     buildingsQueue.setUserBuildings(UserBuildings.address);
     buildingsQueue.setUserResources(UserResources.address);
@@ -57,14 +65,22 @@ module.exports = function(deployer) {
 
     // Initialize buildings data
     for (var i = 0; i < buildingsMock.initialBuildings.length; i++) {
-      if (i == 0) {
+      if (i == 0 || i == buildingsMock.initialBuildings.length - 1) {
         await buildingsData.addBuilding(buildingsMock.initialBuildings[i].id,
           buildingsMock.initialBuildings[i].name,
           buildingsMock.initialBuildings[i].stats);
+      } else {
+        buildingsData.addBuilding(buildingsMock.initialBuildings[i].id,
+          buildingsMock.initialBuildings[i].name,
+          buildingsMock.initialBuildings[i].stats);
       }
-      buildingsData.addBuilding(buildingsMock.initialBuildings[i].id,
-        buildingsMock.initialBuildings[i].name,
-        buildingsMock.initialBuildings[i].stats);
+    }
+
+    // Set Assets requirements
+    for (var i = 0; i < buildingsMock.initialBuildings.length; i++) {
+      if (buildingsMock.initialBuildings[i].requirements.length > 0) {
+        assetsRequirements.setAssetRequirements(buildingsMock.initialBuildings[i].id, buildingsMock.initialBuildings[i].requirements);
+      }
     }
 
     userVillage.setInitialBuildings(initialUserBuildings);

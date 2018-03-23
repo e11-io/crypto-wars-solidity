@@ -8,7 +8,7 @@ module.exports = async (callback, a, b, c) => {
 
   const ether = Math.pow(10, 18);
 
-  let experimentalToken = await ExperimentalToken.deployed();
+  let experimentalToken = await ExperimentalToken.at('0x52fa97ebe456abb8cb0f32c4edb36b08db0fe616');
 
   let activeAccount;
   web3.eth.getAccounts((err,res) => {

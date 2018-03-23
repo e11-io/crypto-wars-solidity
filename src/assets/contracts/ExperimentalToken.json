@@ -231,10 +231,10 @@
     "311": {
       "events": {},
       "links": {},
-      "address": "0x1f592a2ea639a7bc597f7c2fdd483da9a3ebc42d",
-      "transactionHash": "0x061b42fc07af73f3c21f053c619587301041162869fa08e90dd9f987a4e2b513"
+      "address": "0x52fa97ebe456abb8cb0f32c4edb36b08db0fe616",
+      "transactionHash": "0x342962bf923e41a467bd49decb135528be5e051e530f31f7a5f9d2956d372f59"
     }
   },
   "schemaVersion": "2.0.0",
-  "updatedAt": "2018-03-15T18:51:10.605Z"
+  "updatedAt": "2018-03-22T14:36:23.777Z"
 }

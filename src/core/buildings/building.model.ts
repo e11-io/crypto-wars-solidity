@@ -24,6 +24,8 @@ export class Building {
   inQueue: boolean;
   owned: boolean;
   waiting: boolean;
+  assetRequirements: any;
+  missingRequirements: any;
 
   constructor(data: any = {}) {
       this.active = data.active;
@@ -51,6 +53,8 @@ export class Building {
       this.inQueue = !!data.endBlock;
       this.owned = this.active || this.inQueue;
       this.waiting = data.waiting;
+      this.assetRequirements = data.assetRequirements || [];
+      this.missingRequirements = data.missingRequirements || [];
   }
 
 }

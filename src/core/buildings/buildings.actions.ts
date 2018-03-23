@@ -4,7 +4,7 @@ import { type } from '../../app/shared/util/type';
 export namespace BuildingsActions {
 
   export const Types = {
-    SET_BUILDINGS: type('[Buildings] Set Building'),
+    SET_BUILDINGS: type('[Buildings] Set Buildings'),
   }
 
   export class SetBuildings implements Action {

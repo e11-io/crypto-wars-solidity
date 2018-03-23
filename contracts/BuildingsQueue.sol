@@ -2,8 +2,9 @@ pragma solidity ^0.4.18;
 
 import 'zeppelin-solidity/contracts/math/SafeMath.sol';
 import 'zeppelin-solidity/contracts/ownership/NoOwner.sol';
-import './UserBuildings.sol';
+import './AssetsRequirements.sol';
 import './BuildingsData.sol';
+import './UserBuildings.sol';
 import './UserResources.sol';
 import './Versioned.sol';
 
@@ -60,6 +61,8 @@ contract BuildingsQueue is NoOwner, Versioned {
     uint64 endBlock;
   }
 
+
+  AssetsRequirements assetsRequirements;
   BuildingsData buildingsData;
   BuildingsQueue previousBuildingsQueue;
   UserBuildings userBuildings;
@@ -127,6 +130,16 @@ contract BuildingsQueue is NoOwner, Versioned {
   }
 
   /*
+   * @title Instantiate Assets Requirements contract.
+   * @dev Function to provide Assets Requirements address and instantiate it.
+   * @param _assetsRequirements the address of Assets Requirements contract. (address)
+   */
+  function setAssetsRequirements(AssetsRequirements _assetsRequirements) external onlyOwner {
+    require(_assetsRequirements.isAssetsRequirements());
+    assetsRequirements = _assetsRequirements;
+  }
+
+  /*
    * @notice Add New Building To Queue.
    * @dev Function to add a new building to the construction queue of the user.
       index -2: building type is not unique and the builiding cant be created.
@@ -136,6 +149,7 @@ contract BuildingsQueue is NoOwner, Versioned {
    */
   function addNewBuildingToQueue(uint _id) external {
     require(buildingsData.checkBuildingExist(_id));
+    require(assetsRequirements.validateUserAssetRequirements(msg.sender, _id));
 
     uint typeId = buildingsData.getBuildingTypeId(_id);
     int index = userBuildings.buildingTypeIsUnique(msg.sender, typeId, _id);
@@ -222,6 +236,8 @@ contract BuildingsQueue is NoOwner, Versioned {
     require(buildingsData.checkBuildingExist(_id));
     require(buildingsData.checkBuildingExist(_idOfUpgrade));
     require(buildingsData.checkUpgrade(_id, _idOfUpgrade));
+    require(assetsRequirements.validateUserAssetRequirements(msg.sender, _idOfUpgrade));
+
 
     bool buildingIsInQueue;
     uint buildingIndexInQueue;
@@ -306,17 +322,17 @@ contract BuildingsQueue is NoOwner, Versioned {
    * @return A boolean that indicates if the operation was successful.
    */
   function shiftUserBuildings(address _user, uint _amount) internal returns (bool) {
-        require(_amount <= userBuildingsQueue[_user].length);
+    require(_amount <= userBuildingsQueue[_user].length);
 
-        for (uint i = _amount; i < userBuildingsQueue[_user].length; i++){
-            userBuildingsQueue[_user][i - _amount] = userBuildingsQueue[_user][i];
-        }
-        for (uint j = 1; j <= _amount; j++){
-          delete userBuildingsQueue[_user][userBuildingsQueue[_user].length - j];
-        }
-        userBuildingsQueue[_user].length -= _amount;
-        return true;
+    for (uint i = _amount; i < userBuildingsQueue[_user].length; i++){
+      userBuildingsQueue[_user][i - _amount] = userBuildingsQueue[_user][i];
     }
+    for (uint j = 1; j <= _amount; j++){
+      delete userBuildingsQueue[_user][userBuildingsQueue[_user].length - j];
+    }
+    userBuildingsQueue[_user].length -= _amount;
+    return true;
+  }
 
   /*
    * @notice Shift One User Buildings.
@@ -437,7 +453,6 @@ contract BuildingsQueue is NoOwner, Versioned {
   /*
    * @notice Get Building Id and Block.
    * @dev Function to check the id and end block of a building in queue.
-   *  Only used for testing.
    * @param _user The address of the user's queue to search in. (address)
    * @param _index The index of the element to return in the array. (uint)
    */

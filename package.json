@@ -1,7 +1,7 @@
 {
   "name": "crypto-wars-solidity",
   "author": "Experimental - e11.io",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "license": "ISC",
   "description": "",
   "private": true,
@@ -44,12 +44,12 @@
     "@angular/router": "5.1.1",
     "@ngrx/effects": "4.1.1",
     "@ngrx/store": "4.1.1",
+    "@ngrx/store-devtools": "5.2.0",
     "@ngx-translate/core": "9.1.1",
     "@ngx-translate/http-loader": "2.0.1",
     "angular-blockies": "1.1.0",
     "core-js": "2.5.3",
     "e11-contracts": "git+https://github.com/e11-io/e11-contracts.git",
-    "ngrx-store-logger": "0.2.0",
     "rxjs": "5.5.5",
     "zeppelin-solidity": "1.4.0",
     "zone.js": "0.8.18"

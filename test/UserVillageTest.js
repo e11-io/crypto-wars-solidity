@@ -1,4 +1,6 @@
+const AssetsRequirements = artifacts.require('AssetsRequirements');
 const BuildingsData = artifacts.require('BuildingsData');
+const BuildingsQueue = artifacts.require('BuildingsQueue');
 const ExperimentalToken = artifacts.require('ExperimentalToken');
 const UserBuildings = artifacts.require('UserBuildings');
 const UserResources = artifacts.require('UserResources');
@@ -6,13 +8,14 @@ const UserVault = artifacts.require('UserVault');
 const UserVillage = artifacts.require('UserVillage');
 
 const { assertRevert } = require('./helpers/assertThrow');
+const { initializeContracts } = require('./helpers/initializeContracts');
 const { isVersioned } = require('./helpers/isVersioned');
-const { setContracts } = require('./helpers/setContracts');
+const { setContractsTest } = require('./helpers/setContractsTest');
 
 const buildingsMock = require('../mocks/buildings-test');
 
 contract('User Village Test', (accounts) => {
-  let experimentalToken, userVault, userResources, buildingsData, userBuildings, userVillage;
+  let assetsRequirements, experimentalToken, userVault, userResources, buildingsData, buildingsQueue, userBuildings, userVillage;
 
   const Alice = accounts[0];
   const Bob = accounts[1];
@@ -26,26 +29,25 @@ contract('User Village Test', (accounts) => {
   ];
 
   beforeEach(async () => {
+    assetsRequirements = await AssetsRequirements.new();
     buildingsData = await BuildingsData.new();
+    buildingsQueue = await BuildingsQueue.new();
     experimentalToken = await ExperimentalToken.new();
     userBuildings= await UserBuildings.new();
     userResources = await UserResources.new();
     userVault = await UserVault.new();
     userVillage = await UserVillage.new();
 
-    await userBuildings.setBuildingsData(buildingsData.address);
-    await userBuildings.setUserResources(userResources.address);
-    await userBuildings.setUserVillage(userVillage.address);
-
-    await userResources.setUserVillage(userVillage.address);
-
-    await userVault.setExperimentalToken(experimentalToken.address);
-    await userVault.setUserVillage(userVillage.address);
-
-    await userVillage.setBuildingsData(buildingsData.address);
-    await userVillage.setUserBuildings(userBuildings.address);
-    await userVillage.setUserResources(userResources.address);
-    await userVillage.setUserVault(userVault.address);
+    await initializeContracts({
+      assetsRequirements,
+      buildingsData,
+      buildingsQueue,
+      experimentalToken,
+      userBuildings,
+      userResources,
+      userVault,
+      userVillage,
+    });
 
     await buildingsData.addBuilding(buildingsMock.initialBuildings[0].id,
       buildingsMock.initialBuildings[0].name,
@@ -64,7 +66,7 @@ contract('User Village Test', (accounts) => {
   })
 
   it('Set Contracts', async () => {
-    assert.isTrue(await setContracts(userVillage));
+    assert.isTrue(await setContractsTest(userVillage));
   })
 
   it('Create a village', async () =>  {
