@@ -8,13 +8,14 @@ import { Component, Input, OnChanges, SimpleChanges, Output, EventEmitter } from
 
 export class VillageQueuesComponent implements OnChanges {
   @Input() buildingsQueue: any = [];
-  @Input() barracksQueue: any = [];
   @Input() researchQueue: any = [];
+  @Input() unitsQueue: any = [];
 
-  @Output() goToBuildings: EventEmitter<any> = new EventEmitter<any>();
+  @Output() navigateTo: EventEmitter<string> = new EventEmitter<string>();
 
-  private maxQueueItems: number = 4;
   public buildingsQueueIsEmpty: boolean = true;
+  public unitsQueueIsEmpty: boolean = true;
+  private maxQueueItems: number = 4;
 
   constructor() {
   }
@@ -23,11 +24,20 @@ export class VillageQueuesComponent implements OnChanges {
     if (changes.buildingsQueue) {
       this.setUnfinishedBuildings(changes.buildingsQueue.currentValue);
     }
+
+    if (changes.unitsQueue) {
+      this.setUnfinishedUnits(changes.unitsQueue.currentValue);
+    }
   }
 
   setUnfinishedBuildings(buildings: any) {
     let unfinishedBuildings = buildings.filter(building => building.inProgress);
     this.buildingsQueueIsEmpty = unfinishedBuildings.length ? false : true;
+  }
+
+  setUnfinishedUnits(units: any) {
+    let unfinishedUnits = units.filter(unit => unit.inProgress);
+    this.unitsQueueIsEmpty = unfinishedUnits.length ? false : true;
   }
 
   trackByFn(index, item) {

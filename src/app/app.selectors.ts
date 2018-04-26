@@ -1,9 +1,8 @@
 import { createSelector } from "@ngrx/store";
-import { CryptoWarsState } from './app.reducer';
+import { CryptoWarsState } from './app.state';
 
-
-export const selectBuildings = (state: CryptoWarsState) => state.buildingsState.buildings;
-export const selectBlockNumber = (state: CryptoWarsState) => state.web3State.lastBlock;
+export const selectBuildings = (state: CryptoWarsState) => state.app.buildingsList;
+export const selectBlockNumber = (state: CryptoWarsState) => state.web3.lastBlock;
 
 export const selectActiveBuildings = createSelector(selectBuildings,
                                                     selectBlockNumber,

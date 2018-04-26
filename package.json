@@ -1,7 +1,7 @@
 {
   "name": "crypto-wars-solidity",
   "author": "Experimental - e11.io",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "license": "ISC",
   "description": "",
   "private": true,
@@ -14,7 +14,7 @@
     "url": "https://github.com/e11-io/crypto-wars-solidity/issues"
   },
   "scripts": {
-    "rpc": "testrpc -l 7000000 --seed 0",
+    "rpc": "testrpc -l 7000000 --seed experimental -i 311",
     "ng": "ng",
     "start": "ng serve",
     "start:poa": "ng serve -e poa",
@@ -43,7 +43,7 @@
     "@angular/platform-browser-dynamic": "5.1.1",
     "@angular/router": "5.1.1",
     "@ngrx/effects": "4.1.1",
-    "@ngrx/store": "4.1.1",
+    "@ngrx/store": "5.2.0",
     "@ngrx/store-devtools": "5.2.0",
     "@ngx-translate/core": "9.1.1",
     "@ngx-translate/http-loader": "2.0.1",

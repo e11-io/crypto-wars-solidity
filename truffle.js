@@ -9,7 +9,7 @@ module.exports = {
     e11: {
       host: "localhost",
       port: 8311,
-      gas: 7000000,
+      gas: 8000000,
       gasPrice: 1000000000,
       from: "0xdec8e61b1aabde916bd8248c97e152337a27b660",
       network_id: "311"

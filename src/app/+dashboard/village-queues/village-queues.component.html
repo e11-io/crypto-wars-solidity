@@ -7,8 +7,10 @@
     <div class="box-content define" [class.empty]="buildingsQueueIsEmpty">
       <ng-container *ngFor="let building of buildingsQueue; trackBy: trackByFn">
         <div class="box-option" *ngIf="building && building.inProgress">
-          <div class="e11-avatar">
-
+          <div class="item-avatar">
+            <div class="e11-avatar"
+                 [style.background-image]="'url(/assets/img/buildings/thumbnails/' + building.name + '.png)'">
+            </div>
           </div>
           <div class="flex-col">
             <strong>
@@ -18,7 +20,7 @@
               </span> 
             </strong>
             <span *ngIf="!building.finished">
-              {{ building.percent }}% Done
+              {{building.percent}}% Done
               ({{building.remainingSeconds}} seconds left)
             </span>
             <span *ngIf="building.finished" color="success">
@@ -27,7 +29,7 @@
           </div>
         </div>
       </ng-container>
-      <span class="empty-queue" *ngIf="buildingsQueueIsEmpty" (click)="goToBuildings.emit()">
+      <span class="empty-queue" *ngIf="buildingsQueueIsEmpty" (click)="navigateTo.emit('buildings')">
         Your buildings queue is empty.
         Start building!
       </span>
@@ -38,17 +40,37 @@
     <div class="box-header">
       <i class="e11-icon e11f-sword"></i> Barracks
     </div>
-    <div class="box-content define" [class.empty]="!barracksQueue.length">
-      <div class="box-option"
-           *ngFor="let unit of barracksQueue">
-         barrack
-      </div>
-      <!-- <span *ngIf="!barracksQueue.length">
-        Your barracks queue is empty
+    <div class="box-content define" [class.empty]="unitsQueueIsEmpty">
+      <ng-container *ngFor="let unit of unitsQueue; trackBy: trackByFn">
+        <div class="box-option" *ngIf="unit && unit.inProgress">
+          <div class="item-avatar">
+            <div class="e11-avatar"
+                 [style.background-image]="'url(/assets/img/units/thumbnails/' + unit.name + '.png)'">
+            </div>
+          </div>
+          <div class="flex-col">
+            <strong>
+              {{'DATA.units.' + [unit.name] + '.name' | translate}}
+              <ng-template [ngIf]="unit.quantity > 1">
+                ({{unit.quantity - unit.quantityInQueue + '/' + unit.quantity}})
+              </ng-template>
+              <span class="price" [attr.color]="unit.resource">
+                <div class="bullet-outline"></div>{{unit.price * unit.quantity}}
+              </span> 
+            </strong>
+            <span *ngIf="!unit.finished">
+              {{unit.percent}}% Done
+              ({{unit.remainingSeconds}} seconds left)
+            </span>
+            <span *ngIf="unit.finished" color="success">
+              Finishing up...
+            </span>
+          </div>
+        </div>
+      </ng-container>
+      <span class="empty-queue" *ngIf="unitsQueueIsEmpty" (click)="navigateTo.emit('units')">
+        Your barracks queue is empty.
         Start creating!
-      </span> -->
-      <span>
-        Coming soon
       </span>
     </div>
   </div>
@@ -61,7 +83,7 @@
       <div class="box-option" *ngFor="let research of researchQueue">
          research
       </div>
-      <!-- <span *ngIf="!barracksQueue.length">
+      <!-- <span *ngIf="!unitsQueue.length">
         Nothing researching now
         Start now!
       </span> -->

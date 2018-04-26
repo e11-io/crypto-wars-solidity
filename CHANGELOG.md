@@ -1,5 +1,15 @@
 # Changelog
 
+0.1.8 / 2018-04-26
+==================
+
+  * Units Creation
+  * Small improvements on cards design
+  * Improvements on the internal ngrx core
+  * Changes on how we display and manage the requirements
+  * Upgraded contracts to solidity 0.4.23
+  * Small improvements on the UI
+
 0.1.7 / 2018-03-20
 ==================
 

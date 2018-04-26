@@ -1,0 +1,17 @@
+@mixin e11-avatar() {
+
+    $avatar-default-size: 4rem;
+
+    .e11-avatar {
+      width: 4rem;
+      height: 4rem;
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+}

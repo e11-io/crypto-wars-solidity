@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.23;
 
 import 'zeppelin-solidity/contracts/math/SafeMath.sol';
 import 'zeppelin-solidity/contracts/ownership/NoOwner.sol';
@@ -75,7 +75,7 @@ contract UserBuildings is NoOwner, Versioned {
    * @notice Constructor: Instantiate User Buildings contract.
    * @dev Constructor function to provide User Buildings address and instantiate it.
    */
-  function UserBuildings() public {
+  constructor() public {
   }
 
   /**
@@ -162,7 +162,7 @@ contract UserBuildings is NoOwner, Versioned {
       userBuildings[_user][_indexes[j]] = Building(_ids[j], true);
     }
 
-    AddUserBuildings(_user, _ids, _indexes);
+    emit AddUserBuildings(_user, _ids, _indexes);
 
     return true;
   }
@@ -185,7 +185,7 @@ contract UserBuildings is NoOwner, Versioned {
       userBuildings[_user].push(Building(_ids[j], true));
     }
 
-    AddInitialBuildings(_user, _ids);
+    emit AddInitialBuildings(_user, _ids);
 
     return true;
   }
@@ -204,7 +204,7 @@ contract UserBuildings is NoOwner, Versioned {
 
     userBuildings[_user].push(Building(_id, false));
 
-    InitNewBuilding(_user, userBuildings[_user].length - 1);
+    emit InitNewBuilding(_user, userBuildings[_user].length - 1);
 
     return userBuildings[_user].length - 1;
   }
@@ -230,7 +230,7 @@ contract UserBuildings is NoOwner, Versioned {
 
     require(returnResourcesToUser(_user, _ids));
 
-    RemoveUserBuildings(_user, _ids, _indexes);
+    emit RemoveUserBuildings(_user, _ids, _indexes);
 
     return true;
   }
@@ -250,6 +250,8 @@ contract UserBuildings is NoOwner, Versioned {
     require(userBuildings[_user][_index].id == _id);
 
     userBuildings[_user][_index].active = false;
+
+    emit UpgradeBuilding(_user, _id, _index);
 
     return true;
   }

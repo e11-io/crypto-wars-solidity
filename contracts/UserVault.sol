@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.23;
 
 import 'e11-contracts/contracts/ExperimentalToken.sol';
 import 'zeppelin-solidity/contracts/math/SafeMath.sol';
@@ -34,7 +34,7 @@ contract UserVault is NoOwner, Versioned {
   /**
    * @dev Constructor: Instantiate User Vault contract.
    */
-	function UserVault() public {
+	constructor() public {
 	}
 
 	/**
@@ -86,8 +86,11 @@ contract UserVault is NoOwner, Versioned {
   function add(address _from, uint256 _amount) external returns(bool) {
     require(msg.sender == address(userVillage) || msg.sender == owner);
     require(experimentalToken.transferFrom(_from, this, _amount));
+
     balances[_from] = balances[_from].add(_amount);
-		VaultAdd(_from, _amount);
+
+		emit VaultAdd(_from, _amount);
+
     return true;
   }
 

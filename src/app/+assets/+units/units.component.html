@@ -1,3 +1,119 @@
 <div class="units-container">
-  Units working
+
+  <e11-queue-navbar [disableCancel]="true"
+                    [itemsInQueue]="unitsInQueue"
+                    [queueType]="'units'"
+                    [remainingBlocks]="remainingBlocks">
+  </e11-queue-navbar>
+
+  <div class="units-catalog e11-catalog">
+    <div class="catalog-container" *ngIf="this.units.length">
+
+      <div class="catalog-item"
+           *ngFor="let unit of units; trackBy: trackByFn">
+
+        <div class="hover-area">
+          <div class="item-hover-info">
+            <div class="item-title">
+              <span class="item-name">
+                {{'DATA.units.' + unit.name + '.name' | translate}}
+              </span>
+              <div class="item-price" [attr.color]="unit.resource">
+                <div class="bullet-outline"></div> {{unit.price}}
+              </div>
+            </div>
+            <div class="item-stats">
+              <ng-template ngFor let-stat [ngForOf]="statsArray">
+                <span *ngIf="unit[stat]">
+                  {{'DATA.units.stats.' + stat | translate}}:
+                  <span class="stat-value">
+                    {{unit[stat] || '0'}}
+                  </span>
+                </span>
+              </ng-template>
+            </div>
+          </div>
+
+          <div class="item-avatar"
+               [class.disabled]="unit.missingRequirements.length"
+               [style.background-image]="'url(/assets/img/units/thumbnails/' + unit.name + '.png)'">
+               <div class="e11-badge">
+                 {{unit.quantity}}<!-- this comment removes the whitespace
+                 --><ng-template [ngIf]="unit.quantityInQueue"> / {{unit.quantity + unit.quantityInQueue}}</ng-template>
+               </div>
+          </div>
+        </div>
+
+        <div class="item-info">
+
+          <div class="item-title">
+            <span class="item-name">
+              {{'DATA.units.' + unit.name + '.name' | translate}}
+            </span>
+
+            <span class="item-price" [attr.color]="unit.resource">
+              <div class="bullet-outline"></div>
+              {{unit.price * (unitsToRecruit[unit.id] || 1)}}
+            </span>
+            <span class="item-time">
+              <i class="e11-icon e11f-clock"></i>
+              <ng-template [ngIf]="unitsToRecruit[unit.id]">
+                {{unit.blocks * unitsToRecruit[unit.id]}} Blocks
+              </ng-template>
+            </span>
+          </div>
+
+          <div class="item-description">
+            {{'DATA.units.' + unit.name + '.description' | translate}}
+          </div>
+
+          <div class="e11-slider item-slider"
+               *ngIf="playerResources[unit.resource] / unit.price > 1 &&
+                      !unit.missingRequirements.length">
+            <input type="range"
+                   min="1"
+                   [disabled]="unit.waiting"
+                   [max]="playerResources[unit.resource] / unit.price | round"
+                   [(ngModel)]="unitsToRecruit[unit.id]">
+          </div>
+
+          <button class="item-button e11-button"
+                  type="button"
+                  [class.disabled]="playerResources[unit.resource] < unit.price ||
+                                    unit.waiting"
+                  *ngIf="!unit.missingRequirements.length"
+                  (click)="itemActionRecruit(unit, unitsToRecruit[unit.id])">
+            <ng-template [ngIf]="playerResources[unit.resource] >= unit.price && !unit.waiting ">
+              Recruit {{unitsToRecruit[unit.id] || 1}} {{'DATA.units.' + unit.name + '.name' | translate}}
+            </ng-template>
+            <ng-template [ngIf]="playerResources[unit.resource] < unit.price && !unit.waiting">
+              Not enough {{unit.resource}}
+            </ng-template>
+            <ng-template [ngIf]="unit.waiting">
+              Waiting for transaction...
+            </ng-template>
+          </button>
+
+          <div class="requirements-overview"
+               *ngIf="unit.missingRequirements &&
+                      unit.missingRequirements.length">
+            <span>Requires:</span>
+            <div class="requirement-image"
+                 tooltip-position="bottom"
+                 [attr.tooltip]="('DATA.buildings.' + buildingsMap[requirement].name + '.name' | translate) + ' Lv. ' + buildingsMap[requirement].level"
+                 [style.background-image]="'url(/assets/img/buildings/thumbnails/' + buildingsMap[requirement].name + '.png)'"
+                 *ngFor="let requirement of unit.missingRequirements">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="loading-text" *ngIf="!this.units.length">
+      Fetching available units...
+    </div>
+  </div>
+
 </div>

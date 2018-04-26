@@ -12,16 +12,16 @@
     <div class="queue-items">
       <div class="item"
            [class.ready]="!item.inProgress"
-           [attr.tooltip]="('DATA.' + queueType + '.' + item.name + '.name' | translate) + ' Lvl. ' + item.level"
+           [attr.tooltip]="(item.quantityInQueue? item.quantityInQueue + ' ' : '') + ('DATA.' + queueType + '.' + item.name + '.name' | translate) + (item.level?' Lvl. ' + item.level : '')"
            *ngFor="let item of itemsInQueue; trackBy: trackByFn"
            (click)="onItemClick(item)">
         <div class="item-image"
              [style.background-image]="'url(' + imagePathUrl + item.name + '.png)'">
         </div>
-        <div class="ready" *ngIf="!item.inProgress">
+        <div class="ready" *ngIf="item.quantityInQueue == 0 || item.remainingBlocks == 0">
           <i class="e11-icon e11f-check"></i>
         </div>
-        <div class="hover-action" *ngIf="item.inProgress">
+        <div class="hover-action" *ngIf="item.inProgress && !disableCancel && item.remainingBlocks > 0">
           <i class="e11-icon e11f-error"></i>
         </div>
       </div>

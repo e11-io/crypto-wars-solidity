@@ -20,8 +20,8 @@ Please check the [documentation](https://e11-io.github.io/crypto-wars-solidity/)
     npm install -g truffle
     npm install -g ethereumjs-testrpc # or ganache-cli
     truffle version
-    # Truffle v4.1.0 (core: 4.1.0)
-    # Solidity v0.4.19 (solc-js)
+    # Truffle v4.1.7 (core: 4.1.7)
+    # Solidity v0.4.23 (solc-js)
     ```
 
 2. Install dependencies.
@@ -29,30 +29,30 @@ Please check the [documentation](https://e11-io.github.io/crypto-wars-solidity/)
     npm i # or yarn
     ```
 
-3. Run testrpc on a separate terminal
-    ```shell
-    npm run rpc
-    ```
-
-4. Compile the contracts.
+3. Compile the contracts.
     ```shell
     truffle compile
     ```
 
-5. Run the tests.
+4. Run the tests.
     ```shell
-    truffle test
+    npm run test
     ```
 
-6. Compile the docs.
+5. Compile the docs.
     ```shell
     npm run doxity init
     npm run docs
     ```
 
-7. Run test coverage.
+6. Run test coverage.
     ```shell
     npm run coverage
+    ```
+
+7. Run local testrpc.
+    ```shell
+    npm run rpc
     ```
 
 8. Migrate the contracts.
@@ -64,6 +64,7 @@ Please check the [documentation](https://e11-io.github.io/crypto-wars-solidity/)
   ```shell
   npm run start # to use your local RPC network
   # Open http://localhost:4200 on your favorite web3 browser
+  # Remember to switch your network on Metamask to localhost 8545
   ```
 
 9b. To run the web app with the PoA e11 (311) network.
@@ -76,6 +77,7 @@ Please check the [documentation](https://e11-io.github.io/crypto-wars-solidity/)
   - Console 2:
   ```shell
   npm run start:poa # this will start the angular server with the PoA environment.
+  # Remember to switch your network on Metamask to http://localhost:8311
   ```
 
   Lastly open http://localhost:4200 and on Metamask connect to http://localhost:8311
@@ -91,9 +93,7 @@ Please check the [documentation](https://e11-io.github.io/crypto-wars-solidity/)
 
   - `truffle migrate --network=e11` # Console 3
 
-  - Update contract addresses on `src/environments/environment.poa`
-
-  - Update ExperimentalToken address on `scripts/send-testnet-tokens.js`
+  - Update contract addresses on `scripts/contracts.json`
 
   - Copy `build/contracts` folder and paste it on `src/assets/contracts`
 

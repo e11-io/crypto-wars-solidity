@@ -1,5 +1,7 @@
 // Duplicate contributors.sample.json and modify the addresses and amount as you want.
 const contributors = require('./contributors');
+const contracts = require('./contracts');
+
 
 const ExperimentalToken = artifacts.require('ExperimentalToken');
 
@@ -8,7 +10,7 @@ module.exports = async (callback, a, b, c) => {
 
   const ether = Math.pow(10, 18);
 
-  let experimentalToken = await ExperimentalToken.at('0x52fa97ebe456abb8cb0f32c4edb36b08db0fe616');
+  let experimentalToken = await ExperimentalToken.at(contracts.ExperimentalToken);
 
   let activeAccount;
   web3.eth.getAccounts((err,res) => {
@@ -26,10 +28,11 @@ module.exports = async (callback, a, b, c) => {
         let accountBalance = web3.fromWei(res);
         if (accountBalance < contributors.ether) {
           balanceToSend = contributors.ether - accountBalance;
-          web3.eth.sendTransaction({from: activeAccount, to: account, value: balanceToSend * ether});
+          if (balanceToSend > 1) {
+            web3.eth.sendTransaction({from: activeAccount, to: account, value: balanceToSend * ether});
+          }
         }
       });
-
     });
   });
 

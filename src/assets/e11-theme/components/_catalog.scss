@@ -9,6 +9,15 @@
     flex-wrap: wrap;
     justify-content: space-between;
 
+    .loading-text {
+      display: flex;
+      font-size: 2rem;
+      align-items: center;
+      flex: 1;
+      justify-content: center;
+      color: $color-text-grey;
+    }
+
     .catalog-container {
       display: flex;
       flex-wrap: wrap;
@@ -26,7 +35,7 @@
       position: relative;
 
       .hover-area {
-        flex: 1;
+        position: relative;
         &:hover .item-hover-info {
           display: flex;
         }
@@ -42,6 +51,19 @@
         top: 0;
         left: 0;
         padding: $catalog-item-padding;
+        z-index: 1;
+      }
+      .item-info {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        padding: 1px;
+        padding-top: 1.4rem;
+        flex: 1;
+
+        .item-description {
+          flex: 1;
+        }
       }
 
       .item-avatar {
@@ -49,11 +71,19 @@
         height: 16rem;
         background-position: center;
         background-size: cover;
+        display: flex;
+        align-items: flex-start;
+        border-radius: $app-default-radius;
+        &.disabled {
+          opacity: .3;
+        }
+        .e11-badge {
+          margin: 1rem;
+        }
       }
 
       .item-title {
         font-size: 1.6rem;
-        padding-top: 1.4rem;
         padding-bottom: .5rem;
         display: flex;
         flex-wrap: wrap;
@@ -102,7 +132,6 @@
       }
 
       .item-stats {
-        margin-top: 1rem;
         display: flex;
         flex-direction: column;
         .stat-value {
@@ -110,11 +139,50 @@
         }
       }
 
+      .item-slider {
+        margin-top: 1.5rem;
+        margin-bottom: .5rem;
+      }
       .item-button {
-        margin: 1rem 0;
+        margin-top: 1rem;
         justify-content: center;
         min-height: $catalog-item-button-height;
         z-index: 1;
+      }
+    }
+
+    .requirements-overview {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: $app-default-radius;
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: .6rem;
+      padding-left: 1.2rem;
+      margin-top: 1rem;
+
+      span {
+        margin-right: 1.5rem;
+        font-size: 1.4rem;
+      }
+      .requirement-image {
+        width: 2.4rem;
+        height: 2.4rem;
+        flex-shrink: 0;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        border-radius: 2px;
+        margin-right: 1.2rem;
+        cursor: pointer;
+        &:last-child {
+          margin-right: 0;
+        }
+        &[tooltip]:before {
+          font-size: 1.2rem;
+          padding: .6rem;
+          white-space: nowrap;
+        }
       }
     }
 
@@ -124,7 +192,6 @@
       align-items: center;
       justify-content: center;
       background-color: $color-light-alt;
-      border: 1px solid $color-border;
       opacity: 0.95;
       width: 100%;
       height: 100%;
@@ -134,18 +201,19 @@
       color: $color-text-grey;
       z-index: 2;
       padding: 2rem 4rem;
+      padding-bottom: 1rem;
       overflow: hidden;
-      overflow-y: auto;
 
       .e11-icon {
-        font-size: 7rem;
-        margin-bottom: .5rem;
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
         flex-shrink: 0;
       }
       .title {
-        margin: 2rem 0;
+        margin: 0;
+        margin-bottom: 1.2rem;
       }
-      .title, .requirements {
+      .title, .requirements, .requirements span {
         font-size: 1.4rem;
         line-height: 1.4rem;
         font-weight: bold;

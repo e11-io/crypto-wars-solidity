@@ -1,5 +1,4 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
-
 import { TradesComponent } from "./trades.component";
 
 @NgModule({

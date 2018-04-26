@@ -2,14 +2,16 @@
 
   <e11-village-logs></e11-village-logs>
   <div class="village-info flex-col">
-    <e11-village-info [villageName]="villageName"
-                      [userBalance]="userBalance"
-                      [userBuildings]="userBuildings"
-                      [userResources]="userResources"
-                      (goToBuildings)='goToBuildings()'>
+    <e11-village-info [ownedBuildings]="ownedBuildings"
+                      [playerBalance]="e11Balance"
+                      [playerResources]="playerResources"
+                      [unitsMap]="unitsMap"
+                      [villageName]="villageName"
+                      (navigateTo)='navigateTo($event)'>
     </e11-village-info>
     <e11-village-queues [buildingsQueue]="buildingsInQueue"
-                        (goToBuildings)="goToBuildings()">
+                        [unitsQueue]="unitsInQueue"
+                        (navigateTo)="navigateTo($event)">
     </e11-village-queues>
   </div>
   <e11-village-extras></e11-village-extras>

@@ -7,10 +7,11 @@ import { UnitsComponent } from './+assets/+units/units.component';
 import { DefenseComponent } from './+assets/+defense/defense.component';
 import { ResearchComponent } from './+assets/+research/research.component';
 
-import { DashboardComponent } from './+dashboard/dashboard.component';
-import { TradesComponent } from './+trades/trades.component';
 import { AdminComponent } from './+admin/admin.component';
+import { DashboardComponent } from './+dashboard/dashboard.component';
 import { OnboardingComponent } from './+onboarding/onboarding.component';
+import { TradesComponent } from './+trades/trades.component';
+
 import { BootstrapGuard } from './shared/guards/bootstrap.guard';
 import { UserGuard } from './shared/guards/user.guard';
 

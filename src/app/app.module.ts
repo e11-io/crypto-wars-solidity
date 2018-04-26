@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
@@ -26,23 +27,18 @@ import { ErrorsComponent } from './shared/components/errors/errors.component';
 import { LoadingComponent } from './shared/components/loading/loading.component';
 import { MobileScreenComponent } from './shared/components/mobile-screen/mobile-screen.component';
 import { NavbarComponent } from './shared/components/navbar/navbar.component';
-import { ServicesModule } from './shared/services/services.module';
 
-
-import { AppReducers, metaReducers } from './app.reducer';
+import { appReducer } from './app.reducer';
+import { metaReducers } from './app.state';
 import { AppEffects } from './app.effects';
 
-import { Web3Effects } from '../core/web3/web3.effects';
-import { UserResourcesEffects } from '../core/user-resources/user-resources.effects';
-import { UserEffects } from '../core/user/user.effects';
-import { BuildingsQueueEffects } from '../core/buildings-queue/buildings-queue.effects';
-import { BuildingsDataEffects } from '../core/buildings-data/buildings-data.effects';
-import { UserVillageEffects } from '../core/user-village/user-village.effects';
-import { UserBuildingsEffects } from '../core/user-buildings/user-buildings.effects';
-import { AssetsRequirementsEffects } from '../core/assets-requirements/assets-requirements.effects';
-import { BuildingsEffects } from '../core/buildings/buildings.effects';
 import { BootstrapGuard } from './shared/guards/bootstrap.guard';
 import { UserGuard } from './shared/guards/user.guard';
+
+import { AssetsCoreModule } from '../core/assets/assets.module';
+import { PlayerCoreModule } from '../core/player/player.module';
+import { Web3CoreModule } from '../core/web3/web3.module';
+import { ContractsService } from '../core/shared/contracts.service';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -55,7 +51,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ErrorsComponent,
     LoadingComponent,
     MobileScreenComponent,
-    NavbarComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,
@@ -70,31 +66,28 @@ export function HttpLoaderFactory(http: HttpClient) {
         deps: [HttpClient]
       }
     }),
-    ServicesModule,
+    // Ngrx
+    StoreModule.forRoot({}),
+    StoreModule.forFeature('app', appReducer),
+    EffectsModule.forRoot([
+      AppEffects
+    ]),
+    !environment.production ? StoreDevtoolsModule.instrument({maxAge: 200}) : [],
+
     BlockiesModule,
     AssetsModule,
     DashboardModule,
     TradesModule,
     AdminModule,
     OnboardingModule,
-    StoreModule.forRoot(AppReducers, {metaReducers}),
-    EffectsModule.forRoot([
-      AppEffects,
-      BuildingsDataEffects,
-      UserBuildingsEffects,
-      BuildingsQueueEffects,
-      UserEffects,
-      UserResourcesEffects,
-      UserVillageEffects,
-      Web3Effects,
-      AssetsRequirementsEffects,
-      BuildingsEffects,
-    ]),
+    AssetsCoreModule,
+    PlayerCoreModule,
+    Web3CoreModule,
     // Note that you must instrument after importing StoreModule
-    !environment.production ? StoreDevtoolsModule.instrument({maxAge: 25}) : [],
   ],
   providers: [
     BootstrapGuard,
+    ContractsService,
     UserGuard,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -1,10 +1,11 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.23;
 
 import 'zeppelin-solidity/contracts/math/SafeMath.sol';
 import 'zeppelin-solidity/contracts/ownership/NoOwner.sol';
 import './BuildingsQueue.sol';
 import './UserBuildings.sol';
 import './UserVillage.sol';
+import './UnitsQueue.sol';
 import './Versioned.sol';
 
 /*
@@ -94,6 +95,7 @@ contract UserResources is NoOwner, Versioned {
 	mapping (address => uint) public usersPayoutBlock;
 
 	BuildingsQueue buildingsQueue;
+	UnitsQueue unitsQueue;
 	UserResources previousUserResources;
 	UserBuildings userBuildings;
 	UserVillage userVillage;
@@ -102,7 +104,7 @@ contract UserResources is NoOwner, Versioned {
 	 * @notice Constructor: Instantiate User Resources contract.
 	 * @dev Constructor function.
 	 */
-	function UserResources() public {
+	constructor() public {
 	}
 
 	/**
@@ -157,6 +159,16 @@ contract UserResources is NoOwner, Versioned {
 	}
 
 	/*
+   * @title Instantiate Units Queue contract.
+   * @dev Function to provide Units Queue address and instantiate it.
+   * @param _unitsQueue the address of Units Queue contract. (address)
+   */
+	function setUnitsQueue(UnitsQueue _unitsQueue) external onlyOwner {
+		require(_unitsQueue.isUnitsQueue());
+		unitsQueue = _unitsQueue;
+	}
+
+	/*
    * @title Initiate user resources.
    * @dev Function to add the initial resources to a new user.
    * @param _user address of the user to give the resources. (address)
@@ -171,7 +183,7 @@ contract UserResources is NoOwner, Versioned {
 		usersResources[_user].crystal = initialCrystal;
 		usersResources[_user].quantumDust = initialQuantumDust;
 
-		InitUserResources(_user, initialGold, initialCrystal, initialQuantumDust);
+		emit InitUserResources(_user, initialGold, initialCrystal, initialQuantumDust);
 		return true;
 	}
 
@@ -208,7 +220,7 @@ contract UserResources is NoOwner, Versioned {
      initialQuantumDust = _quantumDust;
    }
 
-	 SetInitialResources(_gold, _crystal, _quantumDust);
+	 emit SetInitialResources(_gold, _crystal, _quantumDust);
 	}
 
 	/*
@@ -218,12 +230,12 @@ contract UserResources is NoOwner, Versioned {
    * @param _price the amount of gold to be consumed. (uint)
    */
 	function consumeGold(address _user, uint _price) external returns (bool) {
-		require(msg.sender == address(buildingsQueue) || msg.sender == owner);
+		require(msg.sender == address(buildingsQueue) || msg.sender == address(unitsQueue) ||msg.sender == owner);
 		payoutResources(_user);
 		require(usersResources[_user].gold >= _price);
 		usersResources[_user].gold = SafeMath.sub(usersResources[_user].gold, _price);
 
-		ConsumeGold(_user, _price);
+		emit ConsumeGold(_user, _price);
 
 		return true;
 	}
@@ -235,12 +247,12 @@ contract UserResources is NoOwner, Versioned {
    * @param _price the amount of crystal to be consumed. (uint)
    */
 	function consumeCrystal(address _user, uint _price) external returns (bool) {
-		require(msg.sender == address(buildingsQueue) || msg.sender == owner);
+		require(msg.sender == address(buildingsQueue) || msg.sender == address(unitsQueue) || msg.sender == owner);
 		payoutResources(_user);
 		require(usersResources[_user].crystal >= _price);
 		usersResources[_user].crystal = SafeMath.sub(usersResources[_user].crystal, _price);
 
-		ConsumeCrystal(_user, _price);
+		emit ConsumeCrystal(_user, _price);
 
 		return true;
 	}
@@ -252,11 +264,11 @@ contract UserResources is NoOwner, Versioned {
    * @param _price the amount of quantum dust to be consumed. (uint)
    */
 	function consumeQuantumDust(address _user, uint _price) external returns (bool) {
-		require(msg.sender == address(buildingsQueue) || msg.sender == owner);
+		require(msg.sender == address(buildingsQueue) || msg.sender == address(unitsQueue) || msg.sender == owner);
 		require(usersResources[_user].quantumDust >= _price);
 		usersResources[_user].quantumDust = SafeMath.sub(usersResources[_user].quantumDust, _price);
 
-		ConsumeQuantum(_user, _price);
+		emit ConsumeQuantum(_user, _price);
 
 		return true;
 	}
@@ -281,7 +293,7 @@ contract UserResources is NoOwner, Versioned {
 		usersResources[_user].crystal += _crystal;
 		usersResources[_user].quantumDust += _quantumDust;
 
-		GiveResourcesToUser(_user, _gold, _crystal, _quantumDust);
+		emit GiveResourcesToUser(_user, _gold, _crystal, _quantumDust);
 	}
 
 	/*
@@ -338,7 +350,7 @@ contract UserResources is NoOwner, Versioned {
 
 			usersPayoutBlock[_user] = block.number;
 
-			PayoutResources(gold, crystal);
+			emit PayoutResources(gold, crystal);
 		}
 	}
 

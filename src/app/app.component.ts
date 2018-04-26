@@ -1,23 +1,24 @@
 import { Component } from '@angular/core';
 import { Router, NavigationEnd, UrlSegment, ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/skip';
 import 'rxjs/add/observable/combineLatest';
 
-import { Store } from '@ngrx/store';
+import * as packageJson from '../../package.json';
+
+import { ContractsService } from '../core/shared/contracts.service';
+import { PlayerResourcesState } from '../core/player/resources/player-resources.state';
+import { PlayerState } from '../core/player/player.state';
 import { Web3Actions } from '../core/web3/web3.actions';
-import { UserState } from '../core/user/user.reducer';
-import { Web3State } from '../core/web3/web3.reducer';
+import { Web3Service } from '../core/web3/web3.service';
+import { Web3State } from '../core/web3/web3.state';
 
 import { AbstractContainerComponent } from './shared/components/abstract-container.component';
-import { ContractsService } from './shared/services/contracts.service';
-import { Web3Service } from './shared/services/web3.service';
-import { CryptoWarsState } from './app.reducer';
 
-import { BuildingsActions } from '../core/buildings/buildings.actions';
-
-import * as packageJson from '../../package.json';
+import { CryptoWarsState } from './app.state';
+import { AppActions } from './app.actions';
 
 @Component({
   selector: 'app-root',
@@ -32,16 +33,16 @@ export class AppComponent  extends AbstractContainerComponent {
   e11Balance: any;
   ethBalance: any;
   error: string;
-  section = 'village';
   lastBlock: number;
-  status: any = {};
-  locationData: UrlSegment;
   loading: boolean = true;
+  locationData: UrlSegment;
   navbarEnabled: boolean;
-  userResources: any;
+  section = 'village';
+  status: any = {};
+  playerResources: PlayerResourcesState;
 
   web3State$: Observable<Web3State>;
-  userState$: Observable<UserState>;
+  playerState$: Observable<PlayerState>;
 
   constructor(private contracts: ContractsService,
               private web3Service: Web3Service,
@@ -56,7 +57,8 @@ export class AppComponent  extends AbstractContainerComponent {
       this.setBalances(),
       this.setWeb3(),
       this.setBuildingsState(),
-      this.setUserResources(),
+      this.setUnitsState(),
+      this.setPlayerResources(),
       this.router.events.filter(event => event instanceof NavigationEnd).subscribe((event: NavigationEnd) => {
         this.navbarEnabled = route.root.firstChild.snapshot.data['navbar'];
         this.childNavDisabled = route.root.firstChild.snapshot.data['childNavigationDisabled'];
@@ -85,23 +87,23 @@ export class AppComponent  extends AbstractContainerComponent {
   }
 
   setBalances() {
-    this.userState$ = this.store.select('userState');
-    return this.userState$.subscribe(user => {
-      this.ethBalance = user.ethBalance;
-      this.e11Balance = user.e11Balance;
+    this.playerState$ = this.store.select('player');
+    return this.playerState$.subscribe(player => {
+      this.ethBalance = player.tokens.ethBalance;
+      this.e11Balance = player.tokens.e11Balance;
     });
   }
 
-  setUserResources() {
-    return this.store.select('userResourcesState').subscribe(userResources => {
-      this.userResources = userResources;
+  setPlayerResources() {
+    return this.store.select(s => s.player.resources).subscribe(playerResources => {
+      this.playerResources = playerResources;
     });
   }
 
   setWeb3() {
-    this.web3State$ = this.store.select('web3State');
+    this.web3State$ = this.store.select('web3');
     return this.web3State$.distinctUntilChanged().subscribe((web3) => {
-      let error = web3.error;
+      let error = web3.status.error;
       if (!error) {
         this.error = null;
         this.loading = !web3.bootstraped;
@@ -135,26 +137,53 @@ export class AppComponent  extends AbstractContainerComponent {
 
   setBuildingsState() {
     return Observable.combineLatest(
-      this.store.select('buildingsDataState').map(s => s.buildings).distinctUntilChanged(),
-      this.store.select('userBuildingsState').map(s => s.buildings).distinctUntilChanged(),
-      this.store.select('buildingsQueueState').map(s => s.buildings).distinctUntilChanged(),
-      this.store.select('buildingsQueueState').map(s => s.localBuildings).distinctUntilChanged(),
-      this.store.select('web3State').map(s => s.lastBlock).distinctUntilChanged(),
-      this.store.select('assetsRequirementsState').map(s => s.requirements).distinctUntilChanged(),
+      this.store.select(s => s.assets.buildings.data.listMap).distinctUntilChanged(),
+      this.store.select(s => s.assets.buildings.queue.list).distinctUntilChanged(),
+      this.store.select(s => s.assets.buildings.queue.localList).distinctUntilChanged(),
+      this.store.select(s => s.assets.requirements.listMap).distinctUntilChanged(),
+      this.store.select(s => s.player.assets.buildings.list).distinctUntilChanged(),
+      this.store.select(s => s.web3.lastBlock).distinctUntilChanged(),
     )
     .subscribe(data => {
       let obj = {
         buildingsData: Object.values(data[0]),
-        userBuildings: data[1],
-        buildingsQueue: data[2],
-        localBuildings: data[3],
-        blockNumber: data[4],
-        assetsRequirements: data[5]
+        buildingsQueue: data[1],
+        localBuildings: data[2],
+        assetsRequirements: data[3],
+        playerBuildings: data[4],
+        blockNumber: data[5],
       }
-      if (!obj.buildingsData.length || !obj.userBuildings.length || !obj.blockNumber) {
+      if (!obj.buildingsData.length || !obj.playerBuildings.length || !obj.blockNumber) {
         return;
       }
-      this.store.dispatch(new BuildingsActions.SetBuildings(obj));
+      this.store.dispatch(new AppActions.SetBuildings(obj));
+    })
+  }
+
+  setUnitsState() {
+    return Observable.combineLatest(
+      this.store.select(s => s.app.buildingsList).distinctUntilChanged(),
+      this.store.select(s => s.assets.units.data.listMap).distinctUntilChanged(),
+      this.store.select(s => s.assets.units.queue.list).distinctUntilChanged(),
+      this.store.select(s => s.assets.units.queue.localList).distinctUntilChanged(),
+      this.store.select(s => s.assets.requirements.listMap).distinctUntilChanged(),
+      this.store.select(s => s.player.assets.units.list).distinctUntilChanged(),
+      this.store.select(s => s.web3.lastBlock).distinctUntilChanged(),
+    )
+    .subscribe(data => {
+      let obj = {
+        buildings: data[0],
+        unitsData: Object.values(data[1]),
+        unitsQueue: data[2],
+        localUnits: data[3],
+        assetsRequirements: data[4],
+        playerUnits: data[5],
+        blockNumber: data[6],
+      }
+      if (!obj.buildings.length || !obj.unitsData.length || !obj.blockNumber) {
+        return;
+      }
+      this.store.dispatch(new AppActions.SetUnits(obj));
     })
   }
 

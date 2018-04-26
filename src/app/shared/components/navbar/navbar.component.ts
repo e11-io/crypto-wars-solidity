@@ -7,12 +7,12 @@ import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } f
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnChanges {
+    @Input() activeAccount: string;
     @Input() activeSection: any;
     @Input() balance: any;
     @Input() childNavDisabled: boolean = false;
     @Input() ethBalance: any;
-    @Input() activeAccount: string;
-    @Input() userResources: any;
+    @Input() playerResources: any;
 
     blockiesOptions: any = {size: 8, scale: 6};
     constructor() {

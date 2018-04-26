@@ -1,18 +1,8 @@
+import { Actions, Effect } from '@ngrx/effects';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Actions, Effect } from '@ngrx/effects';
-import { Web3Service } from '../../app/shared/services/web3.service';
-import { ContractsService } from '../../app/shared/services/contracts.service';
-
-import { Web3Actions } from './web3.actions';
-import { Web3State } from "./web3.reducer";
-import { BuildingsDataActions } from '../buildings-data/buildings-data.actions';
-import { BuildingsQueueActions } from '../buildings-queue/buildings-queue.actions';
-import { UserActions } from '../user/user.actions';
-import { UserBuildingsActions } from '../user-buildings/user-buildings.actions';
-import { UserResourcesActions } from '../user-resources/user-resources.actions';
-import { UserVillageActions } from "../user-village/user-village.actions";
-
+import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs/observable/of';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -21,16 +11,30 @@ import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/observable/from';
 import 'rxjs/add/observable/combineLatest';
-import { of } from 'rxjs/observable/of';
-import { Observable } from 'rxjs/Observable';
+
+import { Web3State } from './web3.state';
+import { Web3Actions } from './web3.actions';
+import { Web3Service } from './web3.service';
+
+import { ContractsService } from '../shared/contracts.service';
+import { Status } from '../shared/status.model';
+
+import { AssetsBuildingsDataActions } from '../assets/buildings/data/buildings-data.actions';
+import { AssetsBuildingsQueueActions } from '../assets/buildings/queue/buildings-queue.actions';
+import { AssetsUnitsDataActions } from '../assets/units/data/units-data.actions';
+import { AssetsUnitsQueueActions } from '../assets/units/queue/units-queue.actions';
+import { PlayerBuildingsActions } from '../player/assets/buildings/player-buildings.actions';
+import { PlayerResourcesActions } from '../player/resources/player-resources.actions';
+import { PlayerTokensActions } from '../player/tokens/player-tokens.actions';
+import { PlayerVillageActions } from '../player/village/player-village.actions';
 
 @Injectable()
 export class Web3Effects {
 
-  constructor(private store: Store<any>,
-              private actions$: Actions,
-              private web3Service: Web3Service,
-              private contractsService: ContractsService) {
+  constructor(private actions$: Actions,
+              private contractsService: ContractsService,
+              private store: Store<any>,
+              private web3Service: Web3Service) {
   }
 
   @Effect({dispatch: false}) bootstrap$ = this.actions$
@@ -38,7 +42,9 @@ export class Web3Effects {
     .do((action: Web3Actions.Bootstrap): any => {
       this.checkWeb3Service((error) => {
         if (error) {
-          this.store.dispatch(new Web3Actions.Web3Error(error));
+          this.store.dispatch(new Web3Actions.Web3Error({
+            status: new Status({ error })
+          }));
           return
         }
         return this.store.dispatch(new Web3Actions.BootstrapSuccess());
@@ -50,7 +56,8 @@ export class Web3Effects {
     .mergeMap(action =>
       Observable.from([
         new Web3Actions.StartPull(),
-        new BuildingsDataActions.GetBuildingsLength()
+        new AssetsBuildingsDataActions.GetBuildingsLength(),
+        new AssetsUnitsDataActions.GetUnitsLength(),
       ])
     );
 
@@ -66,7 +73,7 @@ export class Web3Effects {
     .do(action => {
       this.web3Service.getBlockNumber().then((blockNumber: any) => {
         let newBlock = false;
-        this.store.select(store => store.web3State.lastBlock).take(1)
+        this.store.select(s => s.web3.lastBlock).take(1)
           .subscribe(lastBlockNumber => {
             newBlock = (lastBlockNumber < blockNumber);
           });
@@ -80,20 +87,21 @@ export class Web3Effects {
     .ofType(Web3Actions.Types.GET_BLOCK_NUMBER_SUCCESS)
     .do(() => {
       let activeAccount: string = '';
-      this.store.select('web3State').take(1).subscribe(web3 => {
+      this.store.select('web3').take(1).subscribe(web3 => {
         activeAccount = web3.activeAccount;
       });
       let hasVillage: boolean = false;
-      this.store.select('userVillageState').take(1).subscribe(userVillageState => {
-        hasVillage = !!userVillageState.villageName;
+      this.store.select(s => s.player.village.villageName).take(1).subscribe(villageName => {
+        hasVillage = !!villageName;
       })
       if (hasVillage) {
-        this.store.dispatch(new UserBuildingsActions.GetUserBuildingsLength());
-        this.store.dispatch(new UserResourcesActions.GetUserResources());
-        this.store.dispatch(new BuildingsQueueActions.GetBuildingsQueue(activeAccount));
+        this.store.dispatch(new PlayerBuildingsActions.GetPlayerBuildingsLength());
+        this.store.dispatch(new PlayerResourcesActions.GetPlayerResources());
+        this.store.dispatch(new AssetsBuildingsQueueActions.GetBuildingsQueue(activeAccount));
+        this.store.dispatch(new AssetsUnitsQueueActions.GetUnitsQueue(activeAccount));
       }
-      this.store.dispatch(new UserActions.GetEthBalance(activeAccount));
-      this.store.dispatch(new UserActions.GetE11Balance(activeAccount));
+      this.store.dispatch(new PlayerTokensActions.GetEthBalance(activeAccount));
+      this.store.dispatch(new PlayerTokensActions.GetE11Balance(activeAccount));
       this.store.dispatch(new Web3Actions.TransactionLookup());
     });
 
@@ -110,7 +118,7 @@ export class Web3Effects {
     .ofType(Web3Actions.Types.GET_ACCOUNTS_SUCCESS)
     .do((action: Web3Actions.GetAccountsSucccess): any => {
       let activeAccount: string;
-      this.store.select('web3State').take(1).subscribe(web3 => {
+      this.store.select('web3').take(1).subscribe(web3 => {
         activeAccount = web3.activeAccount;
       });
       if (activeAccount === action.payload[0]) {
@@ -118,7 +126,7 @@ export class Web3Effects {
       }
       if (!activeAccount) {
         this.store.dispatch(new Web3Actions.SetActiveAccount(action.payload[0]));
-        this.store.dispatch(new UserVillageActions.GetVillageName(action.payload[0]));
+        this.store.dispatch(new PlayerVillageActions.GetVillageName(action.payload[0]));
       } else {
         window.location.reload();
       }
@@ -143,7 +151,7 @@ export class Web3Effects {
     .delay(3000)
     .do(action => {
       let activeLoop: boolean;
-      this.store.select('web3State').take(1).subscribe(web3 => {
+      this.store.select('web3').take(1).subscribe(web3 => {
         activeLoop = web3.loop;
       });
       if (!activeLoop) return;
@@ -154,7 +162,7 @@ export class Web3Effects {
     .ofType(Web3Actions.Types.TRANSACTION_LOOKUP)
     .do(() => {
       let transactions: any;
-      this.store.select('web3State').take(1).subscribe(web3 => {
+      this.store.select('web3').take(1).subscribe(web3 => {
         transactions = web3.transactions;
       });
       transactions.forEach((transaction) => {
@@ -170,7 +178,9 @@ export class Web3Effects {
     .ofType(Web3Actions.Types.WEB3_CHECK)
     .do((action: Web3Actions.Web3Check) => {
       this.checkWeb3Service((error) => {
-        if (error) return this.store.dispatch(new Web3Actions.Web3Error(error));
+        if (error) return this.store.dispatch(new Web3Actions.Web3Error({
+          status: new Status({ error })
+        }));
         return this.store.dispatch(new Web3Actions.Web3Success())
       })
     });
@@ -180,7 +190,7 @@ export class Web3Effects {
     .mergeMap((action: Web3Actions.Web3Error) => {
       let actions: any = [];
       let web3: Web3State;
-      this.store.select('web3State').take(1).subscribe(web3State => {
+      this.store.select('web3').take(1).subscribe(web3State => {
         web3 = web3State;
       });
       if (web3.loop) {

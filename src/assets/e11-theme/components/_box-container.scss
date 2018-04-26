@@ -46,6 +46,12 @@
                 .e11-button {
                   width: 100%;
                 }
+                .item-avatar {
+                  @extend .rounded;
+                  flex-shrink: 0;
+                  margin-right: .9rem;
+                  overflow: hidden;
+                }
 
                 &.input {
                   display: flex;

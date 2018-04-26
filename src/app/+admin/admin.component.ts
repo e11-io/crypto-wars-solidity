@@ -1,16 +1,13 @@
 import { Component } from '@angular/core';
-
 import { Store } from '@ngrx/store';
 
-import { AbstractContainerComponent } from '../shared/components/abstract-container.component';
-import { CryptoWarsState } from '../app.reducer';
-
-import { Web3Service } from '../shared/services/web3.service';
-import { ContractsService } from '../shared/services/contracts.service';
-
+import { CryptoWarsState } from '../app.state';
+import { AssetsBuildingsQueueActions } from '../../core/assets/buildings/queue/buildings-queue.actions';
 import { Web3Actions } from '../../core/web3/web3.actions';
-import { BuildingsQueueActions } from '../../core/buildings-queue/buildings-queue.actions';
+import { ContractsService } from '../../core/shared/contracts.service';
+import { Web3Service } from '../../core/web3/web3.service';
 
+import { AbstractContainerComponent } from '../shared/components/abstract-container.component';
 import BigNumber from 'bignumber.js';
 
 const ether = Math.pow(10, 18);
@@ -165,7 +162,7 @@ export class AdminComponent extends AbstractContainerComponent {
 
   addBuildingToQueue(building: number) {
     console.log('Adding building id ' + building + ' to user ' + this.activeAccount);
-    this.store.dispatch(new BuildingsQueueActions.AddBuildingToQueue(building));
+    this.store.dispatch(new AssetsBuildingsQueueActions.AddBuildingToQueue(building));
   }
 
   async checkTransaction() {
@@ -188,7 +185,7 @@ export class AdminComponent extends AbstractContainerComponent {
 
   async getBuildingsInQueueTest() {
     let activeAccount;
-    this.store.select('web3State').take(1).subscribe(web3 => {
+    this.store.select('web3').take(1).subscribe(web3 => {
       activeAccount = web3.activeAccount;
     });
 

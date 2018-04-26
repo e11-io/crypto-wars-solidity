@@ -17,6 +17,15 @@ const buildingsMock = require('../mocks/buildings-test');
 const resourcesMock = require('../mocks/resources-test');
 const stat = buildingsMock.stats;
 
+const cityCenter = buildingsMock.initialBuildings.find(b => b.name == 'city_center_1');
+const goldMine = buildingsMock.initialBuildings.find(b => b.name == 'gold_mine_1');
+const crystalMine = buildingsMock.initialBuildings.find(b => b.name == 'crystal_mine_1');
+const portal = buildingsMock.initialBuildings.find(b => b.name == 'portal_1');
+const goldFactory = buildingsMock.initialBuildings.find(b => b.name == 'gold_factory_1');
+const crystalFactory = buildingsMock.initialBuildings.find(b => b.name == 'crystal_factory_1');
+const goldStorage = buildingsMock.initialBuildings.find(b => b.name == 'gold_storage_1');
+const crystalStorage = buildingsMock.initialBuildings.find(b => b.name == 'crystal_storage_1');
+
 contract('User Resources Test', (accounts) => {
   let assetsRequirements, experimentalToken, userVault, userVillage, userResources, userBuildings, buildingsData, buildingsQueue;
 
@@ -29,9 +38,9 @@ contract('User Resources Test', (accounts) => {
   const crystalAmount = 3000;
   const quantumAmount = 500;
   const initialUserBuildings = [
-    buildingsMock.initialBuildings[0].id,
-    buildingsMock.initialBuildings[1].id,
-    buildingsMock.initialBuildings[2].id,
+    cityCenter.id,
+    goldMine.id,
+    crystalMine.id,
   ];
 
   beforeEach(async () => {
@@ -55,27 +64,27 @@ contract('User Resources Test', (accounts) => {
       userVillage,
     });
 
-    await buildingsData.addBuilding(buildingsMock.initialBuildings[0].id,
-      buildingsMock.initialBuildings[0].name,
-      buildingsMock.initialBuildings[0].stats);
-    await buildingsData.addBuilding(buildingsMock.initialBuildings[1].id,
-      buildingsMock.initialBuildings[1].name,
-      buildingsMock.initialBuildings[1].stats);
-    await buildingsData.addBuilding(buildingsMock.initialBuildings[2].id,
-      buildingsMock.initialBuildings[2].name,
-      buildingsMock.initialBuildings[2].stats);
-    await buildingsData.addBuilding(buildingsMock.initialBuildings[7].id,
-      buildingsMock.initialBuildings[7].name,
-      buildingsMock.initialBuildings[7].stats);
-    await buildingsData.addBuilding(buildingsMock.initialBuildings[8].id,
-      buildingsMock.initialBuildings[8].name,
-      buildingsMock.initialBuildings[8].stats);
-    await buildingsData.addBuilding(buildingsMock.initialBuildings[11].id,
-      buildingsMock.initialBuildings[11].name,
-      buildingsMock.initialBuildings[11].stats);
-    await buildingsData.addBuilding(buildingsMock.initialBuildings[12].id,
-      buildingsMock.initialBuildings[12].name,
-      buildingsMock.initialBuildings[12].stats);
+    await buildingsData.addBuilding(cityCenter.id,
+      cityCenter.name,
+      cityCenter.stats);
+    await buildingsData.addBuilding(goldMine.id,
+      goldMine.name,
+      goldMine.stats);
+    await buildingsData.addBuilding(crystalMine.id,
+      crystalMine.name,
+      crystalMine.stats);
+    await buildingsData.addBuilding(goldFactory.id,
+      goldFactory.name,
+      goldFactory.stats);
+    await buildingsData.addBuilding(crystalFactory.id,
+      crystalFactory.name,
+      crystalFactory.stats);
+    await buildingsData.addBuilding(goldStorage.id,
+      goldStorage.name,
+      goldStorage.stats);
+    await buildingsData.addBuilding(crystalStorage.id,
+      crystalStorage.name,
+      crystalStorage.stats);
     await experimentalToken.approve(userVault.address, 1 * ether);
     await userVillage.setInitialBuildings(initialUserBuildings);
   })
@@ -89,7 +98,7 @@ contract('User Resources Test', (accounts) => {
   })
 
   it('Init User Resources from not User Village Contract', async () => {
-    return assertRevert(async () => {
+    await assertRevert(async () => {
       await userResources.initUserResources(Bob, { from: Bob })
     })
   })
@@ -106,7 +115,7 @@ contract('User Resources Test', (accounts) => {
 
   it('try initializing user resources when user is initialized', async () => {
     await userResources.initUserResources(Bob);
-    return assertRevert(async () => {
+    await assertRevert(async () => {
       await userResources.initUserResources(Bob);
     })
   })
@@ -120,25 +129,25 @@ contract('User Resources Test', (accounts) => {
   })
 
   it('Try consuming gold not from buildings queue contract', async () => {
-    return assertRevert(async () => {
+    await assertRevert(async () => {
       await userResources.consumeGold(Alice, 200, { from: Bob });
     })
   })
 
   it('Try consuming crystal not from buildings queue contract', async () => {
-    return assertRevert(async () => {
+    await assertRevert(async () => {
       await userResources.consumeCrystal(Alice, 200, { from: Bob });
     })
   })
 
   it('Try consuming quantum not from buildings queue contract', async () => {
-    return assertRevert(async () => {
+    await assertRevert(async () => {
       await userResources.consumeQuantumDust(Alice, 200, { from: Bob });
     })
   })
 
   it('Try give Resources To User from random user', async () => {
-    return assertRevert(async () => {
+    await assertRevert(async () => {
       await userResources.giveResourcesToUser(
         Alice, goldAmount, crystalAmount, quantumAmount, {from: Bob}
       );
@@ -146,7 +155,7 @@ contract('User Resources Test', (accounts) => {
   })
 
   it('Try init user payoutblock not from user village contract or owner', async () => {
-    return assertRevert(async () => {
+    await assertRevert(async () => {
       await userResources.initPayoutBlock(Alice, { from: Bob });
     })
   })
@@ -183,25 +192,25 @@ contract('User Resources Test', (accounts) => {
     })
 
     it('Set initial resources amount not from owner', async () => {
-      return assertRevert(async () => {
+      await assertRevert(async () => {
         await userResources.setInitialResources(...resourcesMock.initialResources, {from: Bob});
       })
     })
 
     it('Consume gold without enough resources', async () => {
-      return assertRevert(async () => {
+      await assertRevert(async () => {
         await userResources.consumeGold(Alice, 300);
       })
     })
 
     it('Consume crystal without enough resources', async () => {
-      return assertRevert(async () => {
+      await assertRevert(async () => {
         await userResources.consumeCrystal(Alice, 300);
       })
     })
 
     it('Consume quantum without enough resources', async () => {
-      return assertRevert(async () => {
+      await assertRevert(async () => {
         await userResources.consumeQuantumDust(Alice, 300);
       })
     })
@@ -225,13 +234,10 @@ contract('User Resources Test', (accounts) => {
         })
 
         it('Payout gold resources to user', async () => {
-          let goldMine = buildingsMock.initialBuildings[1];
-          let goldStorage = buildingsMock.initialBuildings[11];
           await userBuildings.addInitialBuildings(Alice, [goldMine.id, goldStorage.id]);
 
           let payoutBlock = await userResources.getUserPayoutBlock.call(Alice);
 
-          let goldFactory = buildingsMock.initialBuildings[7];
           await buildingsQueue.addNewBuildingToQueue(goldFactory.id);
           let resourcediff = goldMine.stats[stat.goldRate] * (web3.eth.blockNumber - payoutBlock);
           resourcediff -= goldFactory.stats[stat.price];
@@ -259,13 +265,10 @@ contract('User Resources Test', (accounts) => {
 
 
         it('Payout crystal resources to user', async () => {
-          let crystalMine = buildingsMock.initialBuildings[2];
-          let crystalStorage = buildingsMock.initialBuildings[12];
           await userBuildings.addInitialBuildings(Alice, [crystalMine.id, crystalStorage.id]);
 
           let payoutBlock = await userResources.getUserPayoutBlock.call(Alice);
 
-          let crystalFactory = buildingsMock.initialBuildings[8];
           await buildingsQueue.addNewBuildingToQueue(crystalFactory.id);
           let resourcediff = crystalMine.stats[stat.crystalRate] * (web3.eth.blockNumber - payoutBlock);
           resourcediff -= crystalFactory.stats[stat.price];
@@ -293,9 +296,6 @@ contract('User Resources Test', (accounts) => {
         })
 
         it('Check queue finished building payouts', async () => {
-          let crystalFactory = buildingsMock.initialBuildings[8];
-          let crystalStorage = buildingsMock.initialBuildings[12];
-
           await userBuildings.addInitialBuildings(Alice, [crystalStorage.id]);
 
           await buildingsQueue.addNewBuildingToQueue(crystalFactory.id);
@@ -319,9 +319,6 @@ contract('User Resources Test', (accounts) => {
         })
 
         it('Exceed gold and crystal capacity', async () => {
-          let goldMine = buildingsMock.initialBuildings[1];
-          let crystalMine = buildingsMock.initialBuildings[2];
-
           await userBuildings.addInitialBuildings(Alice, [goldMine.id, crystalMine.id]);
 
           let [goldCapacity, crystalCapacity] = await userResources.calculateUserResourcesCapacity.call(Alice);
@@ -341,8 +338,6 @@ contract('User Resources Test', (accounts) => {
         })
 
         it('Exceed gold capacity from buildings in queue', async () => {
-          let goldMine = buildingsMock.initialBuildings[1];
-
           await buildingsQueue.addNewBuildingToQueue(goldMine.id);
 
           evmMine(goldMine.stats[stat.blocks] + 1);
@@ -359,8 +354,6 @@ contract('User Resources Test', (accounts) => {
         })
 
         it('Exceed crystal capacity from buildings in queue', async () => {
-          let crystalMine = buildingsMock.initialBuildings[2];
-
           await buildingsQueue.addNewBuildingToQueue(crystalMine.id);
 
           evmMine(crystalMine.stats[stat.blocks] + 1);
@@ -402,9 +395,6 @@ contract('User Resources Test', (accounts) => {
           })
 
           it('Calculate User Resources Capacity after adding buildings', async () => {
-            let goldStorage = buildingsMock.initialBuildings[11];
-            let crystalStorage = buildingsMock.initialBuildings[12];
-
             // NOTE: buildings must be finished to ensure the test is going to pass
             await buildingsQueue.addNewBuildingToQueue(goldStorage.id);
             await buildingsQueue.addNewBuildingToQueue(crystalStorage.id);

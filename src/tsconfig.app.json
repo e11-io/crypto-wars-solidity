@@ -9,7 +9,9 @@
         "../build/contracts/*"
       ]
     },
-    "types": []
+    "types": [
+      "node"
+    ]
   },
   "exclude": [
     "test.ts",

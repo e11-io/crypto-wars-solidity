@@ -1,19 +1,16 @@
 import { Component } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/take';
 
-import { Building } from '../../../core/buildings/building.model';
-import { BuildingsQueueActions } from '../../../core/buildings-queue/buildings-queue.actions';
-import { UserActions } from '../../../core/user/user.actions';
-import { UserResourcesActions } from '../../../core/user-resources/user-resources.actions';
-import { UserVillageActions } from '../../../core/user-village/user-village.actions';
-import { Web3Actions } from '../../../core/web3/web3.actions';
+import { AssetsBuildingsQueueActions } from '../../../core/assets/buildings/queue/buildings-queue.actions';
+import { ContractsService } from '../../../core/shared/contracts.service';
+import { Web3Service } from '../../../core/web3/web3.service';
 
-import { CryptoWarsState } from '../../app.reducer';
+import { CryptoWarsState } from '../../app.state';
+
 import { AbstractContainerComponent } from '../../shared/components/abstract-container.component';
-import { ContractsService } from '../../shared/services/contracts.service';
-import { Web3Service } from '../../shared/services/web3.service';
+import { Building } from '../../shared/models/building.model';
 
 @Component({
   selector: 'e11-buildings',
@@ -23,12 +20,12 @@ import { Web3Service } from '../../shared/services/web3.service';
 
 export class BuildingsComponent extends AbstractContainerComponent {
 
-  availableUserBuildings: Building[] = [];
+  availablePlayerBuildings: Building[] = [];
   buildingsMap: any = {};
   buildingsInQueue: any = [];
-  userResources: any;
-  remainingBlocks: number;
   localBuildings: any = [];
+  remainingBlocks: number;
+  playerResources: any;
 
   statsArray: any = [
     'health',
@@ -40,17 +37,16 @@ export class BuildingsComponent extends AbstractContainerComponent {
     'crystalRate'
   ]
 
-
   constructor(public store: Store<CryptoWarsState>,
-              private web3Service: Web3Service,
-              private contractsService: ContractsService) {
+              private contractsService: ContractsService,
+              private web3Service: Web3Service) {
     super(store);
 
     this.addToSubscriptions(
-      this.setUserResources(),
+      this.setPlayerResources(),
       this.setBuildingsQueue(),
       this.setLocalBuildings(),
-      this.setAvailableUserBuildings(), // This has to be last to wait for data initialization
+      this.setAvailablePlayerBuildings(), // This has to be last to wait for data initialization
     );
   }
 
@@ -59,7 +55,7 @@ export class BuildingsComponent extends AbstractContainerComponent {
       console.error("Missing requirements to create this asset");
       return;
     }
-    if (this.userResources[building.resource] < building.price
+    if (this.playerResources[building.resource] < building.price
         || building.maxLevel
         || building.inProgress) {
       return;
@@ -70,22 +66,23 @@ export class BuildingsComponent extends AbstractContainerComponent {
       this.addNewBuildingToQueue(building.id);
     }
   }
-  setUserResources() {
-    return this.store.select('userResourcesState').subscribe(userResources => {
-      this.userResources = userResources;
+
+  setPlayerResources() {
+    return this.store.select(s => s.player.resources).subscribe(playerResources => {
+      this.playerResources = playerResources;
     })
   }
 
   setBuildingsQueue() {
-    return this.store.select('buildingsState').subscribe(buildingsState => {
-      this.buildingsInQueue = buildingsState.buildings.filter(building => building.inProgress);
+    return this.store.select(s => s.app.buildingsList).subscribe(buildingsList => {
+      this.buildingsInQueue = buildingsList.filter(building => building.inProgress);
       this.buildingsInQueue = this.buildingsInQueue.sort((a, b) => a.endBlock - b.endBlock);
       this.getRemainigQueueBlocks();
     })
   }
 
   setLocalBuildings() {
-    return this.store.select('buildingsQueueState').map(s => s.localBuildings).subscribe(localBuildings => {
+    return this.store.select(s => s.assets.buildings.queue.localList).subscribe(localBuildings => {
       this.localBuildings = localBuildings;
     })
   }
@@ -103,27 +100,27 @@ export class BuildingsComponent extends AbstractContainerComponent {
 
   getBlockNumber() {
     let blockNumber;
-    this.store.select('web3State').take(1).subscribe(web3 => {
+    this.store.select('web3').take(1).subscribe(web3 => {
       blockNumber = web3.lastBlock;
     });
     return blockNumber;
   }
 
-  setAvailableUserBuildings() {
-    return this.store.select('buildingsState').map(s => s.buildings).subscribe(buildings => {
+  setAvailablePlayerBuildings() {
+    return this.store.select(s => s.app.buildingsList).subscribe(buildings => {
       buildings.forEach(building => {
         this.buildingsMap[building.id] = building;
       });
-      this.availableUserBuildings = this.getAvailableUserBuildings(buildings);
+      this.availablePlayerBuildings = this.getAvailablePlayerBuildings(buildings);
     });
   }
 
-  getAvailableUserBuildings(buildings: Building[]) : Building[] {
+  getAvailablePlayerBuildings(buildings: Building[]) : Building[] {
     // Ensures all required data is available
-    // Maps and filters user's buildings depending on the user's queued buildings
-    let userBuildings = buildings.filter(b => b.owned);
+    // Maps and filters player's buildings depending on the player's queued buildings
+    let playerBuildings = buildings.filter(b => b.owned);
     // Checks if there is a next available level and sets building as maxLevel
-    userBuildings = userBuildings.map(building => {
+    playerBuildings = playerBuildings.map(building => {
       let nextBuilding = this.buildingsMap[building.id + 1000];
       if (nextBuilding) {
         return new Building(Object.assign({}, building, {nextLevelId: nextBuilding.id}));
@@ -131,17 +128,17 @@ export class BuildingsComponent extends AbstractContainerComponent {
       return new Building(Object.assign({}, building, {maxLevel: true}));
     })
 
-    // Get all buildings that the user does not already have
+    // Get all buildings that the player does not already have
     let newBuildings = buildings.filter((building) => {
       // If the level is > 1
-      // Or if the user has this building already active
-      if (building.level > 1 || userBuildings.find(userBuilding => userBuilding.typeId == building.typeId)) {
+      // Or if the player has this building already active
+      if (building.level > 1 || playerBuildings.find(playerBuildings => playerBuildings.typeId == building.typeId)) {
         return false;
       }
       return true;
     });
 
-    let availableBuildings = newBuildings.concat(userBuildings);
+    let availableBuildings = newBuildings.concat(playerBuildings);
     // Set buildings in progress when waiting for transaction confirmation.
     availableBuildings = availableBuildings.map(building => {
       if (this.localBuildings.find(b => b == building.id)) {
@@ -160,20 +157,20 @@ export class BuildingsComponent extends AbstractContainerComponent {
   }
 
   addNewBuildingToQueue(buildingId: number) {
-    this.availableUserBuildings = this.availableUserBuildings.map(building => {
+    this.availablePlayerBuildings = this.availablePlayerBuildings.map(building => {
       if (building.id === buildingId) {
         return new Building(Object.assign({}, building, {inProgress: true}));
       }
       return building;
     })
-    this.store.dispatch(new BuildingsQueueActions.AddBuildingToQueue(buildingId));
+    this.store.dispatch(new AssetsBuildingsQueueActions.AddBuildingToQueue(buildingId));
   }
 
   upgradeBuilding(building: Building) {
-    this.store.dispatch(new BuildingsQueueActions.UpgradeBuilding(building));
+    this.store.dispatch(new AssetsBuildingsQueueActions.UpgradeBuilding(building));
   }
 
   cancelBuilding(building: Building) {
-    this.store.dispatch(new BuildingsQueueActions.CancelBuilding(building.id));
+    this.store.dispatch(new AssetsBuildingsQueueActions.CancelBuilding(building.id));
   }
 }

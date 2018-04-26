@@ -11,13 +11,13 @@
             <div class="navbar-resources">
               <span class="resource"
                     [attr.color]="resource"
-                    [attr.tooltip]="userResources[resource+'Capacity'] ? userResources[resource] + '/' + userResources[resource+'Capacity'] : null"
+                    [attr.tooltip]="playerResources[resource+'Capacity'] ? playerResources[resource] + '/' + playerResources[resource+'Capacity'] : null"
                     tooltip-position="bottom"
                     *ngFor="let resource of ['gold', 'crystal', 'quantum']">
                 <div class="bullet-outline"
-                     [style.border-width]="(1 + 4 * (userResources[resource] / userResources[resource+'Capacity'])) / 10 + 'rem'">
+                     [style.border-width]="(1 + 4 * (playerResources[resource] / playerResources[resource+'Capacity'])) / 10 + 'rem'">
                 </div>
-                {{userResources[resource] | number}}
+                {{playerResources[resource] | number}}
               </span>
             </div>
         </div>

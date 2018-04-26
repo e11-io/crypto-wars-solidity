@@ -14,6 +14,10 @@ const { setContractsTest } = require('./helpers/setContractsTest');
 
 const buildingsMock = require('../mocks/buildings-test');
 
+const cityCenter = buildingsMock.initialBuildings.find(b => b.name == 'city_center_1');
+const goldMine = buildingsMock.initialBuildings.find(b => b.name == 'gold_mine_1');
+const crystalMine = buildingsMock.initialBuildings.find(b => b.name == 'crystal_mine_1');
+
 contract('User Village Test', (accounts) => {
   let assetsRequirements, experimentalToken, userVault, userResources, buildingsData, buildingsQueue, userBuildings, userVillage;
 
@@ -23,9 +27,9 @@ contract('User Village Test', (accounts) => {
   const David = accounts[3];
   const ether = Math.pow(10, 18);
   const initialUserBuildings = [
-    buildingsMock.initialBuildings[0].id,
-    buildingsMock.initialBuildings[1].id,
-    buildingsMock.initialBuildings[2].id,
+    cityCenter.id,
+    goldMine.id,
+    crystalMine.id,
   ];
 
   beforeEach(async () => {
@@ -49,15 +53,15 @@ contract('User Village Test', (accounts) => {
       userVillage,
     });
 
-    await buildingsData.addBuilding(buildingsMock.initialBuildings[0].id,
-      buildingsMock.initialBuildings[0].name,
-      buildingsMock.initialBuildings[0].stats);
-    await buildingsData.addBuilding(buildingsMock.initialBuildings[1].id,
-      buildingsMock.initialBuildings[1].name,
-      buildingsMock.initialBuildings[1].stats);
-    await buildingsData.addBuilding(buildingsMock.initialBuildings[2].id,
-      buildingsMock.initialBuildings[2].name,
-      buildingsMock.initialBuildings[2].stats);
+    await buildingsData.addBuilding(cityCenter.id,
+      cityCenter.name,
+      cityCenter.stats);
+    await buildingsData.addBuilding(goldMine.id,
+      goldMine.name,
+      goldMine.stats);
+    await buildingsData.addBuilding(crystalMine.id,
+      crystalMine.name,
+      crystalMine.stats);
     await userVillage.setInitialBuildings(initialUserBuildings);
   })
 
@@ -79,7 +83,7 @@ contract('User Village Test', (accounts) => {
   })
 
   it('Fail initUserResources from user villace create method', async () => {
-    return assertRevert(async () => {
+    await assertRevert(async () => {
       await userResources.setUserVillage(Alice);
       await userResources.initUserResources(Alice);
       await userResources.setUserVillage(userVillage.address);
@@ -95,21 +99,21 @@ contract('User Village Test', (accounts) => {
     })
 
     it('Create village from same user', async () => {
-      return assertRevert(async () => {
+      await assertRevert(async () => {
         await experimentalToken.approve(userVault.address, 1 * ether);
         await userVillage.create('My second village!', 'Awesome player');
       })
     })
 
     it('Create village from account without e11', async () => {
-      return assertRevert(async () => {
+      await assertRevert(async () => {
         await experimentalToken.approve(userVault.address, 1 * ether, {from: Bob})
         await userVillage.create('AccOneVillage','Bob', {from: Bob});
       })
     })
 
     it('Create village with taken Username', async () => {
-      return assertRevert(async () => {
+      await assertRevert(async () => {
         await experimentalToken.transfer(Carol, 5 * ether);
         await experimentalToken.approve(userVault.address, 1 * ether, {from: Carol});
         await userVillage.create('AccTwoVillage','Cool player', {from: Carol});
@@ -117,7 +121,7 @@ contract('User Village Test', (accounts) => {
     })
 
     it('Create village with empty Village Name', async () => {
-      return assertRevert(async () => {
+      await assertRevert(async () => {
         await experimentalToken.transfer(Carol, 5 * ether);
         await experimentalToken.approve(userVault.address, 1 * ether, {from: Carol});
         await userVillage.create('','Player Two', {from: Carol});
@@ -125,7 +129,7 @@ contract('User Village Test', (accounts) => {
     })
 
     it('Create village with empty Username', async () => {
-      return assertRevert(async () => {
+      await assertRevert(async () => {
         await experimentalToken.transfer(Carol, 5 * ether);
         await experimentalToken.approve(userVault.address, 1 * ether, {from: Carol});
         await userVillage.create('Kokorico','', {from: Carol});
@@ -133,7 +137,7 @@ contract('User Village Test', (accounts) => {
     })
 
     it('Try to set initial buildings not from owner', async () => {
-      return assertRevert(async () => {
+      await assertRevert(async () => {
         await userVillage.setInitialBuildings([2, 3], {from: Bob});
       })
     })

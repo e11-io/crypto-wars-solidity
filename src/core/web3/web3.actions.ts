@@ -1,28 +1,28 @@
 import { Action } from '@ngrx/store';
-import { type } from '../../app/shared/util/type';
+import { type } from '../shared/util/type';
 
 export namespace Web3Actions {
 
   export const Types = {
-    BOOTSTRAP: type('[web3] Bootstrap'),
-    BOOTSTRAP_SUCCESS: type('[web] Bootstrap Success'),
-    BOOTSTRAP_RETRY: type('[web] Bootstrap Failure'),
-    GET_ACCOUNTS: type('[web3] Get Accounts'),
-    GET_ACCOUNTS_SUCCESS: type('[web3] Get Accounts Success'),
-    GET_ACCOUNTS_FAILURE: type('[web3] Get Accounts Failure'),
-    GET_BLOCK_NUMBER: type('[web3] Get Block Number'),
+    BOOTSTRAP:                type('[web3] Bootstrap'),
+    BOOTSTRAP_SUCCESS:        type('[web] Bootstrap Success'),
+    BOOTSTRAP_RETRY:          type('[web] Bootstrap Failure'),
+    GET_ACCOUNTS:             type('[web3] Get Accounts'),
+    GET_ACCOUNTS_SUCCESS:     type('[web3] Get Accounts Success'),
+    GET_ACCOUNTS_FAILURE:     type('[web3] Get Accounts Failure'),
+    GET_BLOCK_NUMBER:         type('[web3] Get Block Number'),
     GET_BLOCK_NUMBER_SUCCESS: type('[web3] Get Block Number Success'),
     GET_BLOCK_NUMBER_FAILURE: type('[web3] Get Block Number Failure'),
-    PROCCESS_PULL: type('[web3] Proccess Pull'),
-    SET_ACTIVE_ACCOUNT: type('[web3] Set Active Acount'),
-    START_PULL: type('[web3] Start Pull'),
-    STOP_PULL: type('[web3] Stop Pull'),
-    TRANSACTION_SUBSCRIBE: type('[web3] Transaction Subscribe'),
-    TRANSACTION_LOOKUP: type('[web3] Transaction Lookup'),
-    TRANSACTION_UNSUBSCRIBE: type('[web3] Transaction Unsubscribe'),
-    WEB3_CHECK: type('[web] Web3 Check'),
-    WEB3_ERROR: type('[web3] Web3 Error'),
-    WEB3_SUCCESS: type('[web3] Web3 Success'),
+    PROCCESS_PULL:            type('[web3] Proccess Pull'),
+    SET_ACTIVE_ACCOUNT:       type('[web3] Set Active Acount'),
+    START_PULL:               type('[web3] Start Pull'),
+    STOP_PULL:                type('[web3] Stop Pull'),
+    TRANSACTION_SUBSCRIBE:    type('[web3] Transaction Subscribe'),
+    TRANSACTION_LOOKUP:       type('[web3] Transaction Lookup'),
+    TRANSACTION_UNSUBSCRIBE:  type('[web3] Transaction Unsubscribe'),
+    WEB3_CHECK:               type('[web] Web3 Check'),
+    WEB3_ERROR:               type('[web3] Web3 Error'),
+    WEB3_SUCCESS:             type('[web3] Web3 Success'),
   }
 
   export class Bootstrap implements Action {

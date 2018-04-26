@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.23;
 
 import 'zeppelin-solidity/contracts/ownership/NoOwner.sol';
 import './Versioned.sol';
@@ -52,7 +52,7 @@ contract BuildingsData is NoOwner, Versioned {
    * @notice Constructor: Instantiate Buildings Data contract.
    * @dev Constructor function.
    */
-  function BuildingsData() public {
+  constructor() public {
   }
 
   /*
@@ -94,6 +94,8 @@ contract BuildingsData is NoOwner, Versioned {
    *      attack (int)
    *      goldCapacity (int)
    *      crystalCapacity (int)
+   *      goldRate (int)
+   *      crystalRate (int)
    *      price (int)
    *      resource (int)
    *      blocks (int)
@@ -133,7 +135,7 @@ contract BuildingsData is NoOwner, Versioned {
                              stats[10],
                              stats[11]);
     buildingIds.push(id);
-    AddBuilding(id, name);
+    emit AddBuilding(id, name);
   }
 
   /*
@@ -146,6 +148,8 @@ contract BuildingsData is NoOwner, Versioned {
    *      attack (int)
    *      goldCapacity (int)
    *      crystalCapacity (int)
+   *      goldRate (int)
+   *      crystalRate (int)
    *      price (int)
    *      resource (int)
    *      blocks (int)
@@ -160,7 +164,7 @@ contract BuildingsData is NoOwner, Versioned {
     updateBuildingBasicsA(id, name, stats);
     updateBuildingBasicsB(id, stats);
 
-    UpdateBuilding(id, name);
+    emit UpdateBuilding(id, name);
   }
 
   /*
@@ -175,6 +179,8 @@ contract BuildingsData is NoOwner, Versioned {
    *      attack (int)
    *      goldCapacity (int)
    *      crystalCapacity (int)
+   *      goldRate (int)
+   *      crystalRate (int)
    *      price (int)
    *      resource (int)
    *      blocks (int)
@@ -211,6 +217,8 @@ contract BuildingsData is NoOwner, Versioned {
    *      attack (int)
    *      goldCapacity (int)
    *      crystalCapacity (int)
+   *      goldRate (int)
+   *      crystalRate (int)
    *      price (int)
    *      resource (int)
    *      blocks (int)
@@ -251,8 +259,7 @@ contract BuildingsData is NoOwner, Versioned {
    * @return A boolean that indicates if the building exists or not.
    */
   function checkBuildingExist(uint _id) external view returns (bool) {
-    require(keccak256(buildings[_id].name) != keccak256(""));
-    return true;
+    return keccak256(buildings[_id].name) != keccak256("");
   }
 
   /*
@@ -264,7 +271,6 @@ contract BuildingsData is NoOwner, Versioned {
    */
   function checkUpgrade(uint _id, uint _idOfUpgrade) external view returns (bool) {
     require(buildings[_idOfUpgrade].previousLevelId == int32(_id));
-
     return true;
   }
 

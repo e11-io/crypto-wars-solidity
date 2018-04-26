@@ -24,14 +24,14 @@ contract('Versioned', function(accounts) {
   });
 
   it('should not allow to set version if not an owner', async function() {
-    return assertRevert(async () => {
+    await assertRevert(async () => {
       await versioned.setVersion(1, {from: Bob});
     });
   });
 
   it('should not allow to migrate user', async function() {
     let versioned2 = await Versioned.new();
-    return assertRevert(async () => {
+    await assertRevert(async () => {
       await versioned.migrateUser(versioned2.address);
     });
   });
@@ -49,7 +49,7 @@ contract('Versioned', function(accounts) {
     await versioned2.setVersion(1);
     await versioned.migrateUser(versioned2.address);
     let migrated = await versioned.migratedUsers.call(Alice);
-    return assertRevert(async () => {
+    await assertRevert(async () => {
       await versioned.migrateUser(versioned2.address);
     });
   });

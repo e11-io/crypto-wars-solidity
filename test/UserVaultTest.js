@@ -62,7 +62,7 @@ contract('User Vault Test', accounts => {
 
     let balance = await experimentalToken.balanceOf.call(userVault.address);
     assert.equal(balance.toNumber(), amountB);
-    return assertRevert(async () => {
+    await assertRevert(async () => {
       await userVault.reclaimToken(experimentalToken.address);
     })
   })
@@ -70,7 +70,7 @@ contract('User Vault Test', accounts => {
   it('Add tokens from account without e11 balance', async () => {
     await experimentalToken.approve(userVault.address, 1 * ether, {from: Bob});
 
-    return assertRevert(async () => {
+    await assertRevert(async () => {
       await userVault.add(Bob, 1 * ether);
     })
   })

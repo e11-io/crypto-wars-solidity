@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.23;
 import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 
 /**
@@ -13,7 +13,7 @@ contract Versioned is Ownable {
 
   /**
    * @dev The Versioned constructor, unused
-  function Versioned() public {
+  constructor() public {
   }
   */
 
@@ -40,7 +40,7 @@ contract Versioned is Ownable {
   function migrateUser(Versioned _newContract) public notMigrated {
     require(_newContract.version() > version);
     migratedUsers[msg.sender] = true;
-    UserMigrated(msg.sender, _newContract);
+    emit UserMigrated(msg.sender, _newContract);
   }
 
 }

@@ -37,7 +37,6 @@
     "id": 1003,
     "name": "crystal_mine_1",
     "requirements": [
-
     ],
     "stats": [
       500, 20, 0,
@@ -56,10 +55,19 @@
       0, 0, 1, 1001, 1
     ]
   },{
+    "id": 3001,
+    "name": "city_center_3",
+    "requirements": [
+    ],
+    "stats": [
+      3000, 100, 0,
+      5000, 6000, 0, 0,
+      0, 0, 8, 2001, 1
+    ]
+  },{
     "id": 2002,
     "name": "gold_mine_2",
     "requirements": [
-
     ],
     "stats": [
       800, 40, 0,
@@ -70,7 +78,6 @@
     "id": 2003,
     "name": "crystal_mine_2",
     "requirements": [
-
     ],
     "stats": [
       1000, 40, 0,
@@ -81,7 +88,6 @@
     "id": 1004,
     "name": "portal_1",
     "requirements": [
-
     ],
     "stats": [
       2000, 50, 0,
@@ -103,7 +109,6 @@
     "id": 1006,
     "name": "crystal_factory_1",
     "requirements": [
-
     ],
     "stats": [
       2000, 50, 0,
@@ -114,7 +119,6 @@
     "id": 2005,
     "name": "gold_factory_2",
     "requirements": [
-
     ],
     "stats": [
       2000, 50, 0,
@@ -125,7 +129,6 @@
     "id": 2006,
     "name": "crystal_factory_2",
     "requirements": [
-
     ],
     "stats": [
       2000, 50, 0,
@@ -147,7 +150,6 @@
     "id": 1008,
     "name": "crystal_storage_1",
     "requirements": [
-
     ],
     "stats": [
       2000, 50, 0,
@@ -158,7 +160,6 @@
     "id": 1099,
     "name": "experiment_1",
     "requirements": [
-
     ],
     "stats": [
       2000, 50, 0,
@@ -166,15 +167,36 @@
       400, 8, 5, 0, 99
     ]
   },{
-    "id": 3001,
-    "name": "city_center_3",
+    "id": 1009,
+    "name": "barracks_1",
     "requirements": [
-
+      2001
     ],
     "stats": [
-      3000, 100, 0,
-      5000, 6000, 0, 0,
-      0, 0, 8, 2001, 1
+      1000, 100, 0,
+      0, 0, 0, 0,
+      1500, 1, 20, 0, 9
     ]
-    }]
+  },{
+    "id": 2009,
+    "name": "barracks_2",
+    "requirements": [
+    ],
+    "stats": [
+      2000, 200, 0,
+      0, 0, 0, 0,
+      2000, 1, 40, 1009, 9
+    ]
+  },{
+    "id": 3009,
+    "name": "barracks_3",
+    "requirements": [
+      3001
+    ],
+    "stats": [
+      3000, 300, 0,
+      0, 0, 0, 0,
+      2500, 1, 80, 2009, 9
+    ]
+  }]
 }

@@ -14,27 +14,27 @@
       <div class="flex">
         <div class="village-resource gold">
           <span class="title">
-            Gold <strong class="rate">+{{userResources.rates.gold | number}} RATE</strong>
+            Gold <strong class="rate">+{{playerResources.rates.gold | number}} RATE</strong>
           </span>
           <h1 class="qty">
-            {{userResources.gold | number}}
-            <span class="capacity"> / {{userResources.goldCapacity | number}}</span>
+            {{playerResources.gold | number}}
+            <span class="capacity"> / {{playerResources.goldCapacity | number}}</span>
           </h1>
           <div class="e11-progress-bar">
-            <div class="bar" [style.width]="userResources.gold * 100 / userResources.goldCapacity + '%'">
+            <div class="bar" [style.width]="playerResources.gold * 100 / playerResources.goldCapacity + '%'">
             </div>
           </div>
         </div>
         <div class="village-resource crystal">
           <span class="title">
-            Crystal <strong class="rate">+{{userResources.rates.crystal | number}} RATE</strong>
+            Crystal <strong class="rate">+{{playerResources.rates.crystal | number}} RATE</strong>
           </span>
           <h1 class="qty">
-            {{userResources.crystal | number}}
-            <span class="capacity"> / {{userResources.crystalCapacity | number}}</span>
+            {{playerResources.crystal | number}}
+            <span class="capacity"> / {{playerResources.crystalCapacity | number}}</span>
           </h1>
           <div class="e11-progress-bar">
-            <div class="bar" [style.width]="userResources.crystal * 100 / userResources.crystalCapacity + '%'">
+            <div class="bar" [style.width]="playerResources.crystal * 100 / playerResources.crystalCapacity + '%'">
             </div>
           </div>
         </div>
@@ -42,11 +42,11 @@
       <div class="flex">
         <div class="village-resource e11">
           <span class="title">E11 balance</span>
-          <h1 class="qty">{{userBalance | number}}</h1>
+          <h1 class="qty">{{playerBalance | number}}</h1>
         </div>
         <div class="village-resource quantum">
           <span class="title">Quantum dust</span>
-          <h1 class="qty">{{userResources.quantum | number}}</h1>
+          <h1 class="qty">{{playerResources.quantum | number}}</h1>
         </div>
       </div>
     </div>
@@ -55,11 +55,11 @@
       <div class="flex">
         <div class="stat">
           <span class="title">Buildings</span>
-          <span class="qty" size="small">Currently have: {{userBuildings.length}}</span>
+          <span class="qty" size="small">Currently have: {{ownedBuildings.length}}</span>
         </div>
         <div class="stat">
           <span class="title">Population</span>
-          <span class="qty" size="small">Currently living: 0</span>
+          <span class="qty" size="small">Currently living: {{unitsQuantity}}</span>
         </div>
         <div class="stat">
           <span class="title">Research</span>
@@ -67,7 +67,7 @@
         </div>
       </div>
       <!--
-      <button class="e11-button" type="button" (click)="goToBuildings.emit()">
+      <button class="e11-button" type="button" (click)="navigateTo.emit('buildings')">
         Upgrade Village
       </button>
       -->

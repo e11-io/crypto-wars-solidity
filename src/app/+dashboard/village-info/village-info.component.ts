@@ -1,5 +1,10 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
+
+import { PlayerResourcesState } from '../../../core/player/resources/player-resources.state';
+
+import { Building } from '../../shared/models/building.model';
+import { UnitMap } from '../../shared/models/unit.model';
 
 @Component({
   selector: 'e11-village-info',
@@ -7,14 +12,29 @@ import { Router } from '@angular/router';
   styleUrls: ['./village-info.component.scss']
 })
 
-export class VillageInfoComponent {
+export class VillageInfoComponent implements OnChanges {
+  @Input() unitsMap: UnitMap = {};
+  @Input() playerResources: PlayerResourcesState;
+  @Input() ownedBuildings: Building[] = [];
+  @Input() playerBalance: number;
   @Input() villageName: string;
-  @Input() userResources: any;
-  @Input() userBuildings: any = [];
-  @Input() userBalance: number;
 
-  @Output() goToBuildings: EventEmitter<any> = new EventEmitter<any>();
+  @Output() navigateTo: EventEmitter<string> = new EventEmitter<string>();
+
+
+  unitsQuantity: number = 0;
 
   constructor(private router: Router) {}
+
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.unitsMap) {
+      this.unitsQuantity = 0;
+      Object.values(this.unitsMap).forEach(unit => {
+        this.unitsQuantity += unit.quantity;
+      })
+    }
+  }
+
 
 }

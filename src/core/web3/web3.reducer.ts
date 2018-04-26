@@ -1,65 +1,50 @@
+import { initialWeb3State } from './web3.state';
 import { Web3Actions } from './web3.actions';
 import { Transaction } from './transaction.model';
+import { Status, initialStatus } from '../shared/status.model';
 
-export interface Web3State {
-  accounts: string[],
-  activeAccount: string,
-  bootstraped: boolean,
-  error: string,
-  lastBlock: number,
-  loop: boolean,
-  loading: boolean,
-  transactions: Transaction[],
-}
-
-const initialWeb3State: Web3State = {
-  accounts: [],
-  activeAccount: null,
-  bootstraped: false,
-  error: null,
-  lastBlock: 0,
-  loop: false,
-  loading: false,
-  transactions: [],
-}
-
-export function web3 (state = initialWeb3State, action: Web3Actions.Actions) {
+export function web3Reducer (state = initialWeb3State, action: Web3Actions.Actions) {
   switch (action.type) {
 
     case Web3Actions.Types.BOOTSTRAP:
-      return Object.assign({}, state, {loading: true});
+      return Object.assign({}, state, {status: new Status({ loading: true })});
 
     case Web3Actions.Types.BOOTSTRAP_SUCCESS:
-      return Object.assign({}, state, {loading: false, bootstraped: true, error: null});
+      return Object.assign({}, state, {
+        bootstraped: true,
+        status:      new Status({ error: null })
+      });
 
     case Web3Actions.Types.GET_BLOCK_NUMBER:
-      return Object.assign({}, state, {loading: true})
+      return Object.assign({}, state, {
+        status: new Status({ loading: true })
+      })
 
     case Web3Actions.Types.GET_BLOCK_NUMBER_SUCCESS:
       return Object.assign({}, state, {
         lastBlock: action.payload,
-        loading: false
+        status:    new Status()
       });
 
     case Web3Actions.Types.GET_BLOCK_NUMBER_FAILURE:
       return Object.assign({}, state, {
-        error: action.payload,
-        loading: false
+        status: new Status({ error: action.payload })
       });
 
     case Web3Actions.Types.GET_ACCOUNTS:
-      return Object.assign({}, state, {loading: true})
+      return Object.assign({}, state, {
+        status: new Status()
+      })
 
     case Web3Actions.Types.GET_ACCOUNTS_SUCCESS:
       return Object.assign({}, state, {
         accounts: action.payload,
-        loading: false
+        status:   new Status()
       });
 
     case Web3Actions.Types.GET_ACCOUNTS_FAILURE:
       return Object.assign({}, state, {
-        error: action.payload,
-        loading: false
+        status: new Status({ error: action.payload })
       });
 
     case Web3Actions.Types.START_PULL:
@@ -84,10 +69,15 @@ export function web3 (state = initialWeb3State, action: Web3Actions.Actions) {
       return Object.assign({}, state, {transactions: state.transactions.filter(tx => tx.hash != action.payload.hash)});
 
     case Web3Actions.Types.WEB3_ERROR:
-      return Object.assign({}, state, {loading: false, error: action.payload, bootstraped: false});
+      return Object.assign({}, state, {
+        bootstraped: false,
+        status:      new Status({ error: action.payload.status.error })
+      });
 
     case Web3Actions.Types.WEB3_SUCCESS:
-      return Object.assign({}, state, {loading: false, error: null});
+      return Object.assign({}, state, {
+        status: new Status({ error: action.payload })
+      });
 
     default:
       return state;

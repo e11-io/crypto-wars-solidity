@@ -1,0 +1,45 @@
+{
+  "unitProperties":{
+    "id": 0,
+    "name": "x",
+    "stats": [
+      "health", "defense", "attack",
+      "price", "resource", "blocks"
+    ]
+  },
+  "stats": {
+    "health": 0, "defense": 1, "attack": 2,
+    "price": 3, "resource": 4, "blocks": 5
+  },
+  "initialUnits": [{
+    "id": 1,
+    "name": "tiny_warrior",
+    "requirements": [
+      1009
+    ],
+    "stats": [
+      200, 25, 150,
+      100, 0, 1
+    ]
+  },{
+    "id": 2,
+    "name": "archer",
+    "requirements": [
+      2009
+    ],
+    "stats": [
+      100, 20, 250,
+      200, 0, 2
+    ]
+  },{
+    "id": 3,
+    "name": "guardian",
+    "requirements": [
+      3009
+    ],
+    "stats": [
+      500, 250, 50,
+      500, 0, 4
+    ]
+  }]
+}

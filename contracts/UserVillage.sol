@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.23;
 
 import 'zeppelin-solidity/contracts/token/ERC20Basic.sol';
 import 'zeppelin-solidity/contracts/ownership/NoOwner.sol';
@@ -40,9 +40,9 @@ contract UserVillage is NoOwner, Versioned {
 	UserVault userVault;
 
 	/**
-   * @dev UserVillage Constructor: Instantiate User Village contract.
+   * @dev Constructor: Instantiate User Village contract.
    */
-	function UserVillage() public {
+	constructor() public {
 	}
 
 	/**
@@ -106,9 +106,6 @@ contract UserVillage is NoOwner, Versioned {
     userVault = _userVault;
   }
 
-
-
-
 	/**
    * @notice Creates a new village
    * @dev Function to create a village
@@ -129,7 +126,7 @@ contract UserVillage is NoOwner, Versioned {
 
 		villages[msg.sender] = _name;
 		addresses[keccak256(_username)] = msg.sender;
-		VillageCreated(msg.sender, _name, _username);
+		emit VillageCreated(msg.sender, _name, _username);
   }
 
 	/**

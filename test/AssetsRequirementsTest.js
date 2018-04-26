@@ -2,8 +2,11 @@ const AssetsRequirements = artifacts.require('AssetsRequirements');
 const BuildingsData = artifacts.require('BuildingsData');
 const BuildingsQueue = artifacts.require('BuildingsQueue');
 const ExperimentalToken = artifacts.require('ExperimentalToken');
+const UnitsData = artifacts.require('UnitsData');
+const UnitsQueue = artifacts.require('UnitsQueue');
 const UserBuildings = artifacts.require('UserBuildings');
 const UserResources = artifacts.require('UserResources');
+const UserUnits = artifacts.require('UserUnits');
 const UserVault = artifacts.require('UserVault');
 const UserVillage = artifacts.require('UserVillage');
 
@@ -14,32 +17,49 @@ const { setContractsTest } = require('./helpers/setContractsTest');
 
 const buildingsMock = require('../mocks/buildings-test');
 const stat = buildingsMock.stats;
+const unitsMock = require('../mocks/units-test');
+
+const cityCenter = buildingsMock.initialBuildings.find(b => b.name == 'city_center_1');
+const goldMine = buildingsMock.initialBuildings.find(b => b.name == 'gold_mine_1');
+const goldMineLvl2 = buildingsMock.initialBuildings.find(b => b.name == 'gold_mine_2');
+const goldFactory = buildingsMock.initialBuildings.find(b => b.name == 'gold_factory_1');
+const goldStorage = buildingsMock.initialBuildings.find(b => b.name == 'gold_storage_1');
+const crystalStorage = buildingsMock.initialBuildings.find(b => b.name == 'crystal_storage_1');
+
+const tiny_warrior = unitsMock.initialUnits.find(unit => unit.name == 'tiny_warrior');
+const archer = unitsMock.initialUnits.find(unit => unit.name == 'archer');
+const guardian = unitsMock.initialUnits.find(unit => unit.name == 'guardian');
 
 contract('Assets Requirements Test', (accounts) => {
-  let assetsRequirements, buildingsQueue, buildingsData, userResources, userVillage, userVault, experimentalToken;
+  let assetsRequirements,
+      buildingsData,
+      buildingsQueue,
+      experimentalToken,
+      unitsData,
+      unitsQueue,
+      userBuildings,
+      userResources,
+      userUnits,
+      userVault,
+      userVillage;
 
   const Alice = accounts[0];
   const Bob = accounts[1];
   const ether = Math.pow(10,18);
   const initialUserBuildings = [
-    buildingsMock.initialBuildings[0].id,
+    cityCenter.id,
   ];
-
-  const goldMine = buildingsMock.initialBuildings[1];
-  const goldMineLvl2 = buildingsMock.initialBuildings[4];
-  const goldFactory = buildingsMock.initialBuildings[7];
-  const goldStorage = buildingsMock.initialBuildings[11];
-  const crystalStorage = buildingsMock.initialBuildings[12];
-
-
 
   beforeEach(async () => {
     assetsRequirements = await AssetsRequirements.new();
     buildingsData = await BuildingsData.new();
     buildingsQueue = await BuildingsQueue.new();
     experimentalToken = await ExperimentalToken.new();
+    unitsData = await UnitsData.new();
+    unitsQueue = await UnitsQueue.new();
     userBuildings = await UserBuildings.new();
     userResources = await UserResources.new();
+    userUnits = await UserUnits.new();
     userVault = await UserVault.new();
     userVillage = await UserVillage.new();
 
@@ -48,16 +68,27 @@ contract('Assets Requirements Test', (accounts) => {
       buildingsData,
       buildingsQueue,
       experimentalToken,
+      unitsData,
+      unitsQueue,
       userBuildings,
       userResources,
+      userUnits,
       userVault,
       userVillage,
     });
 
+    // set buildings data.
     for (var i = 0; i < buildingsMock.initialBuildings.length; i++) {
       await buildingsData.addBuilding(buildingsMock.initialBuildings[i].id,
         buildingsMock.initialBuildings[i].name,
         buildingsMock.initialBuildings[i].stats);
+    }
+
+    // set units data.
+    for (var i = 0; i < unitsMock.initialUnits.length; i++) {
+      await unitsData.addUnit(unitsMock.initialUnits[i].id,
+        unitsMock.initialUnits[i].name,
+        unitsMock.initialUnits[i].stats);
     }
 
     await userVillage.setInitialBuildings(initialUserBuildings);
@@ -79,11 +110,20 @@ contract('Assets Requirements Test', (accounts) => {
     assert.equal(requirements.toString(), goldMine.requirements.toString());
   })
 
+  it('Set Unit Requirements', async () => {
+    await assetsRequirements.setAssetRequirements(archer.id, archer.requirements);
+
+    let requirements = await assetsRequirements.getRequirements.call(archer.id);
+
+    assert.equal(requirements.toString(), archer.requirements.toString());
+  })
+
   context('Set needed buildings requirement Period', async () => {
     beforeEach(async () => {
       await assetsRequirements.setAssetRequirements(goldMine.id, goldMine.requirements);
       await assetsRequirements.setAssetRequirements(goldFactory.id, goldFactory.requirements);
       await assetsRequirements.setAssetRequirements(goldStorage.id, goldStorage.requirements);
+      await assetsRequirements.setAssetRequirements(archer.id, archer.requirements);
     })
 
     it('Add Asset Requirement', async () => {
@@ -94,12 +134,28 @@ contract('Assets Requirements Test', (accounts) => {
       assert.equal(requirements.toString(), goldMine.requirements.concat([crystalStorage.id]));
     })
 
+    it('Add Unit Requirement', async () => {
+      await assetsRequirements.addAssetRequirement(archer.id, crystalStorage.id);
+
+      let requirements = await assetsRequirements.getRequirements.call(archer.id);
+
+      assert.equal(requirements.toString(), archer.requirements.concat([crystalStorage.id]));
+    })
+
     it('Remove Asset Requirement', async () => {
       await assetsRequirements.removeAssetRequirement(goldStorage.id, goldStorage.requirements[0]);
 
       let requirements = await assetsRequirements.getRequirements.call(goldStorage.id);
 
       assert.equal(requirements.toString(), goldStorage.requirements.slice(1).toString());
+    })
+
+    it('Remove Unit Requirement', async () => {
+      await assetsRequirements.removeAssetRequirement(archer.id, archer.requirements[0]);
+
+      let requirements = await assetsRequirements.getRequirements.call(archer.id);
+
+      assert.equal(requirements.toString(), archer.requirements.slice(1).toString());
     })
 
     it('Update Asset Requirement', async () => {
@@ -109,98 +165,107 @@ contract('Assets Requirements Test', (accounts) => {
       assert.equal(requirements.toString(), crystalStorage.id.toString());
     })
 
+    it('Update Unit Requirement', async () => {
+      await assetsRequirements.updateAssetRequirement(archer.id, archer.requirements[0], crystalStorage.id);
+
+      let requirements = await assetsRequirements.getRequirements.call(archer.id);
+      assert.equal(requirements.toString(), crystalStorage.id.toString());
+    })
+
     it('Set Assets Requirements Errors', async () => {
       // Passing _id equal to 0
-      assertRevert(async () => {
+      await assertRevert(async () => {
         await assetsRequirements.setAssetRequirements(0, goldMine.requirements);
       })
 
       // Passing nonexistent building _id
-      assertRevert(async () => {
+      await assertRevert(async () => {
         await assetsRequirements.setAssetRequirements(12345, goldMine.requirements);
       })
 
       // Passing empty _requirements array
-      assertRevert(async () => {
+      await assertRevert(async () => {
         await assetsRequirements.setAssetRequirements(goldMine.id, []);
       })
 
       // Trying to create an existen _id and _requirement
-      assertRevert(async () => {
+      await assertRevert(async () => {
         await assetsRequirements.setAssetRequirements(goldMine.id, goldMine.requirements);
       })
 
       // Passing nonexistent _requirement
-      assertRevert(async () => {
+      await assertRevert(async () => {
         await assetsRequirements.setAssetRequirements(goldMine.id, [12345]);
       })
     })
 
     it('Add Assets Requirements Errors', async () => {
       // Passing _requirement > 0
-      assertRevert(async () => {
+      await assertRevert(async () => {
         await assetsRequirements.addAssetRequirement(goldMine.id, 0);
       })
 
       // Passing same _id and _requirement
-      assertRevert(async () => {
+      await assertRevert(async () => {
         await assetsRequirements.addAssetRequirement(goldMine.id, goldMine.id);
       })
 
       // Passing nonexistent requirement
-      assertRevert(async () => {
+      await assertRevert(async () => {
         await assetsRequirements.addAssetRequirement(goldMine.id, 12345);
       })
 
       // Passing a requirement that the building already has
-      assertRevert(async () => {
+      await assertRevert(async () => {
         await assetsRequirements.addAssetRequirement(goldMine.id, goldMine.requirements[0]);
       })
 
       // Passing a same typeid building as a requirement
-      assertRevert(async () => {
+      await assertRevert(async () => {
         await assetsRequirements.addAssetRequirement(goldMineLvl2.id, [goldMine.id]);
       })
     })
 
     it('Remove Assets Requirements Errors', async () => {
       // Passing _requirement > 0
-      assertRevert(async () => {
+      await assertRevert(async () => {
         await assetsRequirements.removeAssetRequirement(goldMine.id, 0);
       })
 
       // Passing same _id and _requirement
-      assertRevert(async () => {
+      await assertRevert(async () => {
         await assetsRequirements.removeAssetRequirement(goldMine.id, goldMine.id);
       })
 
       // Removing a requirement that the building doesnt have.
-      assertRevert(async () => {
+      await assertRevert(async () => {
         await assetsRequirements.removeAssetRequirement(goldMine.id, crystalStorage.id);
       })
     })
 
     it('Update Assets Requirements Errors', async () => {
       // Trying to upgrade nonexistent requierement
-      assertRevert(async () => {
+      await assertRevert(async () => {
         await assetsRequirements.updateAssetRequirement(crystalStorage.id, goldMine.requirements[0], 1004);
       })
 
       // Passing 0 as _newRequirement
-      assertRevert(async () => {
+      await assertRevert(async () => {
         await assetsRequirements.updateAssetRequirement(goldMine.id, goldMine.requirements[0], 0);
       })
 
       // Passing nonexistent building as _newRequirement
-      assertRevert(async () => {
+      await assertRevert(async () => {
         await assetsRequirements.updateAssetRequirement(goldMine.id, goldMine.requirements[0], 12345);
       })
 
       // Passing as _oldRequirement a building id that the requirement doesnt have.
-      assertRevert(async () => {
+      await assertRevert(async () => {
         await assetsRequirements.updateAssetRequirement(goldMine.id, crystalStorage.id, 1007);
       })
     })
+
+
 
       context('User with Village period', async() => {
         beforeEach(async () => {

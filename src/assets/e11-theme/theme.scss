@@ -1,6 +1,8 @@
 @import 'e11-font';
 @import 'global';
 @import 'mixins';
+@import 'components/avatar';
+@import 'components/badge';
 @import 'components/box-container';
 @import 'components/button';
 @import 'components/catalog';
@@ -8,9 +10,12 @@
 @import 'components/input';
 @import 'components/progress-bar';
 @import 'components/segments';
+@import 'components/slider';
 
 @mixin e11-default-theme() {
     .e11-default-theme {
+        @include e11-avatar();
+        @include e11-badge();
         @include e11-box-container();
         @include e11-button();
         @include e11-catalog();
@@ -18,5 +23,6 @@
         @include e11-input();
         @include e11-progress-bar();
         @include e11-segments();
+        @include e11-slider();
     }
 }

@@ -1,10 +1,12 @@
-import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, RouterStateSnapshot, CanActivate, Router } from "@angular/router";
-import { Store } from "@ngrx/store";
-import { Observable } from "rxjs/Observable";
-import { CryptoWarsState } from "../../app.reducer";
-import { ContractsService } from "../services/contracts.service";
-import { Web3Service } from "../services/web3.service";
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, RouterStateSnapshot, CanActivate, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
+
+import { CryptoWarsState } from '../../app.state';
+
+import { ContractsService } from '../../../core/shared/contracts.service';
+import { Web3Service } from '../../../core/web3/web3.service';
 
 @Injectable()
 export class UserGuard implements CanActivate {
@@ -18,7 +20,7 @@ export class UserGuard implements CanActivate {
               private contracts: ContractsService,
               private web3Service: Web3Service,
               private router: Router) {
-    this.bootstraped$ = this.store.select(s => s.web3State.bootstraped);
+    this.bootstraped$ = this.store.select(s => s.web3.bootstraped);
   }
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {

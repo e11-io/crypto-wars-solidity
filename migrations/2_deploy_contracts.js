@@ -1,87 +1,95 @@
 const ExperimentalToken = artifacts.require('e11-contracts/contracts/ExperimentalToken.sol');
-const SimpleToken = artifacts.require('zeppelin-solidity/contracts/examples/SimpleToken.sol');
 
 const AssetsRequirements = artifacts.require('./AssetsRequirements.sol');
 const BuildingsData = artifacts.require('./BuildingsData.sol');
 const BuildingsQueue = artifacts.require('./BuildingsQueue.sol');
+const UnitsData = artifacts.require('./UnitsData.sol');
+const UnitsQueue = artifacts.require('./UnitsQueue.sol');
 const UserBuildings = artifacts.require('./UserBuildings.sol');
 const UserResources = artifacts.require('./UserResources.sol');
+const UserUnits = artifacts.require('./UserUnits.sol');
 const UserVault = artifacts.require('./UserVault.sol');
 const UserVillage = artifacts.require('./UserVillage.sol');
 
+const { initializeContracts } = require('../test/helpers/initializeContracts');
 const buildingsMock = require('../mocks/buildings-production');
 const resourcesMock = require('../mocks/resources-production');
+const unitsMock = require('../mocks/units-production');
 
 const initialUserBuildings = [
   buildingsMock.initialBuildings[0].id,
 ];
 
 module.exports = function(deployer) {
-  deployer.deploy(ExperimentalToken).then(async () => {
-    // Deploy contracts
-    await deployer.deploy(AssetsRequirements);
-    await deployer.deploy(BuildingsData);
-    await deployer.deploy(BuildingsQueue);
-    await deployer.deploy(SimpleToken);
-    await deployer.deploy(UserBuildings);
-    await deployer.deploy(UserResources);
-    await deployer.deploy(UserVault);
-    await deployer.deploy(UserVillage);
+  // Deploy contracts
+  deployer.deploy([
+    AssetsRequirements,
+    BuildingsData,
+    BuildingsQueue,
+    ExperimentalToken,
+    UnitsData,
+    UnitsQueue,
+    UserBuildings,
+    UserResources,
+    UserUnits,
+    UserVault,
+    UserVillage
+  ]).then(async () => {
 
-    // Setup deployed contracts
     let assetsRequirements = await AssetsRequirements.deployed();
     let buildingsData = await BuildingsData.deployed();
     let buildingsQueue = await BuildingsQueue.deployed();
+    let experimentalToken = await ExperimentalToken.deployed();
+    let unitsData = await UnitsData.deployed();
+    let unitsQueue = await UnitsQueue.deployed();
     let userBuildings = await UserBuildings.deployed();
     let userResources = await UserResources.deployed();
+    let userUnits = await UserUnits.deployed();
     let userVault = await UserVault.deployed();
     let userVillage = await UserVillage.deployed();
 
-    assetsRequirements.setBuildingsData(BuildingsData.address);
-    assetsRequirements.setBuildingsQueue(BuildingsQueue.address);
-    assetsRequirements.setUserBuildings(UserBuildings.address);
+    // Setup deployed contracts
+    await initializeContracts({
+      assetsRequirements,
+      buildingsData,
+      buildingsQueue,
+      experimentalToken,
+      unitsData,
+      unitsQueue,
+      userBuildings,
+      userResources,
+      userUnits,
+      userVault,
+      userVillage,
+    }, true);
 
-    buildingsQueue.setAssetsRequirements(AssetsRequirements.address);
-    buildingsQueue.setBuildingsData(BuildingsData.address);
-    buildingsQueue.setUserBuildings(UserBuildings.address);
-    buildingsQueue.setUserResources(UserResources.address);
+    // Initialize Buildings and Units data & requirements
+    let assets = [{
+        initialAssets: buildingsMock.initialBuildings,
+        contractFunction: buildingsData.addBuilding
+      },{
+        initialAssets: unitsMock.initialUnits,
+        contractFunction: unitsData.addUnit
+      }];
 
-    userBuildings.setBuildingsData(BuildingsData.address);
-    userBuildings.setBuildingsQueue(BuildingsQueue.address);
-    userBuildings.setUserResources(UserResources.address);
-    userBuildings.setUserVillage(UserVillage.address);
-
-    userResources.setBuildingsQueue(BuildingsQueue.address);
-    userResources.setUserBuildings(UserBuildings.address);
-    userResources.setUserVillage(UserVillage.address);
-
-    userVault.setExperimentalToken(ExperimentalToken.address);
-    userVault.setUserVillage(UserVillage.address);
-
-    await userVillage.setBuildingsData(BuildingsData.address);
-    userVillage.setUserBuildings(UserBuildings.address);
-    userVillage.setUserResources(UserResources.address);
-    userVillage.setUserVault(UserVault.address);
-
-    // Initialize buildings data
-    for (var i = 0; i < buildingsMock.initialBuildings.length; i++) {
-      if (i == 0 || i == buildingsMock.initialBuildings.length - 1) {
-        await buildingsData.addBuilding(buildingsMock.initialBuildings[i].id,
-          buildingsMock.initialBuildings[i].name,
-          buildingsMock.initialBuildings[i].stats);
-      } else {
-        buildingsData.addBuilding(buildingsMock.initialBuildings[i].id,
-          buildingsMock.initialBuildings[i].name,
-          buildingsMock.initialBuildings[i].stats);
+    for (var j = 0; j < assets.length; j++) {
+      // Initialize Data
+      for (var i = 0; i < assets[j].initialAssets.length; i++) {
+        // If is the last asset wait for confirmation
+        if (i == assets[j].initialAssets.length - 1) {
+          await assets[j].contractFunction(assets[j].initialAssets[i].id, assets[j].initialAssets[i].name, assets[j].initialAssets[i].stats);
+        } else {
+          assets[j].contractFunction(assets[j].initialAssets[i].id, assets[j].initialAssets[i].name, assets[j].initialAssets[i].stats);
+        }
       }
-    }
-
-    // Set Assets requirements
-    for (var i = 0; i < buildingsMock.initialBuildings.length; i++) {
-      if (buildingsMock.initialBuildings[i].requirements.length > 0) {
-        assetsRequirements.setAssetRequirements(buildingsMock.initialBuildings[i].id, buildingsMock.initialBuildings[i].requirements);
+      // Initialize Requirements
+      for (var i = 0; i < assets[j].initialAssets.length; i++) {
+        if (assets[j].initialAssets[i].requirements.length > 0) {
+          assetsRequirements.setAssetRequirements(assets[j].initialAssets[i].id, assets[j].initialAssets[i].requirements);
+        }
       }
-    }
+    };
+
 
     userVillage.setInitialBuildings(initialUserBuildings);
     userResources.setInitialResources(...resourcesMock.initialResources);

@@ -1,0 +1,24 @@
+@mixin e11-badge() {
+
+    $badge-border-radius: 18px;
+    $badge-background: #90969F;
+    $badge-color: $color-text;
+    $badge-font-size: 1.5rem;
+    $badge-padding: 4px 9px;
+    $badge-shadow: 0 -1px 0 0 #E6EAEE;
+
+    .e11-badge {
+      @extend .noselect;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: $badge-border-radius;
+      font-size: $badge-font-size;
+      padding: $badge-padding;
+      background: $badge-background;
+      color: $badge-color;
+      box-shadow: $badge-shadow;
+    }
+
+}

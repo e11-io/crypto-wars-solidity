@@ -144,7 +144,7 @@ p, span, strong {
 
 .disabled {
   cursor: default;
-  opacity: .7;
+  opacity: .6;
   &:active {
     pointer-events: none;
   }

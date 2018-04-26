@@ -55,6 +55,18 @@
         "goldRate": "Gold rate",
         "crystalRate": "Crystal rate"
       },
+      "barracks_1": {
+        "name": "Barracks",
+        "description": "Train some units to fight for your realm!"
+      },
+      "barracks_2": {
+        "name": "Barracks",
+        "description": "Train some units to fight for your realm!"
+      },
+      "barracks_3": {
+        "name": "Barracks",
+        "description": "Train some units to fight for your realm!"
+      },
       "city_center_1": {
         "name": "City center",
         "description": "The core of your village. Upgrade it to unlock new buildings and units!"
@@ -185,7 +197,23 @@
       }
     },
     "units": {
-
+      "stats": {
+        "health": "Health",
+        "attack": "Attack",
+        "defense": "Defense"
+      },
+      "tiny_warrior": {
+        "name": "Tiny warrior",
+        "description": "The first unit you will unlock. He is as short as he is brave. His tiny legs will rush all over the realm, trying to destroy everything that steps in his way. He always moves with his pack."
+      },
+      "archer": {
+        "name": "Archer",
+        "description": "Your archers are lonely creatures, one of your army’s most valuable resources - for ranged and really precise attacks. Have a few of these to ensure a great attack."
+      },
+      "guardian": {
+        "name": "Guardian",
+        "description": "Slow but strong, clumsy but steady. Your guardians will never have enough, they can really take a punch! The perfect protector for your pack of tiny warriors."
+      }
     },
     "RESOURCES": {
       "gold": "Gold",

@@ -7,53 +7,18 @@
   </e11-queue-navbar>
 
   <div class="buildings-catalog e11-catalog">
-    <div class="catalog-container">
-      <div class="catalog-item" *ngFor="let building of availableUserBuildings; trackBy: trackByFn">
+    <div class="catalog-container" *ngIf="this.availablePlayerBuildings.length">
 
-        <div class="item-unavailable" *ngIf="building.missingRequirements.length">
-          <i class="e11-icon e11f-error"></i>
-          <h4 class="title">
-            <span class="name">
-              {{'DATA.buildings.' + [building.name] + '.name' | translate}} Lv. {{building.level}}
-            </span>
-            <br>
-            Unavailable
-          </h4>
-          <div class="requirements">
-            <span>
-              Requires
-              <ng-template ngFor let-requirement let-i="index" [ngForOf]="building.missingRequirements">
-                {{'DATA.buildings.' + buildingsMap[requirement].name + '.name' | translate}}
-                Lv. {{buildingsMap[requirement].level}}<!--comments cancel white space
-             --><ng-template [ngIf]="i + 1 < building.missingRequirements.length">,</ng-template>
-              </ng-template>
-            </span>
-          </div>
-        </div>
+      <div class="catalog-item" *ngFor="let building of availablePlayerBuildings; trackBy: trackByFn">
 
         <div class="hover-area">
           <div class="item-hover-info">
             <div class="item-title">
               <span class="item-name">
-                {{'DATA.buildings.' + [building.name] + '.name' | translate}} - Lv. {{building.level}}
+                Stats:
+                Lv. {{building.level}}
                 {{building.owned && building.nextLevelId? '-> ' + buildingsMap[building.nextLevelId].level: null}}
               </span>
-              <div class="item-price" [attr.color]="building.resource" *ngIf="!building.maxLevel">
-                <div class="bullet-outline">
-                </div>
-                <span *ngIf="building.previousLevelId > 0 && building.owned && building.nextLevelId">
-                  {{buildingsMap[building.nextLevelId].price}}
-                </span>
-                <span *ngIf="building.previousLevelId === 0 && !building.owned">
-                  {{building.price}}
-                </span>
-                <span *ngIf="building.previousLevelId === 0 && building.owned && building.nextLevelId">
-                  {{buildingsMap[building.nextLevelId].price}}
-                </span>
-              </div>
-            </div>
-            <div class="item-description">
-              {{'DATA.buildings.' + [building.name] + '.description' | translate}}
             </div>
             <div class="item-stats">
               <ng-template ngFor let-stat [ngForOf]="statsArray">
@@ -74,8 +39,18 @@
           </div>
 
           <div class="item-avatar"
-               [style.background-image]="'url(/assets/img/buildings/thumbnails/' + building.name + '.png)'">
+               [class.disabled]="buildingsMap[building.nextLevelId].missingRequirements.length"
+               [style.background-image]="'url(/assets/img/buildings/thumbnails/' + building.name + '.png)'"
+               *ngIf="building.owned">
           </div>
+          <div class="item-avatar"
+               [class.disabled]="building.missingRequirements.length"
+               [style.background-image]="'url(/assets/img/buildings/thumbnails/' + building.name + '.png)'"
+               *ngIf="!building.owned">
+          </div>
+        </div>
+        <div class="item-info">
+
           <div class="item-title">
             <span class="item-name"*ngIf="building.owned">
               {{'DATA.buildings.' + [building.name] + '.name' | translate}} - Lv. {{building.level}}
@@ -109,72 +84,107 @@
           <div class="item-description">
             {{'DATA.buildings.' + [building.name] + '.description' | translate}}
           </div>
+
+          <ng-template [ngIf]="!building.owned">
+            <button class="item-button e11-button"
+                    type="button"
+                    [class.disabled]="building.maxLevel ||
+                                      playerResources[building.resource] < building.price ||
+                                      building.inProgress ||
+                                      building.waiting"
+                    *ngIf="!building.missingRequirements.length"
+                    (click)="itemActionBuild(building)">
+                <ng-container *ngIf="!building.inProgress">
+                  <ng-template [ngIf]="playerResources[building.resource] >= building.price &&
+                                       !building.waiting">
+                      Build
+                    </ng-template>
+                    <ng-template [ngIf]="playerResources[building.resource] < building.price &&
+                                         !building.waiting">
+                      Not enough {{building.resource}}
+                    </ng-template>
+                    <ng-template [ngIf]="building.waiting">
+                      Waiting for transaction...
+                    </ng-template>
+                  <ng-template [ngIf]="building.maxLevel">
+                    Max Level
+                  </ng-template>
+                </ng-container>
+                <ng-template [ngIf]="building.inProgress">
+                  Creating building...
+                </ng-template>
+            </button>
+
+            <div class="requirements-overview"
+                 *ngIf="!building.inProgress &&
+                        building.missingRequirements &&
+                        building.missingRequirements.length">
+              <span>Requires:</span>
+
+              <div class="requirement-image"
+                   tooltip-position="bottom"
+                   [attr.tooltip]="('DATA.buildings.' + buildingsMap[requirement].name + '.name' | translate) + ' Lv. ' + buildingsMap[requirement].level"
+                   [style.background-image]="'url(/assets/img/buildings/thumbnails/' + buildingsMap[requirement].name + '.png)'"
+                   *ngFor="let requirement of building.missingRequirements">
+              </div>
+            </div>
+          </ng-template>
+
+          <ng-template [ngIf]="building.owned">
+            <button class="item-button e11-button"
+                    type="button"
+                    [class.disabled]="building.maxLevel ||
+                                      playerResources[buildingsMap[building.nextLevelId].resource] < buildingsMap[building.nextLevelId].price ||
+                                      building.inProgress ||
+                                      building.waiting"
+                    *ngIf="!buildingsMap[building.nextLevelId].missingRequirements.length"
+                    (click)="itemActionBuild(building)">
+                <ng-container *ngIf="!building.inProgress">
+                  <ng-template [ngIf]="!building.maxLevel">
+                    <ng-template [ngIf]="playerResources[buildingsMap[building.nextLevelId].resource] >= buildingsMap[building.nextLevelId].price &&
+                                         !building.waiting">
+                      Upgrade to Level {{buildingsMap[building.nextLevelId].level}}
+                    </ng-template>
+                    <ng-template [ngIf]="playerResources[buildingsMap[building.nextLevelId].resource] < buildingsMap[building.nextLevelId].price &&
+                                         !building.waiting">
+                      Not enough {{buildingsMap[building.nextLevelId].resource}}
+                    </ng-template>
+                    <ng-template [ngIf]="building.waiting">
+                      Waiting for transaction...
+                    </ng-template>
+                  </ng-template>
+                  <ng-template [ngIf]="building.maxLevel">
+                    Max Level
+                  </ng-template>
+                </ng-container>
+                <ng-template [ngIf]="building.inProgress">
+                  Creating building...
+                </ng-template>
+            </button>
+
+            <div class="requirements-overview"
+                 *ngIf="!building.inProgress &&
+                        buildingsMap[building.nextLevelId] &&
+                        buildingsMap[building.nextLevelId].missingRequirements &&
+                        buildingsMap[building.nextLevelId].missingRequirements.length">
+              <span>Requires:</span>
+
+              <div class="requirement-image"
+                   tooltip-position="bottom"
+                   [attr.tooltip]="('DATA.buildings.' + buildingsMap[requirement].name + '.name' | translate) + ' Lv. ' + buildingsMap[requirement].level"
+                   [style.background-image]="'url(/assets/img/buildings/thumbnails/' + buildingsMap[requirement].name + '.png)'"
+                   *ngFor="let requirement of buildingsMap[building.nextLevelId].missingRequirements">
+              </div>
+            </div>
+
+          </ng-template>
         </div>
 
-        <ng-template [ngIf]="!building.owned">
-          <button class="item-button e11-button"
-                  type="button"
-                  [class.disabled]="building.maxLevel ||
-                                    userResources[building.resource] < building.price ||
-                                    building.inProgress ||
-                                    building.waiting"
-                  (click)="itemActionBuild(building)">
-              <ng-container *ngIf="!building.inProgress">
-                <ng-template [ngIf]="userResources[building.resource] >= building.price &&
-                                     !building.waiting">
-                    Build
-                  </ng-template>
-                  <ng-template [ngIf]="userResources[building.resource] < building.price &&
-                                       !building.waiting">
-                    Not enough {{building.resource}}
-                  </ng-template>
-                  <ng-template [ngIf]="building.waiting">
-                    Waiting for transaction...
-                  </ng-template>
-                <ng-template [ngIf]="building.maxLevel">
-                  Max Level
-                </ng-template>
-              </ng-container>
-              <ng-template [ngIf]="building.inProgress">
-                Creating building...
-              </ng-template>
-          </button>
-        </ng-template>
-
-        <ng-template [ngIf]="building.owned">
-          <button class="item-button e11-button"
-                  type="button"
-                  [class.disabled]="building.maxLevel ||
-                                    userResources[buildingsMap[building.nextLevelId].resource] < buildingsMap[building.nextLevelId].price ||
-                                    building.inProgress ||
-                                    building.waiting"
-                  (click)="itemActionBuild(building)">
-              <ng-container *ngIf="!building.inProgress">
-                <ng-template [ngIf]="!building.maxLevel">
-                  <ng-template [ngIf]="userResources[buildingsMap[building.nextLevelId].resource] >= buildingsMap[building.nextLevelId].price &&
-                                       !building.waiting">
-                    Upgrade to Level {{buildingsMap[building.nextLevelId].level}}
-                  </ng-template>
-                  <ng-template [ngIf]="userResources[buildingsMap[building.nextLevelId].resource] < buildingsMap[building.nextLevelId].price &&
-                                       !building.waiting">
-                    Not enough {{buildingsMap[building.nextLevelId].resource}}
-                  </ng-template>
-                  <ng-template [ngIf]="building.waiting">
-                    Waiting for transaction...
-                  </ng-template>
-                </ng-template>
-                <ng-template [ngIf]="building.maxLevel">
-                  Max Level
-                </ng-template>
-              </ng-container>
-              <ng-template [ngIf]="building.inProgress">
-                Creating building...
-              </ng-template>
-
-          </button>
-        </ng-template>
       </div>
+    </div>
 
+    <div class="loading-text" *ngIf="!this.availablePlayerBuildings.length">
+      Fetching available buildings...
     </div>
   </div>
 

@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.23;
 
 import 'zeppelin-solidity/contracts/math/SafeMath.sol';
 import 'zeppelin-solidity/contracts/ownership/NoOwner.sol';
@@ -75,7 +75,7 @@ contract BuildingsQueue is NoOwner, Versioned {
    * @notice Constructor: Instantiate Buildings Queue contract.
    * @dev Constructor function to provide User Buildings address and instantiate it.
    */
-  function BuildingsQueue() public {
+  constructor() public {
   }
 
   /*
@@ -177,11 +177,11 @@ contract BuildingsQueue is NoOwner, Versioned {
       uint64(endBlock)
     ));
 
-    AddNewBuildingToQueue(msg.sender,
-                          _id,
-                          uint(index),
-                          startBlock,
-                          endBlock);
+    emit AddNewBuildingToQueue(msg.sender,
+                               _id,
+                               uint(index),
+                               startBlock,
+                               endBlock);
   }
 
   /*
@@ -194,12 +194,14 @@ contract BuildingsQueue is NoOwner, Versioned {
    */
   function updateQueue(address _user) public {
     require(_user != address(0));
-    require(userBuildingsQueue[_user].length > 0);
+    if (userBuildingsQueue[_user].length == 0) {
+      return;
+    }
 
     uint length = userBuildingsQueue[_user].length;
     uint i = 0;
 
-    while (i < length && userBuildingsQueue[_user][i].endBlock <= block.number) {
+    while (i < length && userBuildingsQueue[_user][i].endBlock < block.number) {
       i++;
     }
 
@@ -207,7 +209,7 @@ contract BuildingsQueue is NoOwner, Versioned {
     uint[] memory finishedIndexes = new uint[](i);
 
     if (i == 0) {
-      UpdateQueue(_user, finishedIds, finishedIndexes);
+      emit UpdateQueue(_user, finishedIds, finishedIndexes);
       return;
     }
 
@@ -221,7 +223,7 @@ contract BuildingsQueue is NoOwner, Versioned {
 
     require(shiftUserBuildings(_user, i));
 
-    UpdateQueue(_user, finishedIds, finishedIndexes);
+    emit UpdateQueue(_user, finishedIds, finishedIndexes);
   }
 
   /*
@@ -251,7 +253,7 @@ contract BuildingsQueue is NoOwner, Versioned {
     consumeResources(msg.sender, price, resourceType);
 
     if (buildingIsInQueue) {
-      require(userBuildingsQueue[msg.sender][buildingIndexInQueue].endBlock <= block.number);
+      require(userBuildingsQueue[msg.sender][buildingIndexInQueue].endBlock < block.number);
       updateQueue(msg.sender);
     }
 
@@ -264,7 +266,7 @@ contract BuildingsQueue is NoOwner, Versioned {
       uint32(_idOfUpgrade), uint32(_index), uint64(startBlock), uint64(endBlock)
     ));
 
-    UpgradeBuilding(_idOfUpgrade, _index, startBlock, endBlock);
+    emit UpgradeBuilding(_idOfUpgrade, _index, startBlock, endBlock);
   }
 
   /*
@@ -550,7 +552,7 @@ contract BuildingsQueue is NoOwner, Versioned {
 
     require(userBuildings.updateBuildingStatus(msg.sender, _id, _index));
 
-    RemoveBuilding(msg.sender, _id, _index);
+    emit RemoveBuilding(msg.sender, _id, _index);
 
   }
 

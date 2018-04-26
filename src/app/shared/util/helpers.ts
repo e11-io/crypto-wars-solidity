@@ -1,8 +1,9 @@
-import { environment } from '../../../environments/environment';
 import { Store } from '@ngrx/store';
 
+import { environment } from '../../../environments/environment';
+
 import * as selectors from '../../app.selectors';
-import { Building } from '../../../core/buildings/building.model';
+import { Building } from '../models/building.model';
 
 export function convertBlocksToSeconds(blocks: number): number {
   return (blocks * environment.blockTime);
@@ -18,7 +19,7 @@ export function getRemainingSeconds(toBlock: number, store: Store<any>): number 
 
 export function getCurrentBlockFromStore(store: Store<any>): number {
   let blockNumber: number = 0;
-  store.select('web3State').take(1).subscribe(web3 => {
+  store.select('web3').take(1).subscribe(web3 => {
     blockNumber = web3.lastBlock;
   });
   return blockNumber;

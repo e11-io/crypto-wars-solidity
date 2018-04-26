@@ -1,9 +1,10 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.23;
 
 import 'zeppelin-solidity/contracts/ownership/NoOwner.sol';
 import './Versioned.sol';
 import './BuildingsData.sol';
 import './BuildingsQueue.sol';
+import './UnitsData.sol';
 import './UserBuildings.sol';
 
 /**
@@ -46,6 +47,7 @@ contract AssetsRequirements is NoOwner, Versioned {
   AssetsRequirements previousAssetsRequirements;
   BuildingsData buildingsData;
   BuildingsQueue buildingsQueue;
+  UnitsData unitsData;
   UserBuildings userBuildings;
 
   // Mapping of uint (buildings id) -> uint[] (buildings ids).
@@ -56,7 +58,7 @@ contract AssetsRequirements is NoOwner, Versioned {
    * @notice Constructor: Instantiate Assets Requirements contract.
    * @dev Constructor function.
    */
-  function AssetsRequirements() public {
+  constructor() public {
   }
 
   /*
@@ -80,7 +82,7 @@ contract AssetsRequirements is NoOwner, Versioned {
     setVersion(_version);
   }
 
-  /**
+  /*
    * @notice Instantiate Buildings Data contract.
    * @dev Function to provide Buildings Data address and instantiate it.
    * @param _buildingsData the address of Buildings Data contract. (address)
@@ -111,6 +113,16 @@ contract AssetsRequirements is NoOwner, Versioned {
   }
 
   /*
+   * @notice Instantiate Buildings Data contract.
+   * @dev Function to provide Buildings Data address and instantiate it.
+   * @param _buildingsData the address of Buildings Data contract. (address)
+   */
+  function setUnitsData(UnitsData _unitsData) external onlyOwner {
+    require(_unitsData.isUnitsData());
+    unitsData = _unitsData;
+  }
+
+  /*
    * @notice Add new asset with requirements
    * @dev This method create a new Asset Requirement definition that can be used on the game.
    * @param _id (uint)
@@ -123,7 +135,7 @@ contract AssetsRequirements is NoOwner, Versioned {
                                 uint[] _requirements) external onlyOwner {
 
     require(_id > 0);
-    require(buildingsData.checkBuildingExist(_id));
+    require(buildingsData.checkBuildingExist(_id) || unitsData.checkUnitExist(_id));
     require(_requirements.length > 0);
     require(requirements[_id].length == 0);
 
@@ -133,7 +145,7 @@ contract AssetsRequirements is NoOwner, Versioned {
 
     requirements[_id] = _requirements;
 
-    SetAssetRequirements(_id, _requirements);
+    emit SetAssetRequirements(_id, _requirements);
   }
 
   /*
@@ -159,7 +171,7 @@ contract AssetsRequirements is NoOwner, Versioned {
 
     requirements[_id].push(_requirement);
 
-    AddedAssetRequirement(_id, _requirement);
+    emit AddedAssetRequirement(_id, _requirement);
   }
 
   /*
@@ -186,7 +198,7 @@ contract AssetsRequirements is NoOwner, Versioned {
 
     require(shiftRequirement(_id, i));
 
-    RemovedAssetRequirement(_id, _requirement);
+    emit RemovedAssetRequirement(_id, _requirement);
   }
 
   /*
@@ -214,7 +226,7 @@ contract AssetsRequirements is NoOwner, Versioned {
 
     require(updated);
 
-    UpdatedAssetRequirement(_id, _oldRequirement, _newRequirement);
+    emit UpdatedAssetRequirement(_id, _oldRequirement, _newRequirement);
   }
 
   /*
@@ -251,7 +263,7 @@ contract AssetsRequirements is NoOwner, Versioned {
 
   /*
    * @title Get User Buildings Ids
-   * @dev This method is used to get the buildings in User Buildings that are valid to check requirements. 
+   * @dev This method is used to get the buildings in User Buildings that are valid to check requirements.
    * @param _user (address)
    */
   function getUserBuildingsIds(address _user) internal view returns (uint userBuildingsLength, uint[] userBuildingsIds) {
@@ -336,8 +348,9 @@ contract AssetsRequirements is NoOwner, Versioned {
   */
   function validateRequirement(uint _id, uint _requirement) internal view returns (bool valid)  {
     require(_requirement > 0);
-    // Require to have a different type id
-    require((_id % 1000 != _requirement % 1000));
+
+    // Require to be a unit or to have a different type id
+    require(_id < 1000 || (_id % 1000 != _requirement % 1000));
     require(buildingsData.checkBuildingExist(_requirement));
     return true;
   }

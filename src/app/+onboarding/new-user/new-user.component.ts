@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
-
 @Component({
   selector: 'e11-new-user',
   templateUrl: './new-user.component.html',
@@ -14,8 +13,8 @@ export class NewUserComponent {
 
   @Input() step: string = 'userCreation';
 
-  @Output() newVillageEmitter: EventEmitter<any> = new EventEmitter<any>();
   @Output() newApproveEmitter: EventEmitter<any> = new EventEmitter<any>();
+  @Output() newVillageEmitter: EventEmitter<any> = new EventEmitter<any>();
 
 
   constructor() {

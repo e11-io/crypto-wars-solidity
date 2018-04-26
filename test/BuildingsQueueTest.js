@@ -16,6 +16,22 @@ const { setContractsTest } = require('./helpers/setContractsTest');
 const buildingsMock = require('../mocks/buildings-test');
 const stat = buildingsMock.stats;
 
+const cityCenter = buildingsMock.initialBuildings.find(b => b.name == 'city_center_1');
+const goldMine = buildingsMock.initialBuildings.find(b => b.name == 'gold_mine_1');
+const crystalMine = buildingsMock.initialBuildings.find(b => b.name == 'crystal_mine_1');
+const cityCenterLvl2 = buildingsMock.initialBuildings.find(b => b.name == 'city_center_2');
+const goldMineLvl2 = buildingsMock.initialBuildings.find(b => b.name == 'gold_mine_2');
+const crystalMineLvl2 = buildingsMock.initialBuildings.find(b => b.name == 'crystal_mine_2');
+const portal = buildingsMock.initialBuildings.find(b => b.name == 'portal_1');
+const goldFactory = buildingsMock.initialBuildings.find(b => b.name == 'gold_factory_1');
+const crystalFactory = buildingsMock.initialBuildings.find(b => b.name == 'crystal_factory_1');
+const goldFactoryLvl2 = buildingsMock.initialBuildings.find(b => b.name == 'gold_factory_2');
+const crystalFactoryLvl2 = buildingsMock.initialBuildings.find(b => b.name == 'crystal_factory_2');
+const goldStorage = buildingsMock.initialBuildings.find(b => b.name == 'gold_storage_1');
+const crystalStorage = buildingsMock.initialBuildings.find(b => b.name == 'crystal_storage_1');
+const experiment = buildingsMock.initialBuildings.find(b => b.name == 'experiment_1');
+const cityCenterLvl3 = buildingsMock.initialBuildings.find(b => b.name == 'city_center_3');
+
 contract('Buildings Queue Test', (accounts) => {
   let assetsRequirements, buildingsQueue, buildingsData, userResources, userVillage, userVault, experimentalToken;
 
@@ -23,9 +39,9 @@ contract('Buildings Queue Test', (accounts) => {
   const Bob = accounts[1];
   const ether = Math.pow(10,18);
   const initialUserBuildings = [
-    buildingsMock.initialBuildings[0].id,
-    buildingsMock.initialBuildings[1].id,
-    buildingsMock.initialBuildings[2].id,
+    cityCenter.id,
+    goldMine.id,
+    crystalMine.id,
   ];
 
   beforeEach(async () => {
@@ -67,13 +83,12 @@ contract('Buildings Queue Test', (accounts) => {
   })
 
   it('Add building to queue with no resources', async () => {
-    return assertRevert(async () => {
+    await assertRevert(async () => {
       await buildingsQueue.addNewBuildingToQueue(2);
     })
   })
 
   it('Add free building to queue', async () => {
-    let cityCenter = buildingsMock.initialBuildings[0];
 
     const initialBuildings = await userBuildings.getUserBuildings.call(Alice);
     assert.equal(initialBuildings.toString(), '');
@@ -90,8 +105,6 @@ contract('Buildings Queue Test', (accounts) => {
     await userVillage.create('My new village!','Cool player');
     await userResources.giveResourcesToUser(Alice, 500, 500, 200);
 
-    let goldMine = buildingsMock.initialBuildings[1];
-    let goldMineLvl2 = buildingsMock.initialBuildings[4];
 
     let [initial_gold,,] = await userResources.getUserResources.call(Alice);
 
@@ -123,7 +136,6 @@ contract('Buildings Queue Test', (accounts) => {
     })
 
     it('Add gold factory to queue', async () => {
-      let goldFactory = buildingsMock.initialBuildings[7];
 
       await buildingsQueue.addNewBuildingToQueue(goldFactory.id);
 
@@ -133,7 +145,6 @@ contract('Buildings Queue Test', (accounts) => {
     })
 
     it('Add crystal factory to queue', async () => {
-      let crystalFactory = buildingsMock.initialBuildings[8];
       await buildingsQueue.addNewBuildingToQueue(crystalFactory.id);
 
       const [id, startBlock, endBlock, queueId] = await buildingsQueue.getLastUserBuilding.call(Alice);
@@ -142,8 +153,6 @@ contract('Buildings Queue Test', (accounts) => {
     })
 
     it('Add two buildings to queue and check queue length', async () => {
-      let goldFactory = buildingsMock.initialBuildings[7];
-      let crystalFactory = buildingsMock.initialBuildings[8];
 
       await buildingsQueue.addNewBuildingToQueue(goldFactory.id);
       await buildingsQueue.addNewBuildingToQueue(crystalFactory.id);
@@ -154,7 +163,6 @@ contract('Buildings Queue Test', (accounts) => {
     })
 
     it('Add portal to queue (consume quantum)', async () => {
-      const portal = buildingsMock.initialBuildings[6];
       await buildingsQueue.addNewBuildingToQueue(portal.id);
 
       const [id, startBlock, endBlock, queueId] = await buildingsQueue.getLastUserBuilding.call(Alice);
@@ -163,7 +171,6 @@ contract('Buildings Queue Test', (accounts) => {
     })
 
     it('Upgrade gold mine from user buildings', async () => {
-      let goldMine = buildingsMock.initialBuildings[1];
 
       const buildings = await userBuildings.getUserBuildings.call(Alice);
       let index = -1;
@@ -181,28 +188,27 @@ contract('Buildings Queue Test', (accounts) => {
     })
 
     it('Upgrade gold factory from buildings queue', async () => {
-      let building = buildingsMock.initialBuildings[7];
 
       const initialBuildings = await userBuildings.getUserBuildings.call(Alice);
 
-      await buildingsQueue.addNewBuildingToQueue(building.id);
+      await buildingsQueue.addNewBuildingToQueue(goldFactory.id);
 
       const buildings = await userBuildings.getUserBuildings.call(Alice);
 
       let index = -1;
       buildings.forEach((id, i) => {
-        if (id.toNumber() == building.id) {
+        if (id.toNumber() == goldFactory.id) {
           index = i;
         }
       });
 
-      evmMine(building.stats[stat.blocks]);
+      evmMine(goldFactory.stats[stat.blocks]);
 
-      let nextLevelId = 1000 + building.id;
+      let nextLevelId = 1000 + goldFactory.id;
 
-      await buildingsQueue.upgradeBuilding(building.id, nextLevelId, index);
+      await buildingsQueue.upgradeBuilding(goldFactory.id, nextLevelId, index);
 
-      evmMine(building.stats[stat.blocks]);
+      evmMine(goldFactory.stats[stat.blocks]);
 
       let [id, isActive] = await userBuildings.getUserBuildingIdAndStatus.call(Alice, index);
 
@@ -224,55 +230,50 @@ contract('Buildings Queue Test', (accounts) => {
     })
 
     it('Try to upgrade gold mine passing wrong upgrade ID', async () => {
-      let goldMine = buildingsMock.initialBuildings[1];
-      let crystalMine = buildingsMock.initialBuildings[2];
-      return assertRevert(async () => {
+      await assertRevert(async () => {
         await buildingsQueue.upgradeBuilding(goldMine.id, crystalMine.id, 0); // Add to wrong upgrade id
       })
     })
 
     it('Try to pass non existent building id to upgrade building', async () => {
-      return assertRevert(async () => {
+      await assertRevert(async () => {
         await buildingsQueue.upgradeBuilding(865, 2002, 0); // Add to wrong upgrade id
       })
     })
 
     it('Try to pass non existent idOfUpgrade to upgrade building', async () => {
-      let goldMine = buildingsMock.initialBuildings[1];
-      return assertRevert(async () => {
+      await assertRevert(async () => {
         await buildingsQueue.upgradeBuilding(goldMine.id, 2002 + 420, 0); // Add to wrong upgrade id
       })
     })
 
     it('Add non-existing building to queue', async () => {
-      return assertRevert(async () => {
+      await assertRevert(async () => {
         await buildingsQueue.addNewBuildingToQueue(678);
       })
     })
 
     it('Try to create another gold mine (same building type)', async () => {
-      return assertRevert(async () => {
+      await assertRevert(async () => {
         await buildingsQueue.addNewBuildingToQueue(1002);
       })
     })
 
     it('Try to create a gold factory when theres already one in buildings queue (same building type)', async () => {
-      let goldFactory = buildingsMock.initialBuildings[7];
       await buildingsQueue.addNewBuildingToQueue(goldFactory.id);
 
-      return assertRevert(async () => {
+      await assertRevert(async () => {
         await buildingsQueue.addNewBuildingToQueue(goldFactory.id);
       })
     })
 
     it('Pass address 0 to update queue', async () => {
-      return assertRevert(async () => {
+      await assertRevert(async () => {
         await buildingsQueue.updateQueue(0);
       })
     })
 
     it('Update queue when none building is ready', async () => {
-      let goldFactory = buildingsMock.initialBuildings[7];
 
       await buildingsQueue.addNewBuildingToQueue(goldFactory.id);
 
@@ -282,8 +283,6 @@ contract('Buildings Queue Test', (accounts) => {
     })
 
     it('Add new building to queue after las building in queue finished', async () => {
-      let goldFactory = buildingsMock.initialBuildings[7];
-      let crystalFactory = buildingsMock.initialBuildings[8];
 
       await buildingsQueue.addNewBuildingToQueue(goldFactory.id);
 
@@ -301,7 +300,6 @@ contract('Buildings Queue Test', (accounts) => {
 
     it('Cancel new construction before finished', async () => {
       // TODO: make index responsive
-      let goldStorage = buildingsMock.initialBuildings[11];
 
       await buildingsQueue.addNewBuildingToQueue(goldStorage.id);
 
@@ -327,7 +325,6 @@ contract('Buildings Queue Test', (accounts) => {
 
     it('Cancel new construction after finished', async () => {
       // TODO: make index responsive
-      let goldStorage = buildingsMock.initialBuildings[11];
 
       await buildingsQueue.addNewBuildingToQueue(goldStorage.id);
 
@@ -349,7 +346,6 @@ contract('Buildings Queue Test', (accounts) => {
 
     it('Cancel upgrade before finished', async () => {
       // TODO: make index responsive
-      let goldMineLvl2 = buildingsMock.initialBuildings[4];
 
       let [initial_id, initial_status] = await userBuildings.getUserBuildingIdAndStatus.call(Alice, 1);
       assert.equal(initial_id.toNumber(), goldMineLvl2.id -1000)
@@ -372,7 +368,6 @@ contract('Buildings Queue Test', (accounts) => {
 
     it('Cancel upgrade after finished', async () => {
       // TODO: make index responsive
-      let goldMineLvl2 = buildingsMock.initialBuildings[4];
 
       let [initial_id, initial_status] = await userBuildings.getUserBuildingIdAndStatus.call(Alice, 1);
       assert.equal(initial_id.toNumber(), goldMineLvl2.id -1000)
@@ -398,7 +393,6 @@ contract('Buildings Queue Test', (accounts) => {
 
     it('Create deleted construction', async () => {
       // TODO: make index responsive
-      let goldStorage = buildingsMock.initialBuildings[11];
 
       await buildingsQueue.addNewBuildingToQueue(goldStorage.id);
 
@@ -434,14 +428,12 @@ contract('Buildings Queue Test', (accounts) => {
 
       let initial_buildings_queue = await buildingsQueue.getBuildingsInQueue.call(Alice);
 
-      return assertRevert(async () => {
+      await assertRevert(async () => {
       await buildingsQueue.upgradeBuilding(1005, 2005, 3);
       })
     })
 
     it('Gold capacity upgrading gold mine', async () => {
-      let goldMine = buildingsMock.initialBuildings[1];
-      let goldMineLvl2 = buildingsMock.initialBuildings[4];
 
       let buildings = await userBuildings.getUserBuildings.call(Alice);
       let buildingsInQueue =  await buildingsQueue.getBuildingsInQueue.call(Alice);
@@ -459,8 +451,6 @@ contract('Buildings Queue Test', (accounts) => {
     })
 
     it('Gold capacity canceling gold mine upgrade', async () => {
-      let goldMine = buildingsMock.initialBuildings[1];
-      let goldMineLvl2 = buildingsMock.initialBuildings[4];
 
       let [init_gold_capacity,] = await userResources.calculateUserResourcesCapacity.call(Alice);
 
@@ -474,8 +464,6 @@ contract('Buildings Queue Test', (accounts) => {
     })
 
     it('Gold capacity should not change while building is being upgraded', async () => {
-      let goldMine = buildingsMock.initialBuildings[1];
-      let goldMineLvl2 = buildingsMock.initialBuildings[4];
 
       let [init_gold_capacity,] = await userResources.calculateUserResourcesCapacity.call(Alice);
 
@@ -487,7 +475,6 @@ contract('Buildings Queue Test', (accounts) => {
     })
 
     it('Check gold capacity canceling new building', async () => {
-      let goldStorage = buildingsMock.initialBuildings[11];
 
       let [init_gold_capacity,] = await userResources.calculateUserResourcesCapacity.call(Alice);
 
@@ -506,12 +493,7 @@ contract('Buildings Queue Test', (accounts) => {
       })
 
     it('Upgrade building with requirement city center lvl 2 when city center lvl 3 is in queue', async () => {
-      let cityCenter = buildingsMock.initialBuildings[0];
-      let cityCenterLvl2 = buildingsMock.initialBuildings[3];
-      let cityCenterLvl3 = buildingsMock.initialBuildings[14];
 
-      let crystalMine = buildingsMock.initialBuildings[2];
-      let crystalMineLvl2 = buildingsMock.initialBuildings[5];
 
       await buildingsQueue.upgradeBuilding(cityCenter.id, cityCenterLvl2.id, 0);
       await assetsRequirements.setAssetRequirements(crystalMineLvl2.id, [cityCenterLvl2.id]);
@@ -521,18 +503,24 @@ contract('Buildings Queue Test', (accounts) => {
       await buildingsQueue.upgradeBuilding(crystalMine.id, crystalMineLvl2.id, 2);
     })
 
+    it('trying to upgrade building on the last block of previous building construction', async () => {
+      await buildingsQueue.addNewBuildingToQueue(goldFactory.id);
+
+      evmMine(goldFactory.stats[stat.blocks] - 1);
+
+      assertRevert(async () => {
+        await buildingsQueue.upgradeBuilding(goldFactory.id, goldFactoryLvl2.id, 3);
+      })
+    })
+
     context('Set buildings requirements period', async () => {
       beforeEach(async () => {
-        let goldFactory = buildingsMock.initialBuildings[7];
-        let cityCenterLvl2 = buildingsMock.initialBuildings[3];
-        let goldStorage = buildingsMock.initialBuildings[11];
         await assetsRequirements.setAssetRequirements(goldFactory.id, goldFactory.requirements);
         await assetsRequirements.setAssetRequirements(cityCenterLvl2.id, cityCenterLvl2.requirements);
         await assetsRequirements.setAssetRequirements(goldStorage.id, goldStorage.requirements);
       })
 
       it('Create gold factory with requirements', async () => {
-        let goldFactory = buildingsMock.initialBuildings[7];
         let req = await assetsRequirements.getRequirements(goldFactory.id);
 
         assert.equal(req.toString(), goldFactory.requirements.toString());
@@ -545,9 +533,6 @@ contract('Buildings Queue Test', (accounts) => {
       })
 
       it('Upgrading building with requirements', async () => {
-        let goldMineLvl2 = buildingsMock.initialBuildings[4];
-        let crystalMineLvl2 = buildingsMock.initialBuildings[5];
-        let cityCenterLvl2 = buildingsMock.initialBuildings[3];
 
         let req = await assetsRequirements.getRequirements(cityCenterLvl2.id);
 
@@ -564,18 +549,15 @@ contract('Buildings Queue Test', (accounts) => {
       })
 
       it('Trying to create new building without needed requirements', async () => {
-        let goldStorage = buildingsMock.initialBuildings[11];
 
-        return assertRevert(async () => {
+        await assertRevert(async () => {
             await buildingsQueue.addNewBuildingToQueue(goldStorage.id);
         })
       })
 
       it('Trying to upgrade building without needed requirements', async () => {
-        let cityCenter = buildingsMock.initialBuildings[0];
-        let cityCenterLvl2 = buildingsMock.initialBuildings[3];
 
-        return assertRevert(async () => {
+        await assertRevert(async () => {
           await buildingsQueue.upgradeBuilding(cityCenter.id, cityCenterLvl2.id, 0);
         })
       })
@@ -612,13 +594,11 @@ contract('Buildings Queue Test', (accounts) => {
       })
 
       it('UpdateQueue of non existent user', async () => {
-        return assertRevert(async () => {
-          await buildingsQueue.updateQueue(Bob);
-        })
+        await buildingsQueue.updateQueue(Bob);
       })
 
       it('Get Last User Building when no buildings in queue', async () => {
-        return assertRevert(async () => {
+        await assertRevert(async () => {
           const lastBuilding = await buildingsQueue.getLastUserBuilding.call(Bob);
         })
       })
@@ -678,9 +658,6 @@ contract('Buildings Queue Test', (accounts) => {
       })
 
       it('Check updateQueueBlocks before removed building starts', async () => {
-        let crystalFactory = buildingsMock.initialBuildings[8];
-        let goldStorage = buildingsMock.initialBuildings[11];
-        let crystalStorage = buildingsMock.initialBuildings[12];
 
         await buildingsQueue.addNewBuildingToQueue(goldStorage.id);
         await buildingsQueue.addNewBuildingToQueue(crystalStorage.id);
@@ -710,9 +687,6 @@ contract('Buildings Queue Test', (accounts) => {
       })
 
       it('Check updateQueueBlocks after removed building starts', async () => {
-        let goldFactory = buildingsMock.initialBuildings[7];
-        let goldStorage = buildingsMock.initialBuildings[11];
-        let crystalStorage = buildingsMock.initialBuildings[12];
 
         await buildingsQueue.addNewBuildingToQueue(goldStorage.id);
         await buildingsQueue.addNewBuildingToQueue(crystalStorage.id);
@@ -742,44 +716,43 @@ contract('Buildings Queue Test', (accounts) => {
       })
 
       it('Try to get last user building passing 0 as address', async () => {
-        return assertRevert(async () => {
+        await assertRevert(async () => {
           const [id, startBlock, endBlock] = await buildingsQueue.getLastUserBuilding.call(0);
         })
       })
 
       it('Try to get all buildings in queue passing 0 as address', async () => {
-        return assertRevert(async () => {
+        await assertRevert(async () => {
           const ids = await buildingsQueue.getBuildingsInQueue.call(0);
         })
       })
 
       it('Try to get all ids and blocks in queue passing 0 as address', async () => {
-        return assertRevert(async () => {
+        await assertRevert(async () => {
           const [ids, startBlocks, endBlocks] = await buildingsQueue.getBuildings.call(0);
         })
       })
 
       it('Try to get building index passing 0 as address', async () => {
-        return assertRevert(async () => {
+        await assertRevert(async () => {
           const [id, index] = await buildingsQueue.getBuildingIndex.call(0, 1);
         })
       })
 
       it('Try to pass an index higher or equal to user building length', async () => {
-        return assertRevert(async () => {
+        await assertRevert(async () => {
           const [id, endBlock] = await buildingsQueue.getBuildingIdAndEndBlock.call(Alice, 85);
         })
       })
 
       it('Try to pass an index higher or equal to user building length to getBuildingIndex', async () => {
-        return assertRevert(async () => {
+        await assertRevert(async () => {
           const [id, index] = await buildingsQueue.getBuildingIndex.call(Alice, 85);
         })
       })
 
       it('Try to add a building with resources type 8 to queue', async () => {
-        let experiment = buildingsMock.initialBuildings[13];
-        return assertRevert(async () => {
+        await assertRevert(async () => {
           await buildingsQueue.addNewBuildingToQueue(experiment.id);
         })
       })

@@ -1,19 +1,17 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from "@angular/router";
-
 import { Store } from '@ngrx/store';
 
-import { AbstractContainerComponent } from '../shared/components/abstract-container.component';
-import { CryptoWarsState } from '../app.reducer';
-
-import { Web3Service } from '../shared/services/web3.service';
-import { ContractsService } from '../shared/services/contracts.service';
-
-import { Web3Actions } from '../../core/web3/web3.actions';
-import { BuildingsQueueActions } from '../../core/buildings-queue/buildings-queue.actions';
-import { UserVillageActions } from '../../core/user-village/user-village.actions';
-
 import BigNumber from 'bignumber.js';
+
+import { ContractsService } from '../../core/shared/contracts.service';
+import { PlayerVillageActions } from '../../core/player/village/player-village.actions';
+import { Web3Actions } from '../../core/web3/web3.actions';
+import { Web3Service } from '../../core/web3/web3.service';
+
+import { CryptoWarsState } from '../app.state';
+
+import { AbstractContainerComponent } from '../shared/components/abstract-container.component';
 
 const ether = Math.pow(10, 18);
 
@@ -28,9 +26,9 @@ export class OnboardingComponent extends AbstractContainerComponent {
   step: string;
 
   constructor(public store: Store<CryptoWarsState>,
+              private contractsService: ContractsService,
               private route: ActivatedRoute,
-              private web3Service: Web3Service,
-              private contractsService: ContractsService) {
+              private web3Service: Web3Service) {
     super(store);
 
     this.step = 'userCreation';
@@ -50,13 +48,13 @@ export class OnboardingComponent extends AbstractContainerComponent {
       return;
     }
 
-    this.store.dispatch(new UserVillageActions.CreateVillage(user));
+    this.store.dispatch(new PlayerVillageActions.CreateVillage(user));
   }
 
   setUser() {
-    return this.store.select('userState').subscribe(userState => {
+    return this.store.select(s => s.player.tokens).subscribe(tokens => {
       if (this.missing === 'eth-balance' || this.missing === 'e11-balance') {
-        if (userState.e11Balance && userState.ethBalance) {
+        if (tokens.e11Balance && tokens.ethBalance) {
           window.location.reload();
         }
       }
@@ -64,12 +62,12 @@ export class OnboardingComponent extends AbstractContainerComponent {
   }
 
   setVillageLoading() {
-    return this.store.select('userVillageState').subscribe(userVillage => {
-      if (userVillage.error && userVillage.error != 'user_has_no_village') {
+    return this.store.select(s => s.player.village).subscribe(playerVillage => {
+      if (playerVillage.status.error && playerVillage.status.error != 'player_has_no_village') {
         this.step = 'failedCreation';
         return;
       }
-      if (userVillage.loading) {
+      if (playerVillage.status.loading) {
         this.step = 'creatingVillage';
         return;
       }

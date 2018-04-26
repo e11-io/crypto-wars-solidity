@@ -16,11 +16,32 @@
   }
 
   /deep/ {
+    e11-buildings,
+    e11-units {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
     .buildings-container,
     .defense-container,
     .research-container,
     .units-container {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
+      overflow-y: auto;
+      margin-top: 1rem;
       padding: 0 13vw;
+    }
+
+    .e11-catalog {
+      margin-top: 2rem;
+      .item-unavailable {
+        .title .name {
+          font-weight: bold;
+        }
+      }
     }
   }
 }
