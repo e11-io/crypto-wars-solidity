@@ -1,5 +1,17 @@
 # Changelog
 
+0.1.10 / 2018-04-27
+==================
+
+  * Fixed travis
+
+0.1.9 / 2018-04-27
+==================
+
+  * Improvements on travis-ci
+  * Fixed AoT
+  * Fixed bug on buildings component
+
 0.1.8 / 2018-04-26
 ==================
 
