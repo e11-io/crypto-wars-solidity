@@ -39,7 +39,7 @@
           </div>
 
           <div class="item-avatar"
-               [class.disabled]="buildingsMap[building.nextLevelId].missingRequirements.length"
+               [class.disabled]="buildingsMap[building.nextLevelId] ? buildingsMap[building.nextLevelId].missingRequirements.length : null"
                [style.background-image]="'url(/assets/img/buildings/thumbnails/' + building.name + '.png)'"
                *ngIf="building.owned">
           </div>
@@ -137,7 +137,7 @@
                                       playerResources[buildingsMap[building.nextLevelId].resource] < buildingsMap[building.nextLevelId].price ||
                                       building.inProgress ||
                                       building.waiting"
-                    *ngIf="!buildingsMap[building.nextLevelId].missingRequirements.length"
+                    *ngIf="building.inProgress || !(buildingsMap[building.nextLevelId] && buildingsMap[building.nextLevelId].missingRequirements.length)"
                     (click)="itemActionBuild(building)">
                 <ng-container *ngIf="!building.inProgress">
                   <ng-template [ngIf]="!building.maxLevel">

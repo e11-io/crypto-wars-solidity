@@ -10,15 +10,24 @@ sudo: required
 dist: trusty
 language: node_js
 node_js:
-  - '7'
+  - '8'
+  cache:
+    directories:
+      - node_modules
+env:
+  -
+  - SOLIDITY_COVERAGE=true
+matrix:
+  fast_finish: true
+  allow_failures:
+    - env: SOLIDITY_COVERAGE=true
 install:
   - npm install -g truffle
   - npm install -g ethereumjs-testrpc
   - npm install
+before_script:
+  - truffle version
 script:
   - npm test
 after_script:
   - npm run coverage && cat coverage/lcov.info | coveralls
-cache:
-  directories:
-    - node_modules
