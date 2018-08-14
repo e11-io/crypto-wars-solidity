@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from "@ngx-translate/core";
+import { PipesModule } from '../shared/pipes/pipes.module';
 
 import { DashboardComponent } from './dashboard.component';
 
@@ -12,7 +13,8 @@ import { VillageQueuesComponent } from './village-queues/village-queues.componen
 @NgModule({
   imports: [
     CommonModule,
-    TranslateModule
+    TranslateModule,
+    PipesModule
   ],
   declarations: [
     DashboardComponent,

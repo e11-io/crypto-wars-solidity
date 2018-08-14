@@ -1,13 +1,19 @@
 @mixin e11-box-container() {
     $box-background: $color-light-alt;
+    $box-border: 1px solid $color-border;
     $box-content-padding: 1rem;
+
+    $extra-button-background: #232B3B;
+    $extra-button-size: 6.6rem;
+
+    $box-stripe-background-dark: #1B2431;
 
     .e11-box-container {
         @extend .rounded;
         display: flex;
         flex-direction: column;
         background: $box-background;
-        border: 1px solid $color-border;
+        border: $box-border;
 
         .box-header {
             display: flex;
@@ -75,10 +81,10 @@
 
             &.stripe {
               .box-option:nth-child(even) {
-                  background: $color-light-alt;
+                  background: $box-background;
               }
               .box-option:nth-child(odd) {
-                  background: $color-dark;
+                  background: $box-stripe-background-dark;
               }
             }
             &.define {
@@ -105,6 +111,17 @@
                 text-align: center;
               }
             }
+        }
+
+        .box-extra-button {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          background: $extra-button-background;
+          height: $extra-button-size;
+          font-size: 1.6rem;
+          cursor: pointer;
         }
 
     }

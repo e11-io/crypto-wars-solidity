@@ -8,7 +8,9 @@ export namespace PlayerResourcesActions {
     GET_PLAYER_RESOURCES_SUCCESS: type('[Player Resources] Get Player Resources Success'),
     GET_PLAYER_RESOURCES_FAILURE: type('[Player Resources] Get Player Resources Failure'),
     GIVE_RESOURCES_TO_PLAYER:     type('[Player Resources] Give Resources To Player'),
-    SET_RATES_AND_CAPACITY:       type('[Player Resources] Set Resources Rates and Capacity')
+    SET_RATES_AND_CAPACITY:       type('[Player Resources] Set Resources Rates and Capacity'),
+    LOCK_PLAYER_RESOURCES:        type('[Player Resources] Lock Player Resources'),
+    UNLOCK_PLAYER_RESOURCES:      type('[Player Resources] Unlock Player Resources')
   }
 
   export class GetPlayerResources implements Action {
@@ -42,10 +44,24 @@ export namespace PlayerResourcesActions {
     constructor(public payload: any) { }
   }
 
+  export class LockPlayerResources implements Action {
+    type = Types.LOCK_PLAYER_RESOURCES;
+
+    constructor(public payload: any) { }
+  }
+
+  export class UnlockPlayerResources implements Action {
+    type = Types.UNLOCK_PLAYER_RESOURCES;
+
+    constructor(public payload: any) { }
+  }
+
   export type Actions
     = GetPlayerResources
     | GetPlayerResourcesSuccess
     | GetPlayerResourcesFailure
     | GiveResourcesToPlayer
     | SetRatesAndCapacty
+    | LockPlayerResources
+    | UnlockPlayerResources
 }

@@ -18,16 +18,6 @@ export function playerUnitsReducer (state = initialPlayerUnitsState, action: Pla
 
     case PlayerUnitsActions.Types.GET_PLAYER_UNITS_FAILURE:
       return Object.assign({}, state, {
-        status: new Status({ error: action.payload }),
-      });
-
-    case PlayerUnitsActions.Types.GET_PLAYER_UNITS_LENGTH:
-    return Object.assign({}, state, {
-      status: new Status({ loading: true }),
-    })
-
-    case PlayerUnitsActions.Types.GET_PLAYER_UNITS_LENGTH_FAILURE:
-      return Object.assign({}, state, {
         status: new Status({ error: action.payload.status.error }),
       });
 

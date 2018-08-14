@@ -14,20 +14,20 @@ node_js:
 cache:
   directories:
     - node_modules
-env:
-  -
-  - SOLIDITY_COVERAGE=true
-matrix:
-  fast_finish: true
-  allow_failures:
-    - env: SOLIDITY_COVERAGE=true
 install:
   - npm install -g truffle
-  - npm install -g ethereumjs-testrpc
+  - npm install -g ganache-cli
   - npm install
+env:
+  global:
+    - SOLIDITY_COVERAGE=true
+    - UPLOAD_COVERALLS=false
 before_script:
   - truffle version
 script:
-  - npm test
-after_script:
-  - npm run coverage && cat coverage/lcov.info | coveralls
+  - npm run test
+notifications:
+    slack: e11io:jpVWDSReCf2l6mZlVI5RY68s
+    on_success: change
+    on_failure: always
+    on_pull_requests: false

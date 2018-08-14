@@ -1,0 +1,25 @@
+{
+  "typeId": 6,
+  "name": "Crystal Factory",
+  "maxLevel": 10,
+  "baseStats": {
+    "price": 100000,
+    "resource": 1,
+    "blocks": 45,
+    "health": 0,
+    "defense": 0,
+    "attack": 0,
+    "goldCapacity": 0,
+    "crystalCapacity": 0,
+    "goldRate": 0,
+    "crystalRate": 44
+  },
+  "levelsRequirements": {
+    "1": ["city_center_3", "crystal_mine_5"]
+  },
+  "modifiers": {
+    "price": "BV * (1.7 ** (BL-1))",
+    "blocks": "BV * (1.7 ** (BL-1))",
+    "crystalRate": "BV * BL * ((1.05) ** BL)"
+  }
+}

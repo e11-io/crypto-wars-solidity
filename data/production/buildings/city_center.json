@@ -1,0 +1,24 @@
+{
+  "typeId": 1,
+  "name": "City Center",
+  "maxLevel": 10,
+  "baseStats": {
+    "price": 3500,
+    "resource": 0,
+    "blocks": 5,
+    "health": 0,
+    "defense": 0,
+    "attack": 0,
+    "goldCapacity": 15000,
+    "crystalCapacity": 15000,
+    "goldRate": 3,
+    "crystalRate": 3
+  },
+  "levelsRequirements": {},
+  "modifiers": {
+    "price": "BV * (2.2**(BL-1))",
+    "blocks": "BV * (2.2**(BL-1))",
+    "goldCapacity": "BV * (1.6 * (Math.exp(20*BL/35)))",
+    "crystalCapacity": "BV * (1.6 * (Math.exp(20*BL/35)))"
+  }
+}

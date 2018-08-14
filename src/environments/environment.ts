@@ -12,7 +12,6 @@ export const environment = {
   contracts: {
     Migrations:         null,
     ExperimentalToken:  null,
-    SimpleToken:        null,
     UserVault:          null,
     UserResources:      null,
     BuildingsData:      null,

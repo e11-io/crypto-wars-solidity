@@ -1,0 +1,23 @@
+{
+  "typeId": 7,
+  "name": "Gold Storage",
+  "maxLevel": 10,
+  "baseStats": {
+    "price": 7500,
+    "resource": 0,
+    "blocks": 14,
+    "health": 0,
+    "defense": 0,
+    "attack": 0,
+    "goldCapacity": 9500,
+    "crystalCapacity": 0,
+    "goldRate": 0,
+    "crystalRate": 0
+  },
+  "levelsRequirements": {},
+  "modifiers": {
+    "price": "BV * (2 ** (BL-1))",
+    "blocks": "BV * (2 ** (BL-1))",
+    "goldCapacity": "BV * (1.8 * (Math.exp((20*BL/35))))"
+  }
+}

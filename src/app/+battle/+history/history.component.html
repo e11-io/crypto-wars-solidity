@@ -1,0 +1,33 @@
+<div class="battle-history-container">
+  <div class="e11-box-container scroll-y">
+
+    <div class="box-content empty" *ngIf="battleDetails.length == 0">
+      <ng-template [ngIf]="battlesLoading">
+        {{ 'BATTLE.LOADING.battles' | translate }}
+      </ng-template>
+      <ng-template [ngIf]="!battlesLoading">
+        {{ 'BATTLE.HISTORY.not-found' | translate }}
+      </ng-template>
+    </div>
+
+    <ng-template [ngIf]="battleDetails.length > 0">
+      <e11-targets-list [battleDetails]="battleDetails"
+                        [unitsMap]="unitsMap"
+                        [expandedBattleId]="expandedBattleId"
+                        (battleDetailEmitter)="expandBattleDetail($event)"
+                        (battleDetailClicked)="battleDetailClicked($event)">
+      </e11-targets-list>
+
+      <div class="fill"></div>
+      <div class="box-extra-button" (click)="findMoreBattles()">
+        <ng-template [ngIf]="!battlesLoading">
+          {{ 'BATTLE.HISTORY.find-more' | translate }}
+        </ng-template>
+        <ng-template [ngIf]="battlesLoading">
+          {{ 'BATTLE.LOADING.more-history' | translate }}
+        </ng-template>
+      </div>
+    </ng-template>
+
+  </div>
+</div>

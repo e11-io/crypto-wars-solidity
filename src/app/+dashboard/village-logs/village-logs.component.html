@@ -1,39 +1,71 @@
 <div class="village-logs-container e11-box-container">
     <div class="box-header">
-        Village Log
+        {{'DASHBOARD.VILLAGE_LOGS.title' | translate}}
     </div>
-    <div class="box-content stripe">
-        <div class="box-option">
-          <div class="bullet"></div>
-          <div class="message">
-            Coming soon
+    <div class="box-content stripe" [class.empty]="battleDetails.length == 0">
+        <ng-template [ngIf]="battleDetails.length == 0">
+          {{'DASHBOARD.VILLAGE_LOGS.no-logs' | translate}}
+        </ng-template>
+
+        <div class="box-option" [class.battle]="true"
+             *ngFor="let battleDetail of battleDetails; let i = index; trackBy: trackByFn">
+          <div class="bullet" [attr.color]="battleDetail.attacked ? 'success' : 'error'"></div>
+
+          <div class="message" (click)="log(battleDetail)">
+
+            <ng-template [ngIf]="battleDetail.attacked">
+              <ng-template [ngIf]="battleDetail.resources.attackerReward.gold > 0 ||
+                                   battleDetail.resources.attackerReward.crystal > 0 ||
+                                   battleDetail.resources.attackerReward.quantum > 0">
+                <span>{{'DASHBOARD.VILLAGE_LOGS.BATTLE.looted-enemy' | translate}}</span>
+                <div class="battle-resources">
+                  <span class="resource"
+                        [attr.color]="resource"
+                        *ngFor="let resource of resources">
+                    <div class="bullet-outline"></div>
+                    <ng-template [ngIf]="battleDetail.resources.attackerReward[resource] > 0">
+                      +<!--This eliminates whitespace
+                 --></ng-template><!--This eliminates whitespace
+                 -->{{battleDetail.resources.attackerReward[resource] | largeNumber}}
+                  </span>
+                </div>
+              </ng-template>
+              <ng-template [ngIf]="battleDetail.resources.attackerReward.gold == 0 &&
+                                   battleDetail.resources.attackerReward.crystal == 0 &&
+                                   battleDetail.resources.attackerReward.quantum == 0">
+                <span>{{'DASHBOARD.VILLAGE_LOGS.BATTLE.didnt-defeat' | translate}}</span>
+              </ng-template>
+            </ng-template>
+
+            <ng-template [ngIf]="battleDetail.defended">
+              <ng-template [ngIf]="battleDetail.resources.attackerReward.gold == 0 &&
+                                   battleDetail.resources.attackerReward.crystal == 0 &&
+                                   battleDetail.resources.attackerReward.quantum == 0">
+                <span>{{'DASHBOARD.VILLAGE_LOGS.BATTLE.village-defended' | translate}}</span>
+              </ng-template>
+              <ng-template [ngIf]="battleDetail.resources.attackerReward.gold > 0 ||
+                                   battleDetail.resources.attackerReward.crystal > 0 ||
+                                   battleDetail.resources.attackerReward.quantum > 0">
+                <span>{{'DASHBOARD.VILLAGE_LOGS.BATTLE.village-raided' | translate}}</span>
+                <div class="battle-resources">
+                  <span class="resource"
+                        [attr.color]="resource"
+                        *ngFor="let resource of resources">
+                    <div class="bullet-outline"></div>
+                    <ng-template [ngIf]="battleDetail.resources.attackerReward[resource] > 0">
+                      -<!--This eliminates whitespace
+                 --></ng-template><!--This eliminates whitespace
+                 -->{{battleDetail.resources.attackerReward[resource] | largeNumber}}
+                  </span>
+                </div>
+              </ng-template>
+            </ng-template>
+
+          </div>
+          <div class="time">
+            {{ currentBlock - battleDetail.block | pastBlockTime}}
           </div>
         </div>
-        <!--
-        <div class="box-option">
-            <div class="bullet"></div>
-            <div class="message">
-                Finished building (Barracks Lv. 1)
-            </div>
-        </div>
-        <div class="box-option">
-            <div class="bullet building"></div>
-            <div class="message">
-                Finished building (Barracks Lv. 1)
-            </div>
-        </div>
-        <div class="box-option">
-            <div class="bullet building"></div>
-            <div class="message">
-                Finished building (Barracks Lv. 1)
-            </div>
-        </div>
-        <div class="box-option">
-            <div class="bullet building"></div>
-            <div class="message">
-                Finished building (Barracks Lv. 1)
-            </div>
-        </div>
-        -->
+
     </div>
 </div>

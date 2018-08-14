@@ -12,6 +12,7 @@ export class NavbarComponent implements OnChanges {
     @Input() balance: any;
     @Input() childNavDisabled: boolean = false;
     @Input() ethBalance: any;
+    @Input() points: number;
     @Input() playerResources: any;
 
     blockiesOptions: any = {size: 8, scale: 6};

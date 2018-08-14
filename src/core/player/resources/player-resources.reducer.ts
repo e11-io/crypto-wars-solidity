@@ -33,6 +33,34 @@ export function playerResourcesReducer (state = initialPlayerResourcesState, act
         status:          new Status(),
       });
 
+    case PlayerResourcesActions.Types.LOCK_PLAYER_RESOURCES:
+      let obj: any;
+      switch (action.payload.resource) {
+        case 'gold':
+          obj = Object.assign({}, obj, { lockedGold: state.lockedGold + action.payload.price });
+          break;
+
+        case 'crystal':
+          obj = Object.assign({}, obj, { lockedCrystal: state.lockedCrystal + action.payload.price });
+          break;
+      }
+      
+      return Object.assign({}, state, obj);
+
+    case PlayerResourcesActions.Types.UNLOCK_PLAYER_RESOURCES:
+      let object: any = {};
+      switch (action.payload.resource) {
+        case 'gold':
+          obj = { lockedGold: state.lockedGold - action.payload.price }
+          break;
+
+        case 'crystal':
+          obj = { lockedCrystal: state.lockedCrystal - action.payload.price }
+          break;
+      }
+
+      return Object.assign({}, state, obj);
+
     default:
       return state;
   }

@@ -1,0 +1,25 @@
+<div class="battle-army-stats-container">
+  <div class="army-stats e11-box-container">
+    <div class="stat dmg">
+      <h3 color="dmg">{{armyStats.attack | largeNumber}}</h3>
+      <span>
+        <i class="e11-icon e11f-sword-outline"></i>
+        {{'DATA.units.stats.dmg' | translate}}
+      </span>
+    </div>
+    <div class="stat def">
+      <h3 color="def">{{armyStats.defense | largeNumber}}</h3>
+      <span>
+        <i class="e11-icon e11f-shield-outline"></i>
+        {{'DATA.units.stats.def' | translate}}
+      </span>
+    </div>
+    <div class="stat hp">
+      <h3 color="hp">{{armyStats.hp | largeNumber}}</h3>
+      <span>
+        <i class="e11-icon e11f-heart"></i>
+        {{'DATA.units.stats.hp' | translate}}
+      </span>
+    </div>
+  </div>
+</div>

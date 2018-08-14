@@ -1,0 +1,30 @@
+{
+  "typeId": 1,
+  "name": "City Center",
+  "requirements": [],
+  "price": 0,
+  "resource": 0,
+  "blocks": 1,
+  "baseStats": {
+    "health": 500,
+    "defense": 50,
+    "attack": 0,
+    "goldCapacity": 1000,
+    "crystalCapacity": 1000,
+    "goldRate": 2,
+    "crystalRate": 2
+  },
+  "levels": [
+    {
+      "requirements": [],
+      "price": 3000,
+      "resource": 0,
+      "blocks": 30,
+      "statsModifier": {
+        "health": 500,
+        "goldCapacity": 1000,
+        "crystalCapacity": 1000
+      }
+    }
+  ]
+}

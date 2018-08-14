@@ -17,6 +17,7 @@ import { routes } from './app.routes';
 
 import { AppComponent } from './app.component';
 import { AssetsModule } from './+assets/assets.module';
+import { BattleModule } from './+battle/battle.module';
 import { BlockiesModule } from 'angular-blockies';
 import { DashboardModule } from './+dashboard/dashboard.module';
 import { TradesModule } from './+trades/trades.module';
@@ -40,6 +41,9 @@ import { PlayerCoreModule } from '../core/player/player.module';
 import { Web3CoreModule } from '../core/web3/web3.module';
 import { ContractsService } from '../core/shared/contracts.service';
 
+import { RoundPipe } from './shared/pipes/round.pipe';
+import { PipesModule } from './shared/pipes/pipes.module';
+
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
     return new TranslateHttpLoader(http);
@@ -51,7 +55,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ErrorsComponent,
     LoadingComponent,
     MobileScreenComponent,
-    NavbarComponent
+    NavbarComponent,
   ],
   imports: [
     BrowserModule,
@@ -72,10 +76,11 @@ export function HttpLoaderFactory(http: HttpClient) {
     EffectsModule.forRoot([
       AppEffects
     ]),
-    !environment.production ? StoreDevtoolsModule.instrument({maxAge: 200}) : [],
+    !environment.production ? StoreDevtoolsModule.instrument({maxAge: 75}) : [],
 
     BlockiesModule,
     AssetsModule,
+    BattleModule,
     DashboardModule,
     TradesModule,
     AdminModule,
@@ -83,6 +88,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     AssetsCoreModule,
     PlayerCoreModule,
     Web3CoreModule,
+    PipesModule
     // Note that you must instrument after importing StoreModule
   ],
   providers: [

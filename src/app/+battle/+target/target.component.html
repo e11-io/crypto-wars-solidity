@@ -1,0 +1,36 @@
+<div class="battle-target-container">
+  <div class="e11-box-container scroll-y">
+    <div class="box-content empty" *ngIf="battleDetails.length == 0">
+      <ng-template [ngIf]="targetsLoading">
+        {{'BATTLE.LOADING.targets' | translate}}
+      </ng-template>
+      <ng-template [ngIf]="!targetsLoading && hasArmy">
+        {{'BATTLE.TARGETS.not-found' | translate}}
+      </ng-template>
+      <ng-template [ngIf]="!targetsLoading && !hasArmy">
+        {{'BATTLE.no-army' | translate}}
+      </ng-template>
+    </div>
+
+    <ng-template [ngIf]="battleDetails.length > 0">
+      <e11-targets-list [battleDetails]="battleDetails"
+                        [targetsMap]="targetsMap"
+                        [unitsMap]="unitsMap"
+                        [attackCooldown]="attackCooldown"
+                        [expandedBattleId]="expandedTargetId"
+                        (battleDetailEmitter)="expandTargetDetail($event)"
+                        (battleDetailClicked)="battleDetailClicked($event)">
+      </e11-targets-list>
+
+      <div class="fill"></div>
+      <div class="box-extra-button" (click)="findMoreTargets()">
+        <ng-template [ngIf]="!targetsLoading">
+          {{'BATTLE.TARGETS.find-more' | translate}}
+        </ng-template>
+        <ng-template [ngIf]="targetsLoading">
+          {{'BATTLE.LOADING.more-targets' | translate}}
+        </ng-template>
+      </div>
+    </ng-template>
+  </div>
+</div>

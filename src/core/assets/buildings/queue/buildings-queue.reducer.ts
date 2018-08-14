@@ -24,13 +24,13 @@ export function assetsBuildingsQueueReducer (state = initialAssetsBuildingsQueue
 
     case AssetsBuildingsQueueActions.Types.ADD_BUILDING_TO_QUEUE:
       return Object.assign({}, state, {
-        localList: state.localList.concat([action.payload]),
+        localList: state.localList.concat([action.payload.id]),
         status:    new Status({ loading: true }),
       })
 
     case AssetsBuildingsQueueActions.Types.ADD_BUILDING_TO_QUEUE_SUCCESS:
       return Object.assign({}, state, {
-        localList: state.localList.filter(building => building != action.payload),
+        localList: state.localList.filter(building => building != action.payload.id),
         status:    new Status(),
       })
 
@@ -48,7 +48,7 @@ export function assetsBuildingsQueueReducer (state = initialAssetsBuildingsQueue
 
     case AssetsBuildingsQueueActions.Types.UPGRADE_BUILDING_SUCCESS:
       return Object.assign({}, state, {
-        localList: state.localList.filter(building => building != action.payload),
+        localList: state.localList.filter(building => building != action.payload.id),
         status:    new Status({ loading: true }),
       })
 

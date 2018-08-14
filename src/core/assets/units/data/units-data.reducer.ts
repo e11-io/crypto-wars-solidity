@@ -11,16 +11,14 @@ export function assetsUnitsDataReducer (state = initialAssetsUnitsDataState, act
       })
 
     case AssetsUnitsDataActions.Types.GET_UNITS_DATA_SUCCESS:
-      let ids: any = {};
-      action.payload.ids.forEach((id, i) => ids[id] = new DataUnit(id, action.payload.units[i]));
       return Object.assign({}, state, {
-        listMap: Object.assign({}, state.listMap, ids),
+        listMap: action.payload,
         status:  new Status(),
       });
 
     case AssetsUnitsDataActions.Types.GET_UNITS_DATA_FAILURE:
       return Object.assign({}, state, {
-        status: new Status({ error: action.payload.status.error }),
+        status: new Status({ error: action.payload.error }),
       });
 
     default:

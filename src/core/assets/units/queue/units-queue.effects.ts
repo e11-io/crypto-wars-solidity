@@ -13,6 +13,7 @@ import { Status } from '../../../shared/status.model';
 
 import { Web3Actions } from '../../../web3/web3.actions';
 import { Web3Service } from '../../../web3/web3.service';
+import { PlayerResourcesActions } from '../../../player/resources/player-resources.actions';
 
 
 @Injectable()
@@ -58,13 +59,19 @@ export class AssetsUnitsQueueEffects {
     .ofType(AssetsUnitsQueueActions.Types.ADD_UNIT_TO_QUEUE)
     .do((action: AssetsUnitsQueueActions.AddUnitToQueue) => {
       let activeAccount: string = '';
-      this.store.select('web3').take(1).subscribe(web3 => {
-        activeAccount = web3.activeAccount;
+      let unitsMap: any;
+      this.store.select(s => s).take(1).subscribe(state => {
+        activeAccount = state.web3.activeAccount;
+        unitsMap = state.assets.units.data.listMap;
       });
+      let unit = Object.assign({}, unitsMap[action.payload.id], { price: unitsMap[action.payload.id].price * action.payload.quantity})
+      this.store.dispatch(new PlayerResourcesActions.LockPlayerResources(unit));
+
       this.web3Service.sendContractTransaction(
         this.contractsService.UnitsQueueInstance.addUnitsToQueue,
         [action.payload.id, action.payload.quantity, {from: activeAccount}],
         (error, data) => {
+          this.store.dispatch(new PlayerResourcesActions.UnlockPlayerResources(unit));
           if (error) {
             return this.store.dispatch(new AssetsUnitsQueueActions.AddUnitToQueueFailure({
               id: action.payload.id,
@@ -75,7 +82,8 @@ export class AssetsUnitsQueueEffects {
         }
       ).then((result: any) => {
         if (result.error) {
-          return this.store.dispatch(new AssetsUnitsQueueActions.AddUnitToQueueFailure({
+          this.store.dispatch(new PlayerResourcesActions.UnlockPlayerResources(unit));
+          this.store.dispatch(new AssetsUnitsQueueActions.AddUnitToQueueFailure({
             id: action.payload.id,
             status: new Status({ error: result.error })
           }));

@@ -1,0 +1,8 @@
+{
+  "properties": {
+    "attackCooldown": 20,
+    "rewardDefenderModifier": 15,
+    "rewardAttackerModifier": 50,
+    "revengeTimeThreshold": 400
+  }
+}

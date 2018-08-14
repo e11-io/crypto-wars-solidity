@@ -20,6 +20,8 @@ import { AbstractContainerComponent } from './shared/components/abstract-contain
 import { CryptoWarsState } from './app.state';
 import { AppActions } from './app.actions';
 
+import * as selectors from './app.selectors';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -32,6 +34,7 @@ export class AppComponent  extends AbstractContainerComponent {
   childNavDisabled: boolean = false;
   e11Balance: any;
   ethBalance: any;
+  points: number;
   error: string;
   lastBlock: number;
   loading: boolean = true;
@@ -39,7 +42,7 @@ export class AppComponent  extends AbstractContainerComponent {
   navbarEnabled: boolean;
   section = 'village';
   status: any = {};
-  playerResources: PlayerResourcesState;
+  playerResources: any;
 
   web3State$: Observable<Web3State>;
   playerState$: Observable<PlayerState>;
@@ -59,6 +62,7 @@ export class AppComponent  extends AbstractContainerComponent {
       this.setBuildingsState(),
       this.setUnitsState(),
       this.setPlayerResources(),
+      this.setVillagePoints(),
       this.router.events.filter(event => event instanceof NavigationEnd).subscribe((event: NavigationEnd) => {
         this.navbarEnabled = route.root.firstChild.snapshot.data['navbar'];
         this.childNavDisabled = route.root.firstChild.snapshot.data['childNavigationDisabled'];
@@ -95,8 +99,14 @@ export class AppComponent  extends AbstractContainerComponent {
   }
 
   setPlayerResources() {
-    return this.store.select(s => s.player.resources).subscribe(playerResources => {
+    return this.store.select(selectors.selectPlayerResources).subscribe(playerResources => {
       this.playerResources = playerResources;
+    });
+  }
+
+  setVillagePoints() {
+    return this.store.select(s => s.player.village.points).distinctUntilChanged().subscribe(points => {
+      this.points = points;
     });
   }
 

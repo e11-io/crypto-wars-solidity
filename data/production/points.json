@@ -1,0 +1,6 @@
+{
+  "properties": {
+    "lowerPointsThreshold": 25,
+    "upperPointsThreshold": 200
+  }
+}

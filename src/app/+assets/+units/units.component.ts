@@ -10,7 +10,10 @@ import { Web3Service } from '../../../core/web3/web3.service';
 import { AbstractContainerComponent } from '../../shared/components/abstract-container.component';
 import { BuildingMap } from '../../shared/models/building.model';
 import { Unit, UnitMap, UnitQuantitytMap } from '../../shared/models/unit.model';
+// TODO We use UnitsMap here?
 import { AssetsUnitsQueueActions } from '../../../core/assets/units/queue/units-queue.actions';
+
+import * as selectors from '../../app.selectors';
 
 @Component({
   selector: 'e11-units',
@@ -79,7 +82,7 @@ export class UnitsComponent extends AbstractContainerComponent {
   }
 
   setPlayerResources() {
-    return this.store.select(s => s.player.resources).subscribe(playerResources => {
+    return this.store.select(selectors.selectPlayerResources).subscribe(playerResources => {
       this.playerResources = playerResources;
     })
   }

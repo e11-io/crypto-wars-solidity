@@ -1,0 +1,15 @@
+{
+  "AssetsRequirements": "0x3702a8d60570c1b7f4a060b62c8cd297b55f05dc",
+  "BuildingsQueue": "0x6fa5c4d1e972bd7c749e91822ea30901a65f9e60",
+  "UnitsData": "0x2b33efa121fdbfbdb9f7e2fdd2a16dfd35549960",
+  "UserResources": "0xd76566edabfa8a269b02a470e4b44393ee46cbe4",
+  "UserUnits": "0xdae4cde926f78a00eaae95cd203d3a3b96aa48c9",
+  "BuildingsData": "0x03bdd78ed87c0426c436bedbac5cb65979e45ea1",
+  "BattleSystem": "0x7be31a708ad424b75c159247f3525797e4ac9862",
+  "UserBuildings": "0x965837103ecf4f0757ac7e9be77aec66ef2ff874",
+  "ExperimentalToken": "0x63614401f234cbee2a56e11747539e4bd11aba11",
+  "UnitsQueue": "0xc4b2c54d270a6b5c538db9dc4f6ba420b1f91092",
+  "UserVillage": "0x8ddb8422d7c44a0ccaa104e623ceddc6eae90dd5",
+  "UserVault": "0x6792b0fefe24d43d1610e80fb1f9f2e3fd075836",
+  "PointsSystem": "0x6fd633b24ff5939896d81b06fa6f9f8729bad49d"
+}

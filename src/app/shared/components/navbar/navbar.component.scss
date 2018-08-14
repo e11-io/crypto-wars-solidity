@@ -74,15 +74,24 @@ $navbar-logo-size: 4.4rem;
     .navbar-user {
         display: flex;
         align-items: center;
-        justify-content: flex-end;
-        flex: 1;
+        justify-content: center;
         outline: none;
+        position: relative;
 
-        .picture {
-            border-radius: 100%;
+        .user-picture {
+            width: 36px;
+            height: 36px;
             overflow: hidden;
-            width: 48px;
-            height: 48px;
+            border-radius: 100%;
+            border: 1px solid white;
+            box-sizing: content-box;
+            /deep/ canvas {
+              width: 36px;
+              height: 36px;
+            }
+        }
+        .user-points {
+          bottom: -5px;
         }
     }
 }

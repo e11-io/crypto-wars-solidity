@@ -1,10 +1,56 @@
 {
   "APPWIDE": {
-    "coming-soon": "Coming soon"
+    "coming-soon": "Coming soon",
+    "waiting-for-transaction-dots": "Waiting for transaction...",
+    "requires": "Requires:",
+    "not-enough-resources": "Not enough {{ resource }}",
+    "block": "Block",
+    "blocks": "Blocks",
+    "resources": "Resources",
+    "army": "Army",
+    "MOBILE": {
+      "title": "Mobile screens are not supported",
+      "text": "Please use a larger screen that supports Metamask"
+    },
+    "TAKING-TO-LONG": {
+      "text": "If this is taking too long, please check your metamask or go to our ",
+      "guide": "troubleshooting guide."
+    },
+    "ERRORS": {
+      "NO_WEB3_PROVIDER": {
+        "title": "Install MetaMask",
+        "text": "You will need a safe place to store your Quantum Dust: MetaMask. Metamask will also act as your login to the game (no extra password needed)."
+      },
+      "NOT_E11_POA": {
+        "title": "Switch to our network",
+        "text": "You need to switch MetaMask to our own Ethereum network. To do this, open MetaMask and add our \"Custom RPC\"",
+        "guide": "If you have any issues, check this short step-by-step guide."
+      },
+      "LOCKED": {
+        "title": "Unlock MetaMask",
+        "text": "It seems that your MetaMask is locked. Please enter your password and click \"Unlock\".",
+        "guide": "If you have any issues, check this short step-by-step guide."
+      },
+      "METAMASK_ERROR": {
+        "title": "Whoops!",
+        "text": "Something unexpected happened, please refresh this site and try again.",
+        "guide": "If the issue persists, please check our troubleshooting guide."
+      },
+      "guide": "Check step-by-step guide"
+    },
+    "COMMON": {
+      "barracks": "Barracks",
+      "build": "Build",
+      "done": "Done",
+      "research": "Research",
+      "left": "left",
+      "loading": "Loading..."
+    }
   },
   "NAVBAR": {
     "TABS": {
       "assets": "Assets",
+      "battle": "Battle",
       "dashboard": "Dashboard",
       "trades": "Trades"
     },
@@ -16,6 +62,43 @@
       "offense": "Offense",
       "defense": "Defense",
       "research": "Research"
+    },
+    "NAVBAR": {
+      "queue": "Queue",
+      "states": {
+        "remaining": "remaining ({{ time }})",
+        "in-progress": "{{ items }} In progress"
+      }
+    }
+  },
+  "DASHBOARD": {
+    "VILLAGE_LOGS": {
+      "title": "Village Log",
+      "no-logs": "No village logs",
+      "BATTLE": {
+        "looted-enemy": "You looted an enemy village!",
+        "didnt-defeat": "You couldn’t defeat an enemy village!",
+        "village-defended": "You defended your village!",
+        "village-raided": "Your village was raided!"
+      }
+    },
+    "VILLAGE_QUEUE": {
+      "finishing": "Finishing up...",
+      "empty-buildings-queue": "Your buildings queue is empty. Start building!",
+      "empty-barracks-queue": "Your barracks queue is empty. Start building!",
+      "research": "research"
+    },
+    "VILLAGE_INFO": {
+      "online": "Online",
+      "rate": "RATE",
+      "population": "Population",
+      "currently-have": "Currently have: {{ buildings }}",
+      "currently-living": "Currently living: {{ living }}",
+      "currently-researching": "Currently researching: {{ researching }}"
+    },
+    "VILLAGE_EXTRAS": {
+      "boosts": "Boosts",
+      "alliance": "Alliance"
     }
   },
   "ONBOARDING": {
@@ -42,10 +125,63 @@
       },
       "disclaimer": "Hey! This is an alpha release, please report any bugs!",
       "taking-long": "If this is taking too long, please make sure there are no pending transactions on Metamask"
+    },
+    "ERRORS": {
+      "PRIVATE_ACCESS": {
+        "title": "This is a private beta",
+        "only-collaborators": "This game is only available to Experimental collaborators.",
+        "presale-info": "If you'd like to join our pre-sale and become a collaborator, please click the button below.",
+        "join-button": "Become a collaborator"
+      }
     }
+  },
+  "BATTLE": {
+    "LOADING": {
+      "battles": "Loading battles...",
+      "targets": "Loading targets...",
+      "more-targets": "Loading more targets",
+      "more-history": "Loading more battle history"
+    },
+    "TARGETS": {
+      "not-found": "No targets found",
+      "find-more": "Find more targets"
+    },
+    "HISTORY": {
+      "not-found": "No battles found",
+      "find-more": "Find more battles"
+    },
+    "you-attacked": "You attacked",
+    "you-defended": "You defended",
+    "your-casualities": "Your casualties",
+    "enemy-casualities": "Enemy Casualties",
+    "total-enemy-resources": "Total enemy resources",
+    "recycled": "Recycled",
+    "looted": "Looted",
+    "available-loot": "Available Loot",
+    "looted-from-you": "Looted from you",
+    "enemy-recycled": "Enemy recycled",
+    "your-army": "Your army",
+    "enemy-army": "Enemy army",
+    "prepare-attack": "Prepare attack against {{ enemy }}",
+    "attack": "Attack {{ enemy }}",
+    "prepare-revenge": "Prepare revenge against {{ enemy }}",
+    "take-revenge": "Take revenge against {{ enemy }}",
+    "cant-attack": "Can't attack {{ enemy }}",
+    "portal-recharging": "Portal recharging, wait {{ blocks }} blocks ({{ time }}) before attacking",
+    "no-army": "Please set your army",
+    "select-target": "Select target",
+    "battle-history": "Battle history",
+    "refresh-list": "Refresh list"
   },
   "DATA": {
     "buildings": {
+      "states": {
+        "fetching-available-buildings": "Fetching available buildings...",
+        "creating-building": "Creating building...",
+        "upgrading-building": "Upgrading building...",
+        "upgrade-to-level": "Upgrade to level {{ level }}",
+        "max-level": "Max Level"
+      },
       "stats": {
         "health": "Health",
         "attack": "Attack",
@@ -57,150 +193,485 @@
       },
       "barracks_1": {
         "name": "Barracks",
+        "idName": "barracks",
+        "image-level": "1",
         "description": "Train some units to fight for your realm!"
       },
       "barracks_2": {
         "name": "Barracks",
+        "idName": "barracks",
+        "image-level": "2",
         "description": "Train some units to fight for your realm!"
       },
       "barracks_3": {
         "name": "Barracks",
+        "idName": "barracks",
+        "image-level": "3",
+        "description": "Train some units to fight for your realm!"
+      },
+      "barracks_4": {
+        "name": "Barracks",
+        "idName": "barracks",
+        "image-level": "3",
+        "description": "Train some units to fight for your realm!"
+      },
+      "barracks_5": {
+        "name": "Barracks",
+        "idName": "barracks",
+        "image-level": "3",
         "description": "Train some units to fight for your realm!"
       },
       "city_center_1": {
         "name": "City center",
+        "idName": "city_center",
+        "image-level": "1",
         "description": "The core of your village. Upgrade it to unlock new buildings and units!"
       },
       "city_center_2": {
         "name": "City center",
+        "idName": "city_center",
+        "image-level": "2",
         "description": "The core of your village. Upgrade it to unlock new buildings and units!"
       },
       "city_center_3": {
         "name": "City center",
+        "idName": "city_center",
+        "image-level": "3",
+        "description": "The core of your village. Upgrade it to unlock new buildings and units!"
+      },
+      "city_center_4": {
+        "name": "City center",
+        "idName": "city_center",
+        "image-level": "3",
+        "description": "The core of your village. Upgrade it to unlock new buildings and units!"
+      },
+      "city_center_5": {
+        "name": "City center",
+        "idName": "city_center",
+        "image-level": "3",
+        "description": "The core of your village. Upgrade it to unlock new buildings and units!"
+      },
+      "city_center_6": {
+        "name": "City center",
+        "idName": "city_center",
+        "image-level": "3",
+        "description": "The core of your village. Upgrade it to unlock new buildings and units!"
+      },
+      "city_center_7": {
+        "name": "City center",
+        "idName": "city_center",
+        "image-level": "3",
+        "description": "The core of your village. Upgrade it to unlock new buildings and units!"
+      },
+      "city_center_8": {
+        "name": "City center",
+        "idName": "city_center",
+        "image-level": "3",
+        "description": "The core of your village. Upgrade it to unlock new buildings and units!"
+      },
+      "city_center_9": {
+        "name": "City center",
+        "idName": "city_center",
+        "image-level": "3",
+        "description": "The core of your village. Upgrade it to unlock new buildings and units!"
+      },
+      "city_center_10": {
+        "name": "City center",
+        "idName": "city_center",
+        "image-level": "3",
         "description": "The core of your village. Upgrade it to unlock new buildings and units!"
       },
       "gold_mine_1": {
         "name": "Gold mine",
+        "idName": "gold_mine",
+        "image-level": "1",
         "description": "Gold production is key for development. Upgrade it to boost performance and storage capacity."
       },
       "gold_mine_2": {
         "name": "Gold mine",
+        "idName": "gold_mine",
+        "image-level": "2",
         "description": "Gold production is key for development. Upgrade it to boost performance and storage capacity."
       },
       "gold_mine_3": {
         "name": "Gold mine",
+        "idName": "gold_mine",
+        "image-level": "3",
         "description": "Gold production is key for development. Upgrade it to boost performance and storage capacity."
       },
       "gold_mine_4": {
         "name": "Gold mine",
+        "idName": "gold_mine",
+        "image-level": "4",
         "description": "Gold production is key for development. Upgrade it to boost performance and storage capacity."
       },
       "gold_mine_5": {
         "name": "Gold mine",
+        "idName": "gold_mine",
+        "image-level": "5",
+        "description": "Gold production is key for development. Upgrade it to boost performance and storage capacity."
+      },
+      "gold_mine_6": {
+        "name": "Gold mine",
+        "idName": "gold_mine",
+        "image-level": "5",
+        "description": "Gold production is key for development. Upgrade it to boost performance and storage capacity."
+      },
+      "gold_mine_7": {
+        "name": "Gold mine",
+        "idName": "gold_mine",
+        "image-level": "5",
+        "description": "Gold production is key for development. Upgrade it to boost performance and storage capacity."
+      },
+      "gold_mine_8": {
+        "name": "Gold mine",
+        "idName": "gold_mine",
+        "image-level": "5",
+        "description": "Gold production is key for development. Upgrade it to boost performance and storage capacity."
+      },
+      "gold_mine_9": {
+        "name": "Gold mine",
+        "idName": "gold_mine",
+        "image-level": "5",
+        "description": "Gold production is key for development. Upgrade it to boost performance and storage capacity."
+      },
+      "gold_mine_10": {
+        "name": "Gold mine",
+        "idName": "gold_mine",
+        "image-level": "5",
         "description": "Gold production is key for development. Upgrade it to boost performance and storage capacity."
       },
       "crystal_mine_1": {
         "name": "Crystal mine",
+        "idName": "crystal_mine",
+        "image-level": "1",
         "description": "Crystal production is key for development. Upgrade it to boost performance and storage capacity."
       },
       "crystal_mine_2": {
         "name": "Crystal mine",
+        "idName": "crystal_mine",
+        "image-level": "2",
         "description": "Crystal production is key for development. Upgrade it to boost performance and storage capacity."
       },
       "crystal_mine_3": {
         "name": "Crystal mine",
+        "idName": "crystal_mine",
+        "image-level": "3",
         "description": "Crystal production is key for development. Upgrade it to boost performance and storage capacity."
       },
       "crystal_mine_4": {
         "name": "Crystal mine",
+        "idName": "crystal_mine",
+        "image-level": "4",
         "description": "Crystal production is key for development. Upgrade it to boost performance and storage capacity."
       },
       "crystal_mine_5": {
         "name": "Crystal mine",
+        "idName": "crystal_mine",
+        "image-level": "5",
+        "description": "Crystal production is key for development. Upgrade it to boost performance and storage capacity."
+      },
+      "crystal_mine_6": {
+        "name": "Crystal mine",
+        "idName": "crystal_mine",
+        "image-level": "5",
+        "description": "Crystal production is key for development. Upgrade it to boost performance and storage capacity."
+      },
+      "crystal_mine_7": {
+        "name": "Crystal mine",
+        "idName": "crystal_mine",
+        "image-level": "5",
+        "description": "Crystal production is key for development. Upgrade it to boost performance and storage capacity."
+      },
+      "crystal_mine_8": {
+        "name": "Crystal mine",
+        "idName": "crystal_mine",
+        "image-level": "5",
+        "description": "Crystal production is key for development. Upgrade it to boost performance and storage capacity."
+      },
+      "crystal_mine_9": {
+        "name": "Crystal mine",
+        "idName": "crystal_mine",
+        "image-level": "5",
+        "description": "Crystal production is key for development. Upgrade it to boost performance and storage capacity."
+      },
+      "crystal_mine_10": {
+        "name": "Crystal mine",
+        "idName": "crystal_mine",
+        "image-level": "5",
         "description": "Crystal production is key for development. Upgrade it to boost performance and storage capacity."
       },
       "gold_storage_1": {
         "name": "Gold storage",
+        "idName": "gold_storage",
+        "image-level": "1",
         "description": "Your gold is stored here. Upgrade your storage for more capacity and durability against attacks."
       },
       "gold_storage_2": {
         "name": "Gold storage",
+        "idName": "gold_storage",
+        "image-level": "2",
         "description": "Your gold is stored here. Upgrade your storage for more capacity and durability against attacks."
       },
       "gold_storage_3": {
         "name": "Gold storage",
+        "idName": "gold_storage",
+        "image-level": "3",
+        "description": "Your gold is stored here. Upgrade your storage for more capacity and durability against attacks."
+      },
+      "gold_storage_4": {
+        "name": "Gold storage",
+        "idName": "gold_storage",
+        "image-level": "3",
+        "description": "Your gold is stored here. Upgrade your storage for more capacity and durability against attacks."
+      },
+      "gold_storage_5": {
+        "name": "Gold storage",
+        "idName": "gold_storage",
+        "image-level": "3",
+        "description": "Your gold is stored here. Upgrade your storage for more capacity and durability against attacks."
+      },
+      "gold_storage_6": {
+        "name": "Gold storage",
+        "idName": "gold_storage",
+        "image-level": "3",
+        "description": "Your gold is stored here. Upgrade your storage for more capacity and durability against attacks."
+      },
+      "gold_storage_7": {
+        "name": "Gold storage",
+        "idName": "gold_storage",
+        "image-level": "3",
+        "description": "Your gold is stored here. Upgrade your storage for more capacity and durability against attacks."
+      },
+      "gold_storage_8": {
+        "name": "Gold storage",
+        "idName": "gold_storage",
+        "image-level": "3",
+        "description": "Your gold is stored here. Upgrade your storage for more capacity and durability against attacks."
+      },
+      "gold_storage_9": {
+        "name": "Gold storage",
+        "idName": "gold_storage",
+        "image-level": "3",
+        "description": "Your gold is stored here. Upgrade your storage for more capacity and durability against attacks."
+      },
+      "gold_storage_10": {
+        "name": "Gold storage",
+        "idName": "gold_storage",
+        "image-level": "3",
         "description": "Your gold is stored here. Upgrade your storage for more capacity and durability against attacks."
       },
       "crystal_storage_1": {
         "name": "Crystal storage",
+        "idName": "crystal_storage",
+        "image-level": "1",
         "description": "Your crystal is stored here. Upgrade your storage for more capacity and durability against attacks."
       },
       "crystal_storage_2": {
         "name": "Crystal storage",
+        "idName": "crystal_storage",
+        "image-level": "2",
         "description": "Your crystal is stored here. Upgrade your storage for more capacity and durability against attacks."
       },
       "crystal_storage_3": {
         "name": "Crystal storage",
+        "idName": "crystal_storage",
+        "image-level": "3",
+        "description": "Your crystal is stored here. Upgrade your storage for more capacity and durability against attacks."
+      },
+      "crystal_storage_4": {
+        "name": "Crystal storage",
+        "idName": "crystal_storage",
+        "image-level": "3",
+        "description": "Your crystal is stored here. Upgrade your storage for more capacity and durability against attacks."
+      },
+      "crystal_storage_5": {
+        "name": "Crystal storage",
+        "idName": "crystal_storage",
+        "image-level": "3",
+        "description": "Your crystal is stored here. Upgrade your storage for more capacity and durability against attacks."
+      },
+      "crystal_storage_6": {
+        "name": "Crystal storage",
+        "idName": "crystal_storage",
+        "image-level": "3",
+        "description": "Your crystal is stored here. Upgrade your storage for more capacity and durability against attacks."
+      },
+      "crystal_storage_7": {
+        "name": "Crystal storage",
+        "idName": "crystal_storage",
+        "image-level": "3",
+        "description": "Your crystal is stored here. Upgrade your storage for more capacity and durability against attacks."
+      },
+      "crystal_storage_8": {
+        "name": "Crystal storage",
+        "idName": "crystal_storage",
+        "image-level": "3",
+        "description": "Your crystal is stored here. Upgrade your storage for more capacity and durability against attacks."
+      },
+      "crystal_storage_9": {
+        "name": "Crystal storage",
+        "idName": "crystal_storage",
+        "image-level": "3",
+        "description": "Your crystal is stored here. Upgrade your storage for more capacity and durability against attacks."
+      },
+      "crystal_storage_10": {
+        "name": "Crystal storage",
+        "idName": "crystal_storage",
+        "image-level": "3",
         "description": "Your crystal is stored here. Upgrade your storage for more capacity and durability against attacks."
       },
       "gold_factory_1": {
         "name": "Gold factory",
+        "idName": "gold_factory",
+        "image-level": "1",
         "description": "Add value to your raw gold turning it into gold bars in a Gold Factory."
       },
       "gold_factory_2": {
         "name": "Gold factory",
+        "idName": "gold_factory",
+        "image-level": "2",
         "description": "Add value to your raw gold turning it into gold bars in a Gold Factory."
       },
       "gold_factory_3": {
         "name": "Gold factory",
+        "idName": "gold_factory",
+        "image-level": "3",
         "description": "Add value to your raw gold turning it into gold bars in a Gold Factory."
       },
       "gold_factory_4": {
         "name": "Gold factory",
+        "idName": "gold_factory",
+        "image-level": "4",
         "description": "Add value to your raw gold turning it into gold bars in a Gold Factory."
       },
       "gold_factory_5": {
         "name": "Gold factory",
+        "idName": "gold_factory",
+        "image-level": "5",
+        "description": "Add value to your raw gold turning it into gold bars in a Gold Factory."
+      },
+      "gold_factory_6": {
+        "name": "Gold factory",
+        "idName": "gold_factory",
+        "image-level": "5",
+        "description": "Add value to your raw gold turning it into gold bars in a Gold Factory."
+      },
+      "gold_factory_7": {
+        "name": "Gold factory",
+        "idName": "gold_factory",
+        "image-level": "5",
+        "description": "Add value to your raw gold turning it into gold bars in a Gold Factory."
+      },
+      "gold_factory_8": {
+        "name": "Gold factory",
+        "idName": "gold_factory",
+        "image-level": "5",
+        "description": "Add value to your raw gold turning it into gold bars in a Gold Factory."
+      },
+      "gold_factory_9": {
+        "name": "Gold factory",
+        "idName": "gold_factory",
+        "image-level": "5",
+        "description": "Add value to your raw gold turning it into gold bars in a Gold Factory."
+      },
+      "gold_factory_10": {
+        "name": "Gold factory",
+        "idName": "gold_factory",
+        "image-level": "5",
         "description": "Add value to your raw gold turning it into gold bars in a Gold Factory."
       },
       "crystal_factory_1": {
         "name": "Crystal factory",
+        "idName": "crystal_factory",
+        "image-level": "1",
         "description": "Make your crystal more valuable by refining it in a Crystal Factory."
       },
       "crystal_factory_2": {
         "name": "Crystal factory",
+        "idName": "crystal_factory",
+        "image-level": "2",
         "description": "Make your crystal more valuable by refining it with a Crystal Factory."
       },
       "crystal_factory_3": {
         "name": "Crystal factory",
+        "idName": "crystal_factory",
+        "image-level": "3",
         "description": "Make your crystal more valuable by refining it with a Crystal Factory."
       },
       "crystal_factory_4": {
         "name": "Crystal factory",
+        "idName": "crystal_factory",
+        "image-level": "4",
         "description": "Make your crystal more valuable by refining it with a Crystal Factory."
       },
       "crystal_factory_5": {
         "name": "Crystal factory",
+        "idName": "crystal_factory",
+        "image-level": "5",
+        "description": "Make your crystal more valuable by refining it with a Crystal Factory."
+      },
+      "crystal_factory_6": {
+        "name": "Crystal factory",
+        "idName": "crystal_factory",
+        "image-level": "5",
+        "description": "Make your crystal more valuable by refining it in a Crystal Factory."
+      },
+      "crystal_factory_7": {
+        "name": "Crystal factory",
+        "idName": "crystal_factory",
+        "image-level": "5",
+        "description": "Make your crystal more valuable by refining it with a Crystal Factory."
+      },
+      "crystal_factory_8": {
+        "name": "Crystal factory",
+        "idName": "crystal_factory",
+        "image-level": "5",
+        "description": "Make your crystal more valuable by refining it with a Crystal Factory."
+      },
+      "crystal_factory_9": {
+        "name": "Crystal factory",
+        "idName": "crystal_factory",
+        "image-level": "5",
+        "description": "Make your crystal more valuable by refining it with a Crystal Factory."
+      },
+      "crystal_factory_10": {
+        "name": "Crystal factory",
+        "idName": "crystal_factory",
+        "image-level": "5",
         "description": "Make your crystal more valuable by refining it with a Crystal Factory."
       },
       "portal_1": {
         "name": "Small portal",
+        "idName": "portal",
+        "image-level": "1",
         "description": "Travel to other realms and attack your opponents! Take the loot and come back home!"
       },
       "portal_2": {
         "name": "Medium portal",
+        "idName": "portal",
+        "image-level": "2",
         "description": "Travel to other realms and attack your opponents! Take the loot and come back home!"
       },
       "portal_3": {
         "name": "Big portal",
+        "idName": "portal",
+        "image-level": "3",
         "description": "Travel to other realms and attack your opponents! Take the loot and come back home!"
       }
     },
     "units": {
+      "states": {
+        "recruit": "Recruit {{ amount }} {{ unit }}",
+        "fetching-available-units": "Fetching available units..."
+      },
       "stats": {
         "health": "Health",
         "attack": "Attack",
-        "defense": "Defense"
+        "defense": "Defense",
+        "hp": "Hp",
+        "dmg": "Dmg",
+        "def": "Def"
       },
       "tiny_warrior": {
         "name": "Tiny warrior",

@@ -63,7 +63,26 @@
   </select>
   <button type="button" (click)="addBuildingToQueue(building.value)">Buy Building</button>
   <br>
-  <button type="button" (click)="checkTransaction()">Cehck transaction</button>
+  <label for="buildingsids">buildingsids:</label>
+  <input #buildingsids type="text" placeholder="e.g., 95,223,10,341">
+  <label for="receiver2">To user:</label>
+  <!-- 0x81c0d92b220AA552f1E70fED1d515dADB14eDD00 -->
+  <input #receiver2 type="text" id="receiver" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae">
+  <button type="button" (click)="addBuildingToUser(receiver2.value, buildingsids.value)">Add building to user</button>
+  <br><br>
+
+  <br><br>
+  <h3>Points System Contract - <a href="#">gh-issue</a></h3>
+  <br>
+  <button type="button" (click)="getThreshold()">Get Threshold</button>
+  <br>
+  <button type="button" (click)="getEvents()">Get Events</button>
+  <br><br>
+
+  <br><br>
+  <h3>Battle System Contract - <a href="#">gh-issue</a></h3>
+  <br>
+  <button type="button" (click)="getBattleInfo()">Get Battle Info</button>
   <br><br>
 
 </div>

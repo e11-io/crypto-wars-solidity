@@ -2,6 +2,45 @@
 
 .village-logs-container {
   margin-top: 5rem;
-  min-width: 19rem;
-  height: 43.4rem;
+  min-width: 26rem;
+  max-height: 43.4rem;
+  min-height: 27.4rem;
+
+  .box-content {
+    &.empty {
+      font-size: 1.6rem;
+    }
+  }
+
+  .box-option {
+    cursor: pointer;
+    align-items: baseline;
+
+    .message {
+      font-size: 1.4rem;
+      flex: 1;
+    }
+    .time {
+      margin-left: .9rem;
+      opacity: .7;
+    }
+
+    &.battle {
+      .battle-resources {
+        display: flex;
+        width: 100%;
+        white-space: nowrap;
+
+        .resource {
+          opacity: .85;
+          margin-right: 1.5rem;
+          .bullet-outline {
+            margin-right: .5rem;
+          }
+        }
+      }
+    }
+
+  }
+
 }

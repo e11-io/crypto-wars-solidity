@@ -1,0 +1,25 @@
+{
+  "typeId": 5,
+  "name": "Gold Factory",
+  "maxLevel": 10,
+  "baseStats": {
+    "price": 55000,
+    "resource": 0,
+    "blocks": 33,
+    "health": 0,
+    "defense": 0,
+    "attack": 0,
+    "goldCapacity": 0,
+    "crystalCapacity": 0,
+    "goldRate": 54,
+    "crystalRate": 0
+  },
+  "levelsRequirements": {
+    "1": ["city_center_3", "gold_mine_5"]
+  },
+  "modifiers": {
+    "price": "BV * (1.6 ** (BL-1))",
+    "blocks": "BV * (1.6 ** (BL-1))",
+    "goldRate": "BV * BL * ((1.06) ** BL)"
+  }
+}

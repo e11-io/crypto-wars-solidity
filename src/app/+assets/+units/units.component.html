@@ -27,7 +27,7 @@
                 <span *ngIf="unit[stat]">
                   {{'DATA.units.stats.' + stat | translate}}:
                   <span class="stat-value">
-                    {{unit[stat] || '0'}}
+                    {{(unit[stat] | largeNumber) || '0'}}
                   </span>
                 </span>
               </ng-template>
@@ -38,8 +38,8 @@
                [class.disabled]="unit.missingRequirements.length"
                [style.background-image]="'url(/assets/img/units/thumbnails/' + unit.name + '.png)'">
                <div class="e11-badge">
-                 {{unit.quantity}}<!-- this comment removes the whitespace
-                 --><ng-template [ngIf]="unit.quantityInQueue"> / {{unit.quantity + unit.quantityInQueue}}</ng-template>
+                 {{unit.quantity | largeNumber}}<!-- this comment removes the whitespace
+                 --><ng-template [ngIf]="unit.quantityInQueue"> / {{(unit.quantity + unit.quantityInQueue) | largeNumber}}</ng-template>
                </div>
           </div>
         </div>
@@ -53,12 +53,13 @@
 
             <span class="item-price" [attr.color]="unit.resource">
               <div class="bullet-outline"></div>
-              {{unit.price * (unitsToRecruit[unit.id] || 1)}}
+              {{((unit.price * (unitsToRecruit[unit.id]) | largeNumber) || 1)}}
             </span>
             <span class="item-time">
               <i class="e11-icon e11f-clock"></i>
               <ng-template [ngIf]="unitsToRecruit[unit.id]">
                 {{unit.blocks * unitsToRecruit[unit.id]}} Blocks
+                ({{unit.blocks * unitsToRecruit[unit.id] | blockTime}})
               </ng-template>
             </span>
           </div>
@@ -84,24 +85,32 @@
                   *ngIf="!unit.missingRequirements.length"
                   (click)="itemActionRecruit(unit, unitsToRecruit[unit.id])">
             <ng-template [ngIf]="playerResources[unit.resource] >= unit.price && !unit.waiting ">
-              Recruit {{unitsToRecruit[unit.id] || 1}} {{'DATA.units.' + unit.name + '.name' | translate}}
+              {{
+                'DATA.units.states.recruit' | translate : {
+                                                amount: (unitsToRecruit[unit.id] | largeNumber),
+                                                unit: ('DATA.units.' + unit.name + '.name' | translate)
+                                              }
+              }}
             </ng-template>
             <ng-template [ngIf]="playerResources[unit.resource] < unit.price && !unit.waiting">
-              Not enough {{unit.resource}}
+              {{ 'APPWIDE.not-enough-resources' | translate : { resource: ('DATA.RESOURCES.' + unit.resource | translate).toLowerCase() } }}
             </ng-template>
             <ng-template [ngIf]="unit.waiting">
-              Waiting for transaction...
+              {{ 'APPWIDE.waiting-for-transaction-dots' | translate }}
             </ng-template>
           </button>
 
           <div class="requirements-overview"
                *ngIf="unit.missingRequirements &&
                       unit.missingRequirements.length">
-            <span>Requires:</span>
+            <span>{{ 'APPWIDE.requires' | translate }}</span>
             <div class="requirement-image"
                  tooltip-position="bottom"
                  [attr.tooltip]="('DATA.buildings.' + buildingsMap[requirement].name + '.name' | translate) + ' Lv. ' + buildingsMap[requirement].level"
-                 [style.background-image]="'url(/assets/img/buildings/thumbnails/' + buildingsMap[requirement].name + '.png)'"
+                 [style.background-image]="'url(/assets/img/buildings/thumbnails/' +
+                                           ('DATA.buildings.' + buildingsMap[requirement].name + '.idName' | translate) + '_' +
+                                           ('DATA.buildings.' + buildingsMap[requirement].name + '.image-level' | translate) + '.png)'"
+
                  *ngFor="let requirement of unit.missingRequirements">
             </div>
           </div>
@@ -112,7 +121,7 @@
     </div>
 
     <div class="loading-text" *ngIf="!this.units.length">
-      Fetching available units...
+      {{ 'DATA.units.states.fetching-available-units' | translate }}
     </div>
   </div>
 

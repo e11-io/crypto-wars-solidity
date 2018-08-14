@@ -1,0 +1,25 @@
+<div class="battle-container">
+    <div class="army-info">
+      <h2>{{ 'BATTLE.your-army' | translate }}</h2>
+      <e11-battle-army-stats></e11-battle-army-stats>
+      <e11-battle-army-selection></e11-battle-army-selection>
+    </div>
+    <div class="battle-info">
+      <h2 class="title-selection">
+        <a routerLink="/battle/target" routerLinkActive="active">
+          {{ 'BATTLE.select-target' | translate }}
+        </a>
+        <div class="vertical-separator"></div>
+        <a routerLink="/battle/history" routerLinkActive="active">
+          {{ 'BATTLE.battle-history' | translate }}
+        </a>
+        <div class="fill"></div>
+        <span class="refresh-list" (click)="refresh()">
+          <i class="e11-icon e11f-refresh"></i>
+          {{ 'BATTLE.refresh-list' | translate }}
+        </span>
+      </h2>
+
+      <router-outlet></router-outlet>
+    </div>
+</div>

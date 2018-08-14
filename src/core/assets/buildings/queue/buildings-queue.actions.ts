@@ -40,7 +40,7 @@ export namespace AssetsBuildingsQueueActions {
   export class AddBuildingToQueue implements Action {
     type = Types.ADD_BUILDING_TO_QUEUE;
 
-    constructor(public payload: number) { }
+    constructor(public payload: any) { }
   }
 
   export class AddBuildingToQueueSuccess implements Action {

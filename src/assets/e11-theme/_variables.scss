@@ -27,3 +27,22 @@ $color-resource-gold: #D9CA2B;
 $color-warning: #DA932C;
 $color-error: #D35847;
 $color-success: #66B92E;
+
+$color-hp: #39B54A;
+$color-dmg: #D35847;
+$color-def: #2BB8D9;
+
+$colors: (
+  e11: $color-resource-e11,
+  quantum: $color-resource-quantum,
+  crystal: $color-resource-crystal,
+  gold: $color-resource-gold,
+
+  warning: $color-warning,
+  error: $color-error,
+  success: $color-success,
+
+  hp: $color-hp,
+  dmg: $color-dmg,
+  def: $color-def
+);

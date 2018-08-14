@@ -43,7 +43,7 @@ export class Web3Service {
           if (state.networkVersion === '1') {
             return resolve('mainnet');
           }
-          if (state.networkVersion !== '311') {
+          if (state.networkVersion !== '311001') {
             return resolve('not_e11_poa');
           }
           this.getAccounts().then((accounts) => {
@@ -130,6 +130,21 @@ export class Web3Service {
 
   getAccounts() {
     return this.web3.eth.getAccounts();
+  }
+
+  public async getEvents(contractEvent, currentBlock = 0, searchThreshold = 0, filters = {}) {
+    let startBlock = currentBlock - searchThreshold;
+    if (startBlock < 0) {
+      startBlock = 0;
+    }
+    return new Promise((resolve) => {
+      contractEvent(filters, { fromBlock: startBlock, toBlock: currentBlock }).get((error, data) => {
+        if (error) {
+          return resolve({error});
+        }
+        return resolve({data});
+      })
+    })
   }
 
 }

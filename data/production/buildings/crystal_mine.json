@@ -1,0 +1,23 @@
+{
+  "typeId": 3,
+  "name": "Crystal Mine",
+  "maxLevel": 10,
+  "baseStats": {
+    "price": 6500,
+    "resource": 1,
+    "blocks": 8,
+    "health": 0,
+    "defense": 0,
+    "attack": 0,
+    "goldCapacity": 0,
+    "crystalCapacity": 0,
+    "goldRate": 0,
+    "crystalRate": 9
+  },
+  "levelsRequirements": {},
+  "modifiers": {
+    "price": "BV * (1.65 ** (BL-1))",
+    "blocks": "BV * (1.65 ** (BL-1))",
+    "crystalRate": "BV * BL * (1.1**BL)"
+  }
+}

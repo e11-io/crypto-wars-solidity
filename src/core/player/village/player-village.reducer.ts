@@ -20,8 +20,23 @@ export function playerVillageReducer (state = initialPlayerVillageState, action:
       })
 
     case PlayerVillageActions.Types.GET_VILLAGE_NAME_FAILURE:
+    case PlayerVillageActions.Types.GET_USER_POINTS_FAILURE:
       return Object.assign({}, state, {
         status: new Status({ error: action.payload.status.error })
+      })
+
+    case PlayerVillageActions.Types.GET_USER_POINTS:
+      return Object.assign({}, state, {
+        status: new Status({
+          error:   null,
+          loading: true
+        })
+      })
+
+    case PlayerVillageActions.Types.GET_USER_POINTS_SUCCESS:
+      return Object.assign({}, state, {
+        points:      action.payload,
+        status:      new Status()
       })
 
     case PlayerVillageActions.Types.CREATE_VILLAGE:

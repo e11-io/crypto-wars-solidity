@@ -12,6 +12,7 @@ import { AssetsBuildingsQueueActions } from '../../assets/buildings/queue/buildi
 import { AssetsUnitsQueueActions } from '../../assets/units/queue/units-queue.actions';
 import { PlayerBuildingsActions } from '../assets/buildings/player-buildings.actions';
 import { PlayerResourcesActions } from '../resources/player-resources.actions';
+import { PlayerUnitsActions } from '../assets/units/player-units.actions';
 
 import { ContractsService } from '../../shared/contracts.service';
 import { Status } from '../../shared/status.model';
@@ -56,6 +57,22 @@ export class PlayerVillageEffects {
       })
     })
 
+  @Effect({dispatch:false}) getUserPoints =  this.actions$
+    .ofType(PlayerVillageActions.Types.GET_USER_POINTS)
+    .map((action: PlayerVillageActions.GetUserPoints) => {
+      this.web3Service.callContract(
+        this.contractsService.PointsSystemInstance.usersPoints,
+        [action.payload]
+      ).then((result) => {
+        if (result.error) {
+          return this.store.dispatch(new PlayerVillageActions.GetUserPointsFailure({
+            status: new Status({ error: result.error })
+          }));
+        }
+        return this.store.dispatch(new PlayerVillageActions.GetUserPointsSuccess(result));
+      })
+    })
+
   @Effect() getVillageNameSuccess$ = this.actions$
     .ofType(PlayerVillageActions.Types.GET_VILLAGE_NAME_SUCCESS)
     .mergeMap((action: PlayerVillageActions.GetVillageNameSuccess) => {
@@ -67,6 +84,7 @@ export class PlayerVillageEffects {
         new AssetsBuildingsQueueActions.GetBuildingsQueue(activeAccount),
         new PlayerBuildingsActions.GetPlayerBuildingsLength(),
         new AssetsUnitsQueueActions.GetUnitsQueue(activeAccount),
+        new PlayerUnitsActions.GetPlayerUnits(),
       ])
     });
 

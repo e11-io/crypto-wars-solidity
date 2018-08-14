@@ -37,6 +37,8 @@
 
     .e11-catalog {
       margin-top: 2rem;
+      flex-shrink: 0;
+
       .item-unavailable {
         .title .name {
           font-weight: bold;

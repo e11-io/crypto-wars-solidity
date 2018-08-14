@@ -1,0 +1,77 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.battle-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 3.3rem 8vw;
+
+  .army-info,
+  .battle-info {
+    margin: 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+  }
+  .army-info {
+    width: 21.6rem;
+  }
+  .battle-info {
+    flex: 1;
+  }
+
+  .title-selection {
+    display: flex;
+    align-items: center;
+    user-select: none;
+    margin-bottom: 1.5rem;
+    flex-shrink: 0;
+
+    a, .refresh-list {
+      color: #7F8CA3;
+    }
+
+    a {
+      text-decoration: none;
+      &.active {
+        color: white;
+      }
+    }
+
+    .refresh-list {
+      display: flex;
+      align-items: center;
+      font-size: 1.4rem;
+      font-weight: bold;
+      cursor: pointer;
+
+      .e11-icon {
+        margin-right: .5rem;
+      }
+    }
+  }
+
+  .vertical-separator {
+    width: 1px;
+    height: 1.4rem;
+    background-color: #7F8FA4;
+    margin: 0 1.5rem;
+  }
+}
+
+/deep/ {
+  .battle-target-container,
+  .battle-history-container {
+    & > .e11-box-container {
+      min-height: 40rem;
+      max-height: 72vh;
+      .box-content.empty {
+        margin: 1rem;
+        font-size: 2.4rem;
+      }
+    }
+  }
+}

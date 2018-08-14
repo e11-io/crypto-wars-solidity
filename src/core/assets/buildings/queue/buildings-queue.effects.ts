@@ -13,6 +13,7 @@ import { Status } from '../../../shared/status.model';
 
 import { Web3Actions } from '../../../web3/web3.actions';
 import { Web3Service } from '../../../web3/web3.service';
+import { PlayerResourcesActions } from '../../../player/resources/player-resources.actions';
 
 
 
@@ -62,14 +63,16 @@ export class AssetsBuildingsQueueEffects {
       this.store.select('web3').take(1).subscribe(web3 => {
         activeAccount = web3.activeAccount;
       });
+      this.store.dispatch(new PlayerResourcesActions.LockPlayerResources(action.payload));
 
       this.web3Service.sendContractTransaction(
         this.contractsService.BuildingsQueueInstance.addNewBuildingToQueue,
-        [action.payload, {from: activeAccount}],
+        [action.payload.id, {from: activeAccount}],
         (error, data) => {
+          this.store.dispatch(new PlayerResourcesActions.UnlockPlayerResources(action.payload));
           if (error) {
             return this.store.dispatch(new AssetsBuildingsQueueActions.AddBuildingToQueueFailure({
-              id: action.payload,
+              id: action.payload.id,
               status: new Status(error)
             }));
           }
@@ -77,8 +80,9 @@ export class AssetsBuildingsQueueEffects {
         }
       ).then((result: any) => {
         if (result.error) {
-          return this.store.dispatch(new AssetsBuildingsQueueActions.AddBuildingToQueueFailure({
-            id: action.payload,
+          this.store.dispatch(new PlayerResourcesActions.UnlockPlayerResources(action.payload));
+          this.store.dispatch(new AssetsBuildingsQueueActions.AddBuildingToQueueFailure({
+            id: action.payload.id,
             status: new Status({ error: result.error })
           }));
         }
@@ -89,25 +93,31 @@ export class AssetsBuildingsQueueEffects {
     .ofType(AssetsBuildingsQueueActions.Types.UPGRADE_BUILDING)
     .do((action: AssetsBuildingsQueueActions.UpgradeBuilding) => {
       let activeAccount: string = '';
-      this.store.select('web3').take(1).subscribe(web3 => {
-        activeAccount = web3.activeAccount;
+      let buildingsMap: any;
+      this.store.select(s => s).take(1).subscribe(state => {
+        activeAccount = state.web3.activeAccount;
+        buildingsMap = state.assets.buildings.data.listMap;
       });
+      let building = buildingsMap[action.payload.nextLevelId];
+      this.store.dispatch(new PlayerResourcesActions.LockPlayerResources(building));
 
       this.web3Service.sendContractTransaction(
         this.contractsService.BuildingsQueueInstance.upgradeBuilding,
         [action.payload.id, action.payload.nextLevelId, action.payload.index, {from: activeAccount}],
         (error, data) => {
+          this.store.dispatch(new PlayerResourcesActions.UnlockPlayerResources(building));
           if (error) {
             return this.store.dispatch(new AssetsBuildingsQueueActions.UpgradeBuildingFailure({
               id: action.payload.id,
               status: new Status({error})
             }));
           }
-          return this.store.dispatch(new AssetsBuildingsQueueActions.UpgradeBuildingSuccess(action.payload.id));
+          return this.store.dispatch(new AssetsBuildingsQueueActions.UpgradeBuildingSuccess(action.payload));
         }
       ).then((tx: any) => {
         if (tx.error) {
-          return this.store.dispatch(new AssetsBuildingsQueueActions.UpgradeBuildingFailure({
+          this.store.dispatch(new PlayerResourcesActions.UnlockPlayerResources(building));
+          this.store.dispatch(new AssetsBuildingsQueueActions.UpgradeBuildingFailure({
             id: action.payload.id,
             status: new Status({error: tx.error})
           }));

@@ -9,6 +9,7 @@ import 'rxjs/add/operator/mergeMap';
 
 import { AssetsUnitsDataActions } from './units-data.actions';
 import { AssetsUnitsDataService } from './units-data.service';
+import { DataUnit } from './data-unit.model';
 
 import { ContractsService } from '../../../shared/contracts.service';
 import { Status } from '../../../shared/status.model';
@@ -25,41 +26,29 @@ export class AssetsUnitsDataEffects {
               private web3Service: Web3Service) {
   }
 
-  @Effect({dispatch: false}) getUnitsLength$ = this.actions$
-    .ofType(AssetsUnitsDataActions.Types.GET_UNITS_LENGTH)
-    .switchMap((action): any =>
-      this.unitsDataService.getUnitIdsLength()
-        .map((unitsIdsLength: any) => {
-          if (unitsIdsLength.error) {
-            return this.store.dispatch(new AssetsUnitsDataActions.GetUnitsLengthFailure({
-              status: new Status({ error: unitsIdsLength.error })
-            }));
-          }
-          return this.store.dispatch(new AssetsUnitsDataActions.GetUnitsIds(unitsIdsLength.toNumber()));
-        })
-    )
-
-  @Effect({dispatch: false}) getUnitsIds$ = this.actions$
-    .ofType(AssetsUnitsDataActions.Types.GET_UNITS_IDS)
-    .switchMap((action: AssetsUnitsDataActions.GetUnitsIds) =>
-      this.unitsDataService.getUnitsIds(action.payload)
-        .map((ids: any) => {
-          ids = ids.map(id => id.toNumber());
-          return this.store.dispatch(new AssetsUnitsDataActions.GetUnitsData(ids));
-        })
-    )
-
-  @Effect({dispatch: false}) getUnitsData$ = this.actions$
+  @Effect() getUnitsData$ = this.actions$
     .ofType(AssetsUnitsDataActions.Types.GET_UNITS_DATA)
     .switchMap((action: AssetsUnitsDataActions.GetUnitsData) => {
-      return this.unitsDataService.getUnitsData(action.payload)
-        .map((units) => {
-          return this.store.dispatch(
-            new AssetsUnitsDataActions.GetUnitsDataSuccess({
-              ids: action.payload,
-              units
-            })
-          )
+      return this.unitsDataService.getUnitsData()
+        .map((unitsData) => {
+          if (!unitsData[0] || unitsData[0].error ||
+              !unitsData[1] || unitsData[1].error) {
+            return new AssetsUnitsDataActions.GetUnitsDataFailure({
+              error: unitsData[0].error || unitsData[1].error || 'unknown'
+            });
+          }
+          unitsData = unitsData[0].concat(unitsData[1]);
+          let names = unitsData.shift(); // Shift first value (name)
+          let ids = unitsData.shift(); // Shift second value (id)
+          let units = {};
+          ids.forEach((id, i) => {
+            id = id.toNumber();
+            let name = this.web3Service.web3.utils.hexToUtf8(names[i]);
+            units[id] = new DataUnit(id,
+              [name, ...unitsData.map(data => data[i])]
+            );
+          })
+          return new AssetsUnitsDataActions.GetUnitsDataSuccess(units);
         });
     })
 

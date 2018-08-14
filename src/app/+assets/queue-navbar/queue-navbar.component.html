@@ -1,22 +1,32 @@
 <div class="queue-navbar-container">
   <div class="queue-navbar e11-box-container">
 
-    <h2>Queue</h2><div class="v-separator"></div>
-    <span>{{itemsInQueue.length}} In progress</span><div class="v-separator"></div>
-    <span>{{remainingBlocks}}
-      <span *ngIf="remainingBlocks == 1">Block </span>
-      <span *ngIf="remainingBlocks != 1">Blocks </span>
-      remaining
+    <h2>{{ 'ASSETS.NAVBAR.queue' | translate }}</h2><div class="v-separator"></div>
+    <span>{{ 'ASSETS.NAVBAR.states.in-progress' | translate : { items: (itemsInQueue.length | largeNumber) } }}</span><div class="v-separator"></div>
+    <span>{{(remainingBlocks | largeNumber) || 0}}
+      <span *ngIf="remainingBlocks == 1">{{ 'APPWIDE.block' | translate }} </span>
+      <span *ngIf="remainingBlocks != 1">{{ 'APPWIDE.blocks' | translate }} </span>
+      {{ 'ASSETS.NAVBAR.states.remaining' | translate : { time: (remainingBlocks | blockTime) } }}
     </span>
     <div class="v-separator"></div>
     <div class="queue-items">
       <div class="item"
            [class.ready]="!item.inProgress"
-           [attr.tooltip]="(item.quantityInQueue? item.quantityInQueue + ' ' : '') + ('DATA.' + queueType + '.' + item.name + '.name' | translate) + (item.level?' Lvl. ' + item.level : '')"
+           [attr.tooltip]="(item.quantityInQueue? (item.quantityInQueue | largeNumber) + ' ' : '') +
+                           ('DATA.' + queueType + '.' + item.name + '.name' | translate) +
+                           (item.level? ' Lvl. ' + item.level : '') +
+                           ' (' + (item.blocks * (item.quantityInQueue || 1) | blockTime) + ')'"
            *ngFor="let item of itemsInQueue; trackBy: trackByFn"
            (click)="onItemClick(item)">
         <div class="item-image"
-             [style.background-image]="'url(' + imagePathUrl + item.name + '.png)'">
+             [style.background-image]="'url(' + imagePathUrl + item.name + '.png)'"
+             *ngIf="queueType == 'units'">
+        </div>
+        <div class="item-image"
+             [style.background-image]="'url(' + imagePathUrl +
+                                       ('DATA.buildings.' + item.name + '.idName' | translate) + '_' +
+                                       ('DATA.buildings.' + item.name + '.image-level' | translate) + '.png)'"
+             *ngIf="queueType == 'buildings'">
         </div>
         <div class="ready" *ngIf="item.quantityInQueue == 0 || item.remainingBlocks == 0">
           <i class="e11-icon e11f-check"></i>

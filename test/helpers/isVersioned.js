@@ -1,5 +1,5 @@
 const { assertRevert } = require('./assertThrow');
-const SimpleToken = artifacts.require('SimpleToken');
+const ExperimentalToken = artifacts.require('ExperimentalToken');
 
 module.exports = {
   isVersioned: async (instance, contract) => {
@@ -20,9 +20,9 @@ module.exports = {
     await newInstance[`set${contractName}Version`](instance.address, 1);
 
     // Check if contract is not upgradeable to another contract type
-    let simpleToken = await SimpleToken.new();
+    let basicToken = await ExperimentalToken.new();
     await assertRevert(async () => {
-      await instance[`set${contractName}Version`](simpleToken.address, 1);
+      await instance[`set${contractName}Version`](basicToken.address, 1);
     });
 
     // Checks if contract fails when upgraded from equal or higher version

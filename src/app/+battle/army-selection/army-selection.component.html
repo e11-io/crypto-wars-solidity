@@ -1,0 +1,30 @@
+<div class="battle-army-selection-container">
+  <div class="army-selection e11-box-container">
+
+    <div class="unit" *ngFor="let unit of units; trackBy: trackByFn">
+      <div class="unit-info">
+        <div class="e11-avatar rounded"
+             [style.background-image]="'url(/assets/img/units/thumbnails/' + unit.name + '.png)'">
+        </div>
+        <div class="unit-data">
+          <span class="unit-qty">
+            <strong>{{unitsToBattle[unit.id] | largeNumber}}</strong>/{{unit.quantity | largeNumber}}
+          </span>
+          <span class="unit-name">
+            {{'DATA.units.' + [unit.name] + '.name' | translate}}
+          </span>
+        </div>
+      </div>
+      <div class="e11-slider unit-slider"
+           *ngIf="true">
+        <input type="range"
+               min="0"
+               [disabled]="false"
+               [max]="unit.quantity"
+               [(ngModel)]="unitsToBattle[unit.id]"
+               (ngModelChange)="rangeChanged(unit.id, unitsToBattle[unit.id])">
+      </div>
+    </div>
+
+  </div>
+</div>

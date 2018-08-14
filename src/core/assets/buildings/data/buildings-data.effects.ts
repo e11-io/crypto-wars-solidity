@@ -8,6 +8,7 @@ import 'rxjs/add/operator/mergeMap';
 
 import { AssetsBuildingsDataActions } from './buildings-data.actions';
 import { AssetsBuildingsDataService } from './buildings-data.service';
+import { DataBuilding } from './data-building.model';
 
 import { ContractsService } from '../../../shared/contracts.service';
 import { Status } from '../../../shared/status.model';
@@ -24,41 +25,30 @@ export class AssetsBuildingsDataEffects {
               private web3Service: Web3Service) {
   }
 
-  @Effect({dispatch: false}) getBuildingsLength$ = this.actions$
-    .ofType(AssetsBuildingsDataActions.Types.GET_BUILDINGS_LENGTH)
-    .switchMap((action): any =>
-      this.buildingsDataService.getBuildingIdsLength()
-        .map((buildindsIdsLength: any) => {
-          if (buildindsIdsLength.error) {
-            return this.store.dispatch(new AssetsBuildingsDataActions.GetBuildingsLengthFailure({
-              status: new Status({ error: buildindsIdsLength.error })
-            }));
-          }
-          return this.store.dispatch(new AssetsBuildingsDataActions.GetBuildingsIds(buildindsIdsLength.toNumber()));
-        })
-    )
-
-  @Effect({dispatch: false}) getBuildingsIds$ = this.actions$
-    .ofType(AssetsBuildingsDataActions.Types.GET_BUILDINGS_IDS)
-    .switchMap((action: AssetsBuildingsDataActions.GetBuildingsIds) =>
-      this.buildingsDataService.getBuildingsIds(action.payload)
-        .map((ids: any) => {
-          ids = ids.map(id => id.toNumber());
-          return this.store.dispatch(new AssetsBuildingsDataActions.GetBuildingsData(ids));
-        })
-    )
-
-  @Effect({dispatch: false}) getBuildingsData$ = this.actions$
+  @Effect() getBuildingsData$ = this.actions$
     .ofType(AssetsBuildingsDataActions.Types.GET_BUILDINGS_DATA)
     .switchMap((action: AssetsBuildingsDataActions.GetBuildingsData) => {
-      return this.buildingsDataService.getBuildingsData(action.payload)
-        .map((buildings) => {
-          return this.store.dispatch(
-            new AssetsBuildingsDataActions.GetBuildingsDataSuccess({
-              ids: action.payload,
-              buildings
-            })
-          )
+      return this.buildingsDataService.getBuildingsData()
+        .map((buildingsData) => {
+          if (!buildingsData[0] || buildingsData[0].error ||
+              !buildingsData[1] || buildingsData[1].error) {
+            return new AssetsBuildingsDataActions.GetBuildingsDataFailure({
+              error: buildingsData[0].error || buildingsData[1].error || 'unknown'
+            });
+          }
+          buildingsData = buildingsData[0].concat(buildingsData[1]);
+          let names = buildingsData.shift(); // Shift first value (name)
+          let ids = buildingsData.shift(); // Shift second value (id)
+          let buildings = {};
+          ids.forEach((id, i) => {
+            id = id.toNumber();
+            let name = this.web3Service.web3.utils.hexToUtf8(names[i]);
+            buildings[id] = new DataBuilding(id,
+              [name, ...buildingsData.map(data => data[i])]
+            );
+          })
+
+          return new AssetsBuildingsDataActions.GetBuildingsDataSuccess(buildings);
         });
     })
 

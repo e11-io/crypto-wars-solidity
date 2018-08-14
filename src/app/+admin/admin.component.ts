@@ -8,6 +8,7 @@ import { ContractsService } from '../../core/shared/contracts.service';
 import { Web3Service } from '../../core/web3/web3.service';
 
 import { AbstractContainerComponent } from '../shared/components/abstract-container.component';
+import { updateAndfilterUniqueTargets } from '../shared/util/helpers';
 import BigNumber from 'bignumber.js';
 
 const ether = Math.pow(10, 18);
@@ -165,12 +166,15 @@ export class AdminComponent extends AbstractContainerComponent {
     this.store.dispatch(new AssetsBuildingsQueueActions.AddBuildingToQueue(building));
   }
 
-  async checkTransaction() {
-    const result = await this.web3Service.web3.eth.getTransactionReceipt(
-      '0x604b1494a35aec690dda0a9cb186e2be873bfcd8bc39fe42ddad27482acfc480'
-    );
-
-    console.log(result);
+  async addBuildingToUser(user: string, buildingsids: string) {
+    console.log('Adding buildings ids ' + buildingsids + ' to user ' + user);
+    let buildings = buildingsids.split(',');
+    await this.web3Service.sendContractTransaction(
+      this.contractsService.UserBuildingsInstance.addInitialBuildings,
+      [ user, buildings, {from: this.activeAccount} ],
+      (error, data) => {
+        console.log(error? error : 'token sent!');
+      })
   }
 
   getExistingBuildingsLength() {
@@ -201,6 +205,92 @@ export class AdminComponent extends AbstractContainerComponent {
     console.log('ids: ' + ids);
     console.log('start block #: ' + startBlocks);
     console.log('end block #: ' + endBlocks);
+  }
+
+  async getThreshold() {
+    let threshold = await this.web3Service.callContract(
+      this.contractsService.PointsSystemInstance.getPointsThreshold,
+      []
+    )
+
+    console.log('Lower threshold: ' + threshold[0].toNumber());
+    console.log('Upper threshold: ' + threshold[1].toNumber());
+  }
+
+  async getBattleInfo() {
+    let attackCooldown = await this.web3Service.callContract(
+      this.contractsService.BattleSystemInstance.getAttackCooldown,
+      []
+    )
+
+    let cityCenterIndex = await this.web3Service.callContract(
+      this.contractsService.BattleSystemInstance.getCityCenterIndex,
+      []
+    )
+    let rewardDefenderModifier = await this.web3Service.callContract(
+      this.contractsService.BattleSystemInstance.getRewardDefenderModifier,
+      []
+    )
+    let rewardAttackerModifier = await this.web3Service.callContract(
+      this.contractsService.BattleSystemInstance.getRewardAttackerModifier,
+      []
+    )
+
+    console.log('attackCooldown: ' + attackCooldown.toNumber());
+    console.log('cityCenterIndex: ' + cityCenterIndex.toNumber());
+    console.log('rewardDefenderModifier: ' + rewardDefenderModifier.toNumber());
+    console.log('rewardAttackerModifier: ' + rewardAttackerModifier.toNumber());
+  }
+
+  async getEvents(data:any = {}) {
+    if (!data.currentBlock) data.currentBlock = 51772; // oldestBlock
+    if (!data.searchThreshold) data.searchThreshold = 500;
+    if (!data.limitThreshold) data.limitThreshold = 46000;
+    this.web3Service.getEvents(
+      this.contractsService.PointsSystemInstance.PointsChanged,
+      data.currentBlock,
+      data.searchThreshold
+    ).then((result: any) => {
+        if (result.e) {
+          console.log('error:' + result.e);
+        } else {
+          result.data.reverse();
+          // address(user) -> number(block)
+          let addressesObject = {};
+          result.data = result.data.filter(event => {
+            if (!addressesObject[event.args.user] || addressesObject[event.args.user] < event.blockNumber) {
+              addressesObject[event.args.user] = event.blockNumber;
+              return true;
+            }
+          });
+          let events = result.data.map(event => {
+            return {
+              address: event.args.user,
+              block: event.blockNumber,
+              points: event.args.finalPoints.toNumber(),
+            };
+          })
+
+          if (!data.targets) data.targets = [];
+          // TODO Get unique and last events from events[] && data.targets[]
+          let targets = updateAndfilterUniqueTargets(data.targets.concat(events));
+          // return {targets};
+          console.log('targets');
+          targets.forEach((target) => {
+            console.log(target.address, target.block, target.points);
+          })
+
+          if (targets.length < 10) {
+            data.currentBlock -= data.searchThreshold;
+            if (data.currentBlock < data.limitThreshold) {
+              console.log('LIMIT!');
+              return;
+            }
+            this.getEvents(data);
+          }
+
+        }
+      })
   }
 
 }

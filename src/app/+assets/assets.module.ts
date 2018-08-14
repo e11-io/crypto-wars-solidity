@@ -11,14 +11,15 @@ import { QueueNavbarComponent } from './queue-navbar/queue-navbar.component';
 import { ResearchComponent } from './+research/research.component';
 import { UnitsComponent } from './+units/units.component';
 
-import { RoundPipe } from '../shared/pipes/round.pipe';
+import { PipesModule } from '../shared/pipes/pipes.module';
 
 @NgModule({
     imports: [
       CommonModule,
       FormsModule,
       RouterModule,
-      TranslateModule
+      TranslateModule,
+      PipesModule
     ],
     declarations: [
         AssetsComponent,
@@ -27,7 +28,6 @@ import { RoundPipe } from '../shared/pipes/round.pipe';
         QueueNavbarComponent,
         ResearchComponent,
         UnitsComponent,
-        RoundPipe
     ],
     exports: [
     ],

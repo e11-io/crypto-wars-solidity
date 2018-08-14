@@ -27,28 +27,28 @@ export class AssetsRequirementsEffects {
   }
 
   @Effect() getBuildingsRequirements = this.actions$
-    .ofType(AssetsBuildingsDataActions.Types.GET_BUILDINGS_DATA)
+    .ofType(AssetsBuildingsDataActions.Types.GET_BUILDINGS_DATA_SUCCESS)
     .switchMap((action: AssetsBuildingsDataActions.GetBuildingsDataSuccess) => {
-      return this.assetsRequirementsService.getAssetsRequirements(action.payload)
+      let ids = Object.keys(action.payload);
+      return this.assetsRequirementsService.getAssetsRequirements(ids)
         .map((requirements) => {
-          let object = {
-            ids: action.payload,
+          return new AssetsRequirementsActions.GetRequirementsSuccess({
+            ids,
             requirements
-          }
-          return new AssetsRequirementsActions.GetRequirementsSuccess(object);
+          });
         });
     })
 
   @Effect() getUnitRequirements = this.actions$
-    .ofType(AssetsUnitsDataActions.Types.GET_UNITS_DATA)
+    .ofType(AssetsUnitsDataActions.Types.GET_UNITS_DATA_SUCCESS)
     .switchMap((action: AssetsUnitsDataActions.GetUnitsDataSuccess) => {
-      return this.assetsRequirementsService.getAssetsRequirements(action.payload)
+      let ids = Object.keys(action.payload);
+      return this.assetsRequirementsService.getAssetsRequirements(ids)
         .map((requirements) => {
-          let object = {
-            ids: action.payload,
+          return new AssetsRequirementsActions.GetRequirementsSuccess({
+            ids,
             requirements
-          }
-          return new AssetsRequirementsActions.GetRequirementsSuccess(object);
+          });
         });
     })
 

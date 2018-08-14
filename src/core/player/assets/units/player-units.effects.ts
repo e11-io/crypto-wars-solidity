@@ -6,6 +6,7 @@ import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/mergeMap';
 
+import { PlayerUnit } from './player-unit.model';
 import { PlayerUnitsActions } from './player-units.actions';
 import { PlayerUnitsService } from './player-units.service';
 
@@ -28,7 +29,7 @@ export class PlayerUnitsEffects {
 
 
   @Effect({dispatch: false}) getPlayerUnitsLength$ = this.actions$
-    .ofType(PlayerUnitsActions.Types.GET_PLAYER_UNITS_LENGTH)
+    .ofType(PlayerUnitsActions.Types.GET_PLAYER_UNITS)
     .do((action) => {
       let activeAccount: string = '';
       this.store.select('web3').take(1).subscribe(web3 => {
@@ -36,38 +37,24 @@ export class PlayerUnitsEffects {
       });
 
       return this.web3Service.callContract(
-        this.contractsService.UserUnitsInstance.getUserUnits,
+        this.contractsService.UserUnitsInstance.getUserUnitsAndQuantities,
         [activeAccount, {from: activeAccount}]
       ).then((result) => {
         if (result.error) {
-          return this.store.dispatch(new PlayerUnitsActions.GetPlayerUnitsLengthFailure({
+          return this.store.dispatch(new PlayerUnitsActions.GetPlayerUnitsFailure({
             status: new Status({ error: result.error })
           }));
         }
         if (result.length === 0) {
           return this.store.dispatch(new PlayerUnitsActions.GetPlayerUnitsSuccess([]));
         }
-        return this.store.dispatch(new PlayerUnitsActions.GetPlayerUnits(result.length))
+        return this.store.dispatch(new PlayerUnitsActions.GetPlayerUnitsSuccess(
+          result[0].map((unitId, i) => new PlayerUnit({
+            id: unitId.toNumber(),
+            quantity: result[1][i].toNumber(),
+          }))
+        ));
       })
-    })
-
-  @Effect({dispatch: false}) getPlayerUnits$ = this.actions$
-    .ofType(PlayerUnitsActions.Types.GET_PLAYER_UNITS)
-    .switchMap((action: PlayerUnitsActions.GetPlayerUnits) => {
-      let activeAccount: string = '';
-      this.store.select('web3').take(1).subscribe(web3 => {
-        activeAccount = web3.activeAccount;
-      });
-
-      return this.playerUnitsService.getPlayerUnits(activeAccount, action.payload)
-        .map((result: any) => {
-          if (result.error) {
-            return this.store.dispatch(new PlayerUnitsActions.GetPlayerUnitsFailure({
-              status: new Status({ error: result.error })
-            }));
-          }
-          return this.store.dispatch(new PlayerUnitsActions.GetPlayerUnitsSuccess(result));
-        })
     })
 
 }

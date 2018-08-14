@@ -1,0 +1,259 @@
+<div class="targets-list-container">
+  <div class="target"
+       [class.expanded]="expandedBattleId == battleDetail.id"
+       *ngFor="let battleDetail of battleDetails; let i = index; trackBy: trackByFn"
+       (click)="expandBattleDetail(battleDetail.id)">
+
+    <div class="e11-avatar round"
+         [style.background-image]="'url(/assets/img/units/thumbnails/' + 'tiny_warrior.png)'">
+         <span class="e11-points-badge" position="bottom"
+               *ngIf="targetsMap && targetsMap[battleDetail.village.address]">
+           {{targetsMap[battleDetail.village.address].points | largeNumber}}
+         </span>
+    </div>
+
+    <div class="target-info">
+      <div class="target-name">
+        <span class="name">
+          {{battleDetail.village.username}}
+          <div *ngIf="battleDetail.attacked || battleDetail.defended">
+            <i class="e11-icon"
+               [ngClass]="battleDetail.defended? 'e11f-shield' : 'e11f-sword'">
+            </i>
+            <div class="advanced-tooltip arrow down">
+              <ng-template [ngIf]="battleDetail.attacked">
+                {{ 'BATTLE.you-attacked' | translate }}
+              </ng-template>
+              <ng-template [ngIf]="battleDetail.defended">
+                {{'BATTLE.you-defended' | translate}}
+              </ng-template>
+            </div>
+          </div>
+        </span>
+        <span class="target-village-name">
+          <ng-template [ngIf]="!battleDetail.village.allianceName">
+            {{battleDetail.village.villageName}}
+          </ng-template>
+          <ng-template [ngIf]="battleDetail.village.allianceName">
+            {{battleDetail.village.villageName}}/{{battleDetail.allianceName}}
+          </ng-template>
+        </span>
+      </div>
+
+      <!-- It's a battle target -->
+      <ng-template [ngIf]="!battleDetail.attacked && !battleDetail.defended">
+        <div class="target-resources">
+          <span>{{ 'APPWIDE.resources' | translate }}</span>
+          <div class="resources-icons">
+            <i class="e11-icon"
+               [ngClass]="resourcesIndex + 1 <= battleDetail.resources.rate ? 'e11f-gem' : 'e11f-gem-outline'"
+               *ngFor="let gem of [1,2,3,4,5]; let resourcesIndex = index;">
+            </i>
+          </div>
+          <div class="advanced-tooltip arrow down">
+            <div [attr.color]="resource"
+                 *ngFor="let resource of resources">
+              <span>{{battleDetail.resources.defenderTotal[resource] | largeNumber}}</span>
+              {{resource}}
+            </div>
+          </div>
+        </div>
+        <div class="target-casualties">
+          <span>{{ 'APPWIDE.army' | translate }}</span>
+          <div class="casualties-icons">
+            <i class="e11-icon"
+               [ngClass]="armyIndex + 1 <= battleDetail.army.rate ? 'e11f-sword' : 'e11f-sword-outline'"
+               *ngFor="let gem of [1,2,3,4,5], let armyIndex = index;">
+            </i>
+          </div>
+          <div class="advanced-tooltip arrow down">
+            <div [attr.color]="statsName[i]"
+                 *ngFor="let stat of battleDetail.village.battleStats; let i = index;">
+              <span>{{stat | largeNumber}}</span>
+              {{statsName[i]}}
+            </div>
+          </div>
+        </div>
+      </ng-template>
+
+      <!-- It's a battle history -->
+      <ng-template [ngIf]="battleDetail.attacked || battleDetail.defended">
+        <div class="target-casualties">
+          <span>{{ 'BATTLE.your-casualities' | translate }}</span>
+          <div class="casualties-icons">
+            <i class="e11-icon"
+               [ngClass]="armyIndex + 1 <= (battleDetail.casualties[battleDetail.attacked ? 'attacker' : 'defender'].rate) ? 'e11f-sword' : 'e11f-sword-outline'"
+               *ngFor="let gem of [1,2,3,4,5], let armyIndex = index;">
+            </i>
+          </div>
+        </div>
+        <div class="target-casualties">
+          <span>{{ 'BATTLE.enemy-casualities' | translate }}</span>
+          <div class="casualties-icons">
+            <i class="e11-icon"
+               [ngClass]="armyIndex + 1 <= (battleDetail.casualties[battleDetail.attacked ? 'defender' : 'attacker'].rate) ? 'e11f-sword' : 'e11f-sword-outline'"
+               *ngFor="let gem of [1,2,3,4,5], let armyIndex = index;">
+            </i>
+          </div>
+        </div>
+      </ng-template>
+
+      <!-- COLLAPSED INFO only when the oponent is NOT selected -->
+      <!--div class="collapsed-info">
+      </div-->
+      <!-- EXPANDED INFO only when the oponent is selected -->
+      <div class="expanded-info">
+        <div class="extended-resources-casualties">
+          <div class="extended-resources">
+            <span class="title">
+              <ng-template [ngIf]="!battleDetail.attacked && !battleDetail.defended">
+                {{ 'BATTLE.total-enemy-resources' | translate }}
+              </ng-template>
+              <ng-template [ngIf]="battleDetail.defended">
+                {{ 'BATTLE.recycled' | translate }}
+              </ng-template>
+              <ng-template [ngIf]="battleDetail.attacked">
+                {{ 'BATTLE.looted' | translate }}
+              </ng-template>
+            </span>
+            <div class="resources">
+              <div class="resource"
+                   [attr.color]="resource"
+                   *ngFor="let resource of resources">
+                <span>
+                  <ng-template [ngIf]="!battleDetail.attacked && !battleDetail.defended">
+                   <span>{{ battleDetail.resources.defenderTotal[resource] | largeNumber }}</span>
+                  </ng-template>
+                  <ng-template [ngIf]="battleDetail.defended">
+                   {{ battleDetail.resources.defenderReward[resource] | largeNumber }}
+                  </ng-template>
+                  <ng-template [ngIf]="battleDetail.attacked">
+                   {{ battleDetail.resources.attackerReward[resource] | largeNumber }}
+                  </ng-template>
+                </span>
+                {{resource}}
+              </div>
+            </div>
+          </div>
+          <div class="extended-resources">
+            <span class="title">
+              <ng-template [ngIf]="!battleDetail.attacked && !battleDetail.defended">
+                {{ 'BATTLE.available-loot' | translate }}
+              </ng-template>
+              <ng-template [ngIf]="battleDetail.defended">
+                {{ 'BATTLE.looted-from-you' | translate }}
+              </ng-template>
+              <ng-template [ngIf]="battleDetail.attacked">
+                {{ 'BATTLE.enemy-recycled' | translate }}
+              </ng-template>
+            </span>
+            <div class="resources">
+              <div class="resource"
+                   [attr.color]="resource"
+                   *ngFor="let resource of resources">
+                <span>
+                  {{ battleDetail.attacked ? battleDetail.resources.defenderReward[resource] : battleDetail.resources.attackerReward[resource] | largeNumber}}
+                </span>
+                {{ resource }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="extended-resources-casualties">
+          <div class="extended-casualties">
+            <div class="title">
+              <span>{{ 'BATTLE.your-army' | translate }}</span>
+              <div class="e11-points-badge" size="medium">
+                <i class="e11-icon e11f-person"></i>
+                {{battleDetail.casualties[battleDetail.defended ? 'defender' : 'attacker'].total | largeNumber}}
+              </div>
+              <div class="e11-points-badge" size="medium">
+                <i class="e11-icon e11f-skull"></i>
+                {{battleDetail.casualties[battleDetail.defended ? 'defender' : 'attacker'].percent}}%
+              </div>
+            </div>
+            <div class="units">
+              <ng-template ngFor let-unit [ngForOf]="(battleDetail.defended) ? battleDetail.army.defender : battleDetail.army.attacker">
+                <div class="e11-avatar round unit"
+                     [style.background-image]="'url(/assets/img/units/thumbnails/' + unitsMap[unit.id].name + '.png)'"
+                     *ngIf="unit.total > 0">
+                  <div class="unit-qty round">{{unit.dead | largeNumber}}/{{unit.total | largeNumber}}</div>
+                  <div class="e11-points-badge" position="bottom">{{unit.percent}}%</div>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+          <div class="extended-casualties">
+            <div class="title">
+              <span>{{ 'BATTLE.enemy-army' | translate }}</span>
+              <div class="e11-points-badge" size="medium">
+                <i class="e11-icon e11f-person"></i>
+                {{battleDetail.casualties[battleDetail.defended ? 'attacker' : 'defender'].total | largeNumber}}
+              </div>
+              <div class="e11-points-badge" size="medium">
+                <i class="e11-icon e11f-skull"></i>
+                {{battleDetail.casualties[battleDetail.defended ? 'attacker' : 'defender'].percent}}%
+              </div>
+            </div>
+            <div class="units">
+              <ng-template ngFor let-unit [ngForOf]="(battleDetail.defended) ? battleDetail.army.attacker : battleDetail.army.defender">
+                <div class="e11-avatar round unit"
+                     [style.background-image]="'url(/assets/img/units/thumbnails/' + unitsMap[unit.id].name + '.png)'"
+                     *ngIf="unit.total > 0">
+                  <div class="unit-qty round">{{unit.dead | largeNumber}}/{{unit.total | largeNumber}}</div>
+                  <div class="e11-points-badge" position="bottom">{{unit.percent}}%</div>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+
+        <div class="fill"></div>
+
+        <button class="e11-button clear target-action" type="button" name="button"
+                [ngClass]="!battleDetail.village.canAttack && !battleDetail.village.canTakeRevenge? 'disabled' : ''"
+                (click)="battleDetailAction(battleDetail)">
+
+          <ng-template [ngIf]="attackCooldown == 0">
+            <ng-template [ngIf]="battleDetail.village.canAttack && !battleDetail.village.canTakeRevenge">
+              <ng-template [ngIf]="battleDetail.attacked || battleDetail.defended">
+                {{ 'BATTLE.prepare-attack' | translate : { enemy: battleDetail.village.username } }}
+              </ng-template>
+              <ng-template [ngIf]="!battleDetail.attacked && !battleDetail.defended">
+                {{ 'BATTLE.attack' | translate : { enemy: battleDetail.village.username } }}
+              </ng-template>
+            </ng-template>
+
+            <ng-template [ngIf]="battleDetail.village.canTakeRevenge">
+              <ng-template [ngIf]="battleDetail.attacked || battleDetail.defended">
+                {{ 'BATTLE.prepare-revenge' | translate : { enemy: battleDetail.village.username } }}
+              </ng-template>
+              <ng-template [ngIf]="!battleDetail.attacked && !battleDetail.defended">
+                {{ 'BATTLE.prepare-revenge' | translate : { enemy: battleDetail.village.username } }}
+              </ng-template>
+            </ng-template>
+          </ng-template>
+
+          <ng-template [ngIf]="!battleDetail.village.canAttack && !battleDetail.village.canTakeRevenge">
+            {{ 'BATTLE.cant-attack' | translate : { enemy: battleDetail.village.username } }}
+          </ng-template>
+
+          <ng-template [ngIf]="attackCooldown > 0 && (battleDetail.village.canAttack || battleDetail.village.canTakeRevenge)">
+            {{
+              'BATTLE.portal-recharging' | translate : {
+                                                  blocks: attackCooldown,
+                                                  time: (attackCooldown | blockTime)
+                                                }
+            }}
+          </ng-template>
+        </button>
+      </div>
+    </div>
+
+    <div class="expand-button" (click)="collapseBattleDetail(battleDetail.id); $event.stopPropagation()">
+      ▾
+    </div>
+
+  </div>
+</div>

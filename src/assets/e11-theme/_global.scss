@@ -52,49 +52,47 @@ p, span, strong {
     }
 }
 
-[color='e11'] {
-  color: $color-resource-e11;
-  &.bullet, .bullet {
-    background-color: $color-resource-e11;
-  }
-  &.bullet-outline, .bullet-outline {
-    border-color: $color-resource-e11;
-  }
-}
-[color='crystal'] {
-  color: $color-resource-crystal;
-  &.bullet, .bullet {
-    background-color: $color-resource-crystal;
-  }
-  &.bullet-outline, .bullet-outline {
-    border-color: $color-resource-crystal;
+@each $color, $value in $colors {
+  [color='#{$color}'] {
+    color: $value;
+    &.bullet, .bullet {
+      background-color: $value;
+    }
+    &.bullet-outline, .bullet-outline {
+      border-color: $value;
+    }
   }
 }
-[color='gold'] {
-  color: $color-resource-gold;
-  &.bullet, .bullet {
-    background-color: $color-resource-gold;
-  }
-  &.bullet-outline, .bullet-outline {
-    border-color: $color-resource-gold;
-  }
-}
-[color='quantum'] {
-  color: $color-resource-quantum;
-  &.bullet, .bullet {
-    background-color: $color-resource-quantum;
-  }
-  &.bullet-outline, .bullet-outline {
-    border-color: $color-resource-quantum;
-  }
-}
-[color='success'] {
-  color: $color-success;
-  &.bullet, .bullet {
-    background-color: $color-success;
-  }
-  &.bullet-outline, .bullet-outline {
-    border-color: $color-success;
+
+.advanced-tooltip {
+  $tooltip-arrow-size: .9rem;
+  $tooltip-background: #2B3647;
+
+  position: absolute;
+  background-color: $tooltip-background;
+  border-radius: $app-default-radius;
+  border: 1px solid #2B3647;
+  font-size: 1.2rem;
+  padding: .8rem 1.5rem;
+  box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: visibility 0ms linear 200ms, opacity 200ms ease-in-out;
+
+  &.arrow {
+    &::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 0;
+      bottom: 0 - $tooltip-arrow-size;
+      border-left: $tooltip-arrow-size solid transparent;
+      border-right: $tooltip-arrow-size solid transparent;
+    }
+    &.down::after {
+      border-bottom: auto;
+      border-top: $tooltip-arrow-size solid $tooltip-background;
+    }
   }
 }
 
@@ -180,6 +178,9 @@ p, span, strong {
 }
 .rounded {
     border-radius: $app-default-radius;
+}
+.round {
+    border-radius: 100%;
 }
 .hover-action {
   display: none;

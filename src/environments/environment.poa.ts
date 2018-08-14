@@ -1,4 +1,4 @@
-const contracts = require('../../scripts/contracts.json');
+const contracts = require('../../data/contracts.json');
 
 export const environment = {
   blockTime: 10,
@@ -11,7 +11,6 @@ export const environment = {
     AssetsRequirements:     contracts.AssetsRequirements,
     BuildingsData:          contracts.BuildingsData,
     BuildingsQueue:         contracts.BuildingsQueue,
-    SimpleToken:            contracts.SimpleToken,
     UserBuildings:          contracts.UserBuildings,
     UserResources:          contracts.UserResources,
     UserVault:              contracts.UserVault,

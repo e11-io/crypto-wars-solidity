@@ -3,7 +3,6 @@
     $segment-border-color: $color-border;
     $segment-default-width: 19rem;
     $segment-default-padding: 1.4rem;
-    $segment-small-width: 13rem;
     $segment-small-padding: .9rem 1.4rem;
 
     .e11-segments {
@@ -14,7 +13,7 @@
         &[size='small'] {
             .e11-segment {
                 font-size: 1.2rem;
-                width: $segment-small-width;
+                width: auto;
                 padding: $segment-small-padding;
             }
         }

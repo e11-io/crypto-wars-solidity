@@ -3,6 +3,9 @@
     $avatar-default-size: 4rem;
 
     .e11-avatar {
+      display: flex;
+      justify-content: center;
+      position: relative;
       width: 4rem;
       height: 4rem;
       background-position: center;

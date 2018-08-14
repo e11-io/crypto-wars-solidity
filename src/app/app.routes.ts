@@ -7,7 +7,11 @@ import { UnitsComponent } from './+assets/+units/units.component';
 import { DefenseComponent } from './+assets/+defense/defense.component';
 import { ResearchComponent } from './+assets/+research/research.component';
 
+import { BattleTargetComponent } from './+battle/+target/target.component';
+import { BattleHistoryComponent } from './+battle/+history/history.component';
+
 import { AdminComponent } from './+admin/admin.component';
+import { BattleComponent } from './+battle/battle.component';
 import { DashboardComponent } from './+dashboard/dashboard.component';
 import { OnboardingComponent } from './+onboarding/onboarding.component';
 import { TradesComponent } from './+trades/trades.component';
@@ -21,7 +25,7 @@ export const HomeRoutes: Route[] = [
         path: '',
         pathMatch: 'full',
         redirectTo: 'dashboard'
-        //component: OnBoardingComponent}
+        // component: OnBoardingComponent}
     },
     {
         path: 'dashboard',
@@ -33,13 +37,24 @@ export const HomeRoutes: Route[] = [
         path: 'assets',
         canActivate: [UserGuard],
         component: AssetsComponent,
-        data: { navbar: true} ,
+        data: { navbar: true },
         children: [
           { path: '', pathMatch: 'full', redirectTo: '/assets/buildings', },
           { path: 'buildings', canActivate: [], component: BuildingsComponent },
           { path: 'units', canActivate: [], component: UnitsComponent },
           { path: 'defense', canActivate: [], component: DefenseComponent },
           { path: 'research', canActivate: [], component: ResearchComponent }
+        ]
+    },
+    {
+        path: 'battle',
+        canActivate: [UserGuard],
+        component: BattleComponent,
+        data: { navbar: true },
+        children: [
+          { path: '', pathMatch: 'full', redirectTo: '/battle/target', },
+          { path: 'target', canActivate: [], component: BattleTargetComponent },
+          { path: 'history', canActivate: [], component: BattleHistoryComponent }
         ]
     },
     {

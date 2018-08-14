@@ -23,9 +23,11 @@ import { AssetsBuildingsDataActions } from '../assets/buildings/data/buildings-d
 import { AssetsBuildingsQueueActions } from '../assets/buildings/queue/buildings-queue.actions';
 import { AssetsUnitsDataActions } from '../assets/units/data/units-data.actions';
 import { AssetsUnitsQueueActions } from '../assets/units/queue/units-queue.actions';
+import { PlayerBattleActions } from '../player/battle/player-battle.actions';
 import { PlayerBuildingsActions } from '../player/assets/buildings/player-buildings.actions';
 import { PlayerResourcesActions } from '../player/resources/player-resources.actions';
 import { PlayerTokensActions } from '../player/tokens/player-tokens.actions';
+import { PlayerUnitsActions } from '../player/assets/units/player-units.actions';
 import { PlayerVillageActions } from '../player/village/player-village.actions';
 
 @Injectable()
@@ -53,13 +55,15 @@ export class Web3Effects {
 
   @Effect() bootstrapSuccess$ = this.actions$
     .ofType(Web3Actions.Types.BOOTSTRAP_SUCCESS)
-    .mergeMap(action =>
-      Observable.from([
+    .mergeMap(action => {
+      return Observable.from([
         new Web3Actions.StartPull(),
-        new AssetsBuildingsDataActions.GetBuildingsLength(),
-        new AssetsUnitsDataActions.GetUnitsLength(),
-      ])
-    );
+        new AssetsBuildingsDataActions.GetBuildingsData(),
+        new AssetsUnitsDataActions.GetUnitsData(),
+        new PlayerBattleActions.GetRewardsModifiers(),
+        new PlayerBattleActions.GetAttackCooldown(),
+      ]);
+    });
 
   @Effect() bootstrapFailure$ = this.actions$
     .ofType(Web3Actions.Types.BOOTSTRAP_RETRY)
@@ -99,6 +103,9 @@ export class Web3Effects {
         this.store.dispatch(new PlayerResourcesActions.GetPlayerResources());
         this.store.dispatch(new AssetsBuildingsQueueActions.GetBuildingsQueue(activeAccount));
         this.store.dispatch(new AssetsUnitsQueueActions.GetUnitsQueue(activeAccount));
+        this.store.dispatch(new PlayerUnitsActions.GetPlayerUnits());
+        this.store.dispatch(new PlayerBattleActions.GetLastAttackBlock(activeAccount));
+        this.store.dispatch(new PlayerVillageActions.GetUserPoints(activeAccount));
       }
       this.store.dispatch(new PlayerTokensActions.GetEthBalance(activeAccount));
       this.store.dispatch(new PlayerTokensActions.GetE11Balance(activeAccount));
@@ -127,6 +134,8 @@ export class Web3Effects {
       if (!activeAccount) {
         this.store.dispatch(new Web3Actions.SetActiveAccount(action.payload[0]));
         this.store.dispatch(new PlayerVillageActions.GetVillageName(action.payload[0]));
+        this.store.dispatch(new PlayerBattleActions.GetLastAttackBlock(action.payload[0]));
+        this.store.dispatch(new PlayerVillageActions.GetUserPoints(action.payload[0]));
       } else {
         window.location.reload();
       }
@@ -148,7 +157,7 @@ export class Web3Effects {
 
   @Effect({dispatch: false}) pull$ = this.actions$
     .ofType(Web3Actions.Types.PROCCESS_PULL)
-    .delay(3000)
+    .delay(10000)
     .do(action => {
       let activeLoop: boolean;
       this.store.select('web3').take(1).subscribe(web3 => {

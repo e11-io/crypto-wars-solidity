@@ -15,9 +15,9 @@
           <div class="item-hover-info">
             <div class="item-title">
               <span class="item-name">
-                Stats:
                 Lv. {{building.level}}
-                {{building.owned && building.nextLevelId? '-> ' + buildingsMap[building.nextLevelId].level: null}}
+                {{building.owned && building.nextLevelId? '-> Lv. ' + buildingsMap[building.nextLevelId].level: null}}
+                Stats
               </span>
             </div>
             <div class="item-stats">
@@ -27,11 +27,12 @@
                              buildingsMap[building.nextLevelId][stat] !== building[stat])">
                   {{'DATA.buildings.stats.' + stat | translate}}:
                   <span class="stat-value">
-                    {{building[stat] || '0'}}
-                    <ng-template [ngIf]="buildingsMap[building.nextLevelId] &&
-                                         buildingsMap[building.nextLevelId][stat] != building[stat]">
-                       (+{{buildingsMap[building.nextLevelId][stat] - building[stat]}})
-                    </ng-template>
+                    {{(building[stat] | largeNumber) || '0'}}
+                    <span class="stat-upgraded"
+                          *ngIf="buildingsMap[building.nextLevelId] &&
+                                 buildingsMap[building.nextLevelId][stat] != building[stat]">
+                      (+{{buildingsMap[building.nextLevelId][stat] - building[stat] | largeNumber}})
+                    </span>
                   </span>
                 </span>
               </ng-template>
@@ -40,12 +41,16 @@
 
           <div class="item-avatar"
                [class.disabled]="buildingsMap[building.nextLevelId] ? buildingsMap[building.nextLevelId].missingRequirements.length : null"
-               [style.background-image]="'url(/assets/img/buildings/thumbnails/' + building.name + '.png)'"
+               [style.background-image]="'url(/assets/img/buildings/thumbnails/' +
+                                         ('DATA.buildings.' + [building.name] + '.idName' | translate) + '_' +
+                                         ('DATA.buildings.' + [building.name] + '.image-level' | translate) + '.png)'"
                *ngIf="building.owned">
           </div>
           <div class="item-avatar"
                [class.disabled]="building.missingRequirements.length"
-               [style.background-image]="'url(/assets/img/buildings/thumbnails/' + building.name + '.png)'"
+               [style.background-image]="'url(/assets/img/buildings/thumbnails/' +
+                                         ('DATA.buildings.' + [building.name] + '.idName' | translate) + '_' +
+                                         ('DATA.buildings.' + [building.name] + '.image-level' | translate) + '.png)'"
                *ngIf="!building.owned">
           </div>
         </div>
@@ -63,20 +68,23 @@
               <span class="item-price" [attr.color]="buildingsMap[building.nextLevelId].resource">
                 <div class="bullet-outline">
                 </div>
-                {{buildingsMap[building.nextLevelId].price}}
+                {{buildingsMap[building.nextLevelId].price | largeNumber}}
               </span>
               <span class="item-time">
                 <i class="e11-icon e11f-clock"></i>
                 {{buildingsMap[building.nextLevelId].blocks}} Blocks
+                ({{buildingsMap[building.nextLevelId].blocks | blockTime}})
               </span>
             </ng-template>
 
             <ng-template [ngIf]="!building.owned && !building.inProgress">
               <span class="item-price" [attr.color]="building.resource">
-                <div class="bullet-outline"></div>{{building.price}}
+                <div class="bullet-outline"></div>{{building.price | largeNumber}}
               </span>
               <span class="item-time">
-                <i class="e11-icon e11f-clock"></i>{{building.blocks}} Blocks
+                <i class="e11-icon e11f-clock"></i>
+                {{building.blocks}} Blocks
+                ({{building.blocks | blockTime}})
               </span>
             </ng-template>
           </div>
@@ -97,21 +105,25 @@
                 <ng-container *ngIf="!building.inProgress">
                   <ng-template [ngIf]="playerResources[building.resource] >= building.price &&
                                        !building.waiting">
-                      Build
+                      {{ 'APPWIDE.COMMON.build' | translate }}
                     </ng-template>
                     <ng-template [ngIf]="playerResources[building.resource] < building.price &&
                                          !building.waiting">
-                      Not enough {{building.resource}}
+                     {{
+                       'APPWIDE.not-enough-resources' |  translate : {
+                                                            resource: ('DATA.RESOURCES.' + building.resource | translate).toLowerCase()
+                                                          }
+                     }}
                     </ng-template>
                     <ng-template [ngIf]="building.waiting">
-                      Waiting for transaction...
+                      {{ 'APPWIDE.waiting-for-transaction-dots' | translate }}
                     </ng-template>
                   <ng-template [ngIf]="building.maxLevel">
-                    Max Level
+                    {{ 'DATA.buildings.states.max-level' | translate }}
                   </ng-template>
                 </ng-container>
                 <ng-template [ngIf]="building.inProgress">
-                  Creating building...
+                  {{ 'DATA.buildings.states.creating-building' | translate }}
                 </ng-template>
             </button>
 
@@ -119,12 +131,14 @@
                  *ngIf="!building.inProgress &&
                         building.missingRequirements &&
                         building.missingRequirements.length">
-              <span>Requires:</span>
+              <span>{{ 'APPWIDE.requires' | translate }}</span>
 
               <div class="requirement-image"
                    tooltip-position="bottom"
                    [attr.tooltip]="('DATA.buildings.' + buildingsMap[requirement].name + '.name' | translate) + ' Lv. ' + buildingsMap[requirement].level"
-                   [style.background-image]="'url(/assets/img/buildings/thumbnails/' + buildingsMap[requirement].name + '.png)'"
+                   [style.background-image]="'url(/assets/img/buildings/thumbnails/' +
+                                             ('DATA.buildings.' + buildingsMap[requirement].name + '.idName' | translate) + '_' +
+                                             ('DATA.buildings.' + buildingsMap[requirement].name + '.image-level' | translate) + '.png)'"
                    *ngFor="let requirement of building.missingRequirements">
               </div>
             </div>
@@ -143,22 +157,22 @@
                   <ng-template [ngIf]="!building.maxLevel">
                     <ng-template [ngIf]="playerResources[buildingsMap[building.nextLevelId].resource] >= buildingsMap[building.nextLevelId].price &&
                                          !building.waiting">
-                      Upgrade to Level {{buildingsMap[building.nextLevelId].level}}
+                      {{ 'DATA.buildings.states.upgrade-to-level' | translate : { level: buildingsMap[building.nextLevelId].level } }}
                     </ng-template>
                     <ng-template [ngIf]="playerResources[buildingsMap[building.nextLevelId].resource] < buildingsMap[building.nextLevelId].price &&
                                          !building.waiting">
-                      Not enough {{buildingsMap[building.nextLevelId].resource}}
+                      {{ 'APPWIDE.not-enough-resources' | translate : { resource: ('DATA.RESOURCES.' + buildingsMap[building.nextLevelId].resource | translate).toLowerCase() } }}
                     </ng-template>
                     <ng-template [ngIf]="building.waiting">
-                      Waiting for transaction...
+                      {{ 'APPWIDE.waiting-for-transaction-dots' | translate }}
                     </ng-template>
                   </ng-template>
                   <ng-template [ngIf]="building.maxLevel">
-                    Max Level
+                    {{ 'DATA.buildings.states.max-level' | translate }}
                   </ng-template>
                 </ng-container>
                 <ng-template [ngIf]="building.inProgress">
-                  Creating building...
+                  {{ 'DATA.buildings.states.upgrading-building' | translate }}
                 </ng-template>
             </button>
 
@@ -167,12 +181,14 @@
                         buildingsMap[building.nextLevelId] &&
                         buildingsMap[building.nextLevelId].missingRequirements &&
                         buildingsMap[building.nextLevelId].missingRequirements.length">
-              <span>Requires:</span>
+              <span>{{ 'APPWIDE.requires' | translate }}</span>
 
               <div class="requirement-image"
                    tooltip-position="bottom"
                    [attr.tooltip]="('DATA.buildings.' + buildingsMap[requirement].name + '.name' | translate) + ' Lv. ' + buildingsMap[requirement].level"
-                   [style.background-image]="'url(/assets/img/buildings/thumbnails/' + buildingsMap[requirement].name + '.png)'"
+                   [style.background-image]="'url(/assets/img/buildings/thumbnails/' +
+                                             ('DATA.buildings.' + buildingsMap[requirement].name + '.idName' | translate) + '_' +
+                                             ('DATA.buildings.' + buildingsMap[requirement].name + '.image-level' | translate) + '.png)'"
                    *ngFor="let requirement of buildingsMap[building.nextLevelId].missingRequirements">
               </div>
             </div>
@@ -184,7 +200,7 @@
     </div>
 
     <div class="loading-text" *ngIf="!this.availablePlayerBuildings.length">
-      Fetching available buildings...
+      {{ 'DATA.buildings.states.fetching-available-buildings' | translate }}
     </div>
   </div>
 

@@ -1,0 +1,24 @@
+{
+  "typeId": 4,
+  "name": "Portal",
+  "maxLevel": 3,
+  "baseStats": {
+    "price": 32500,
+    "resource": 2,
+    "blocks": 12,
+    "health": 0,
+    "defense": 0,
+    "attack": 0,
+    "goldCapacity": 0,
+    "crystalCapacity": 0,
+    "goldRate": 0,
+    "crystalRate": 0
+  },
+  "levelsRequirements": {
+    "1": ["city_center_3", "barracks_1"]
+  },
+  "modifiers": {
+    "price": "BV * (2.05 ** (BL-1))",
+    "blocks": "BV * (2.05 ** (BL-1))"
+  }
+}

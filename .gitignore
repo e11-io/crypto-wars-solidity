@@ -32,6 +32,7 @@ npm-debug.log
 .node-xmlhttprequest*
 testem.log
 /typings
+/testFalse
 
 # e2e
 /e2e/*.js
@@ -60,4 +61,11 @@ signer.pass
 .datadir
 
 # Scripts
-/scripts/contributors.json
+/data/contributors.json
+
+# Mocks
+/mocks/deploy-config.json
+/mocks/populate-poa-environment.json
+
+# Coveralls
+.coveralls.yml

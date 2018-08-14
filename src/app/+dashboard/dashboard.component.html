@@ -1,6 +1,8 @@
 <div class="dashboard-container">
 
-  <e11-village-logs></e11-village-logs>
+  <e11-village-logs [battleDetails]="battleDetails"
+                    (logClicked)="viewBattleDetail($event)">
+  </e11-village-logs>
   <div class="village-info flex-col">
     <e11-village-info [ownedBuildings]="ownedBuildings"
                       [playerBalance]="e11Balance"

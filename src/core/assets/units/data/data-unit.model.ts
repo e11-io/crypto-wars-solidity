@@ -20,7 +20,6 @@ export class DataUnit {
       this.price = data[4].toNumber();
       this.resource = parseResource(data[5].toNumber());
       this.blocks = data[6].toNumber();
-
   }
 
 }

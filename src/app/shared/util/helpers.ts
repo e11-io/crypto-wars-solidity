@@ -9,6 +9,10 @@ export function convertBlocksToSeconds(blocks: number): number {
   return (blocks * environment.blockTime);
 }
 
+export function getRemainingBlocksBetween(fromBlock: number, toBlock: number): number {
+  return (toBlock - fromBlock);
+}
+
 export function getRemainingSecondsBetween(fromBlock: number, toBlock: number): number {
   return (toBlock - fromBlock) * environment.blockTime;
 }
@@ -49,4 +53,30 @@ export function getMissingRequirements(requirements: any, activeBuildings: Build
     }
   }
   return missingRequirements;
+}
+
+export function updateAndfilterUniqueTargets(array: any) {
+    let a = array.concat();
+    for (let i = 0; i < a.length; ++i) {
+        for (let j = i + 1; j < a.length; ++j) {
+            if (a[i].address === a[j].address && a[i].block <= a[j].block) {
+                a[i] = a[j];
+                a.splice(j--, 1);
+            }
+        }
+    }
+    return a;
+}
+
+// Will optimize proccessing, but not RAM. Avoiding O(n^2)
+export function updateAndfilterUniqueBattleHistories(battleHistories: any) {
+  let existingBattles = {};
+  let filteredBattles = [];
+  for (let i = 0; i < battleHistories.length; i ++) {
+    if (typeof existingBattles[battleHistories[i].id] === 'undefined') {
+      existingBattles[battleHistories[i].id] = true;
+      filteredBattles.push(battleHistories[i]);
+    }
+  }
+  return filteredBattles;
 }

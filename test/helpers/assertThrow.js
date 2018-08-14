@@ -22,5 +22,9 @@ module.exports = {
 
   async assertRevert(block, message = 'should have failed with revert') {
     return assertThrows(block, message, 'revert')
+  },
+
+  async assertSenderWithoutFunds(block, message = 'should have failed to send funds') {
+    return assertThrows(block, message, 'sender doesn\'t have enough funds to send tx')
   }
 }

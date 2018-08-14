@@ -6,27 +6,18 @@ import { environment } from '../../environments/environment';
 import getWeb3 from './util/get-web3';
 
 import AssetsRequirementsContract from '../../assets/contracts/AssetsRequirements.json';
-import AssetsRequirementsContractLocal from '../../../build/contracts/AssetsRequirements.json';
+import BattleSystemContract from '../../assets/contracts/BattleSystem.json';
 import BuildingsDataContract from '../../assets/contracts/BuildingsData.json';
-import BuildingsDataContractLocal from '../../../build/contracts/BuildingsData.json';
 import BuildingsQueueContract from '../../assets/contracts/BuildingsQueue.json';
-import BuildingsQueueContractLocal from '../../../build/contracts/BuildingsQueue.json';
+import PointsSystemContract from '../../assets/contracts/PointsSystem.json';
 import ExperimentalTokenContract from '../../assets/contracts/ExperimentalToken.json';
-import ExperimentalTokenContractLocal from '../../../build/contracts/ExperimentalToken.json';
 import UnitsDataContract from '../../assets/contracts/UnitsData.json';
-import UnitsDataContractLocal from '../../../build/contracts/UnitsData.json';
 import UnitsQueueContract from '../../assets/contracts/UnitsQueue.json';
-import UnitsQueueContractLocal from '../../../build/contracts/UnitsQueue.json';
 import UserBuildingsContract from '../../assets/contracts/UserBuildings.json';
-import UserBuildingsContractLocal from '../../../build/contracts/UserBuildings.json';
 import UserResourcesContract from '../../assets/contracts/UserResources.json';
-import UserResourcesContractLocal from '../../../build/contracts/UserResources.json';
 import UserUnitsContract from '../../assets/contracts/UserUnits.json';
-import UserUnitsContractLocal from '../../../build/contracts/UserUnits.json';
 import UserVaultContract from '../../assets/contracts/UserVault.json';
-import UserVaultContractLocal from '../../../build/contracts/UserVault.json';
 import UserVillageContract from '../../assets/contracts/UserVillage.json';
-import UserVillageContractLocal from '../../../build/contracts/UserVillage.json';
 
 declare let window: any;
 
@@ -37,10 +28,14 @@ export class ContractsService {
 
   public AssetsRequirements: any;
   public AssetsRequirementsInstance: any;
+  public BattleSystem: any;
+  public BattleSystemInstance: any;
   public BuildingsData: any;
   public BuildingsDataInstance: any;
   public BuildingsQueue: any;
   public BuildingsQueueInstance: any;
+  public PointsSystem: any;
+  public PointsSystemInstance: any;
   public ExperimentalToken: any;
   public ExperimentalTokenInstance: any;
   public UnitsData: any;
@@ -80,10 +75,12 @@ export class ContractsService {
   async initContracts(callback: any) {
     let error = null;
     try {
-      const contracts = environment.remoteContracts ? [
+      const contracts = [
         AssetsRequirementsContract,
+        BattleSystemContract,
         BuildingsDataContract,
         BuildingsQueueContract,
+        PointsSystemContract,
         ExperimentalTokenContract,
         UnitsDataContract,
         UnitsQueueContract,
@@ -92,18 +89,6 @@ export class ContractsService {
         UserUnitsContract,
         UserVaultContract,
         UserVillageContract,
-      ] : [
-        AssetsRequirementsContractLocal,
-        BuildingsDataContractLocal,
-        BuildingsQueueContractLocal,
-        ExperimentalTokenContractLocal,
-        UnitsDataContractLocal,
-        UnitsQueueContractLocal,
-        UserBuildingsContractLocal,
-        UserResourcesContractLocal,
-        UserUnitsContractLocal,
-        UserVaultContractLocal,
-        UserVillageContractLocal,
       ];
 
       for (let i = 0; i < contracts.length; i++) {

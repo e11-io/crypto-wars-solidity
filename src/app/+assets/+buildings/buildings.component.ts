@@ -12,6 +12,8 @@ import { CryptoWarsState } from '../../app.state';
 import { AbstractContainerComponent } from '../../shared/components/abstract-container.component';
 import { Building } from '../../shared/models/building.model';
 
+import * as selectors from '../../app.selectors';
+
 @Component({
   selector: 'e11-buildings',
   templateUrl: './buildings.component.html',
@@ -63,12 +65,12 @@ export class BuildingsComponent extends AbstractContainerComponent {
     if (building.owned) {
       this.upgradeBuilding(building);
     } else {
-      this.addNewBuildingToQueue(building.id);
+      this.addNewBuildingToQueue(building);
     }
   }
 
   setPlayerResources() {
-    return this.store.select(s => s.player.resources).subscribe(playerResources => {
+    return this.store.select(selectors.selectPlayerResources).subscribe(playerResources => {
       this.playerResources = playerResources;
     })
   }
@@ -156,14 +158,14 @@ export class BuildingsComponent extends AbstractContainerComponent {
     return item.id;
   }
 
-  addNewBuildingToQueue(buildingId: number) {
+  addNewBuildingToQueue(build: Building) {
     this.availablePlayerBuildings = this.availablePlayerBuildings.map(building => {
-      if (building.id === buildingId) {
+      if (building.id === build.id) {
         return new Building(Object.assign({}, building, {inProgress: true}));
       }
       return building;
     })
-    this.store.dispatch(new AssetsBuildingsQueueActions.AddBuildingToQueue(buildingId));
+    this.store.dispatch(new AssetsBuildingsQueueActions.AddBuildingToQueue(build));
   }
 
   upgradeBuilding(building: Building) {

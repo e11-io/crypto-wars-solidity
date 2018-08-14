@@ -1,5 +1,4 @@
-pragma solidity ^0.4.23;
-import 'zeppelin-solidity/contracts/examples/SimpleToken.sol';
+pragma solidity ^0.4.24;
 
 contract Migrations {
   address public owner;

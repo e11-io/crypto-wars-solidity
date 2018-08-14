@@ -1,0 +1,47 @@
+.battle-army-selection-container {
+  margin-top: 3rem;
+
+  .e11-box-container {
+    padding: 3rem;
+    overflow: hidden;
+    overflow-y: auto;
+  }
+
+  .unit {
+    margin-bottom: 2.6rem;
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .unit-info {
+      display: flex;
+
+      .e11-avatar {
+        margin-right: .9rem;
+      }
+      .unit-data {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        color: #7F8CA3;
+
+        .unit-qty {
+          font-size: 1.4rem;
+          font-weight: 300;
+          color: white;
+          strong {
+            text-decoration: underline;
+            font-weight: 500;
+            margin-right: .4rem;
+            font-size: 1.7rem;
+          }
+        }
+      }
+    }
+    .unit-slider {
+      margin-top: 2rem;
+    }
+
+  }
+
+}

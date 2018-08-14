@@ -7,50 +7,48 @@
 
       <ng-template [ngIf]="error == 'no_web3_provider'">
         <img class="metamask-logo" src="/assets/img/metamask-fox.png" alt="Metamask"/>
-        <h2>Install MetaMask</h2>
+        <h2>{{'APPWIDE.ERRORS.NO_WEB3_PROVIDER.title' | translate}}</h2>
         <p class="metamask-desc">
-          You will need a safe place to store your Quantum Dust: MetaMask.
-          Metamask will also act as your login to the game (no extra password needed).
+          {{'APPWIDE.ERRORS.NO_WEB3_PROVIDER.text' | translate}}
         </p>
         <button class="e11-button" type="button" name="button" (click)="installMetamask()">
-          Install Metamask
+          {{'APPWIDE.ERRORS.NO_WEB3_PROVIDER.title' | translate}}
         </button>
       </ng-template>
 
       <ng-template [ngIf]="error == 'not_e11_poa'">
         <img class="metamask-logo" src="/assets/img/metamask-e11.png" alt="Metamask E11"/>
-        <h2>Switch to our network</h2>
+        <h2>{{'APPWIDE.ERRORS.NOT_E11_POA.title' | translate}}</h2>
         <p class="metamask-desc">
-          You need to switch MetaMask to our own Ethereum network.
-          To do this, open MetaMask and add our "Custom RPC" (<strong>http://poa.e11.io:8311</strong>)
+          {{'APPWIDE.ERRORS.NOT_E11_POA.text' | translate}}(<strong>http://poa.e11.io:8311</strong>)
           <br><br>
-          If you have any issues, check this short step-by-step guide.
+          {{'APPWIDE.ERRORS.NOT_E11_POA.guide' | translate}}
         </p>
       </ng-template>
 
       <ng-template [ngIf]="error == 'locked'">
         <img class="metamask-logo" src="/assets/img/metamask-lock.png" alt="Metamask Locked"/>
-        <h2>Unlock MetaMask</h2>
+        <h2>{{'APPWIDE.ERRORS.LOCKED.title' | translate}}</h2>
         <p class="metamask-desc">
-          It seems that your MetaMask is locked. Please enter your password and click "Unlock".
+          {{'APPWIDE.ERRORS.LOCKED.text' | translate}}
           <br><br>
-          If you have any issues, check this short step-by-step guide.
+          {{'APPWIDE.ERRORS.LOCKED.guide' | translate}}
         </p>
       </ng-template>
 
       <ng-template [ngIf]="error == 'metamask_error'">
         <img class="metamask-logo" src="/assets/img/metamask-oops.png" alt="Whoops"/>
-        <h2>Whoops!</h2>
+        <h2>{{'APPWIDE.ERRORS.METAMASK_ERROR.title' | translate}}</h2>
         <p class="metamask-desc">
-          Something unexpected happened, please refresh this site and try again.
+          {{'APPWIDE.ERRORS.METAMASK_ERROR.text' | translate}}
           <br><br>
-          If the issue persists, please check our troubleshooting guide.
+          {{'APPWIDE.ERRORS.METAMASK_ERROR.guide' | translate}}
         </p>
       </ng-template>
 
       <ng-template [ngIf]="error == 'not_e11_poa' || error == 'locked' || error == 'metamask_error'">
         <button class="e11-button" type="button" name="button" (click)="openGuide()">
-          Check step-by-step guide
+          {{'APPWIDE.ERRORS.guide' | translate}}
         </button>
       </ng-template>
 

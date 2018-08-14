@@ -1,5 +1,16 @@
 # Changelog
 
+0.1.11 / 2018-08-8
+==================
+
+  * Village Logs
+  * Battle System
+  * Revenge System
+  * Points System
+  * Game balancing
+  * Upgraded contracts to pragma 0.4.24
+  * Scripts generate-buildings, update-buildings, and populate-poa
+
 0.1.10 / 2018-04-27
 ==================
 
@@ -19,7 +30,7 @@
   * Small improvements on cards design
   * Improvements on the internal ngrx core
   * Changes on how we display and manage the requirements
-  * Upgraded contracts to solidity 0.4.23
+  * Upgraded contracts to pragma 0.4.23
   * Small improvements on the UI
 
 0.1.7 / 2018-03-20

@@ -17,6 +17,7 @@ export class AssetsRequirementsService {
   }
 
   getAssetsRequirements(ids: any[]) {
+    // TODO Improve (must implement max amount of requirements)
     return Observable.forkJoin(
       ids.map(id => {
         return this.web3Service.callContract(

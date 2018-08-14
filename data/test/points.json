@@ -1,0 +1,8 @@
+{
+  "properties": {
+    "lowerPointsThreshold": 25,
+    "upperPointsThreshold": 200
+  },
+  "pointsToAdd": 100,
+  "pointsToSubtract": 10
+}

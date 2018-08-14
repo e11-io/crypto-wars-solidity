@@ -11,13 +11,13 @@
             <div class="navbar-resources">
               <span class="resource"
                     [attr.color]="resource"
-                    [attr.tooltip]="playerResources[resource+'Capacity'] ? playerResources[resource] + '/' + playerResources[resource+'Capacity'] : null"
+                    [attr.tooltip]="playerResources[resource+'Capacity'] ? (playerResources[resource] | largeNumber) + '/' + (playerResources[resource+'Capacity'] | largeNumber) : null"
                     tooltip-position="bottom"
                     *ngFor="let resource of ['gold', 'crystal', 'quantum']">
                 <div class="bullet-outline"
                      [style.border-width]="(1 + 4 * (playerResources[resource] / playerResources[resource+'Capacity'])) / 10 + 'rem'">
                 </div>
-                {{playerResources[resource] | number}}
+                {{playerResources[resource] | largeNumber}}
               </span>
             </div>
         </div>
@@ -25,16 +25,22 @@
     <div class="navbar-actions" *ngIf="!childNavDisabled">
         <div class="e11-segments" size="small">
             <div class="e11-segment"
+                 routerLink="/dashboard"
+                 routerLinkActive="active">
+                <i class="e11-icon e11f-dashboard"></i>
+                {{'NAVBAR.TABS.dashboard' | translate}}
+            </div>
+            <div class="e11-segment"
                  routerLink="/assets"
                  routerLinkActive="active">
                 <i class="e11-icon e11f-building"></i>
                 {{'NAVBAR.TABS.assets' | translate}}
             </div>
             <div class="e11-segment"
-                 routerLink="/dashboard"
+                 routerLink="/battle"
                  routerLinkActive="active">
-                <i class="e11-icon e11f-dashboard"></i>
-                {{'NAVBAR.TABS.dashboard' | translate}}
+                <i class="e11-icon e11f-sword"></i>
+                {{'NAVBAR.TABS.battle' | translate}}
             </div>
             <div class="e11-segment disabled"
                  routerLink="/trades"
@@ -46,10 +52,12 @@
             </div>
         </div>
     </div>
+    <div class="fill"></div>
     <div routerLinkActive="active" class="navbar-user">
-      <div class="picture">
+      <div class="user-picture">
         <angular-blockies *ngIf="blockiesOptions.seed" [options]="blockiesOptions">
         </angular-blockies>
       </div>
+      <span class="user-points e11-points-badge" position="bottom">{{points | largeNumber}}</span>
     </div>
 </div>

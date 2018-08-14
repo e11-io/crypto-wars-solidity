@@ -1,7 +1,6 @@
 module.exports = {
     copyPackages: [
-      'e11-contracts',
-      'zeppelin-solidity',
+      'openzeppelin-solidity',
     ],
     norpc: true,
     skipFiles: [

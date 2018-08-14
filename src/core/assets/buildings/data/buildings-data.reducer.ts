@@ -11,16 +11,14 @@ export function assetsBuildingsDataReducer (state = initialAssetsBuildingsDataSt
       })
 
     case AssetsBuildingsDataActions.Types.GET_BUILDINGS_DATA_SUCCESS:
-      let ids: any = {};
-      action.payload.ids.forEach((id, i) => ids[id] = new DataBuilding(id, action.payload.buildings[i]));
       return Object.assign({}, state, {
-        listMap: Object.assign({}, state.listMap, ids),
+        listMap: action.payload,
         status:  new Status(),
       });
 
     case AssetsBuildingsDataActions.Types.GET_BUILDINGS_DATA_FAILURE:
       return Object.assign({}, state, {
-        status: new Status({ error: action.payload.status.error }),
+        status: new Status({ error: action.payload.error }),
       });
 
     default:

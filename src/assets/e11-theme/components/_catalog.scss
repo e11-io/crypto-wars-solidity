@@ -135,6 +135,9 @@
         display: flex;
         flex-direction: column;
         .stat-value {
+          color: $color-text;
+        }
+        .stat-upgraded {
           color: $color-success;
         }
       }

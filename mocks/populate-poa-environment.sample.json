@@ -1,0 +1,22 @@
+{
+  "testAccounts": [
+    {
+      "address": "0xe117a8d00e33988b88e7f22c1a9b25e9e0b1af5d",
+      "privKey": "f366a1e9de5722f6743c87186988e2bedbce9a0825d5507a30b30253e2d56ad9",
+      "buildings": ["3001","5002","5003","5005","5006","3007","3008","3009"],
+      "resources": ["10000","10000","0"],
+      "unitsIds": [1, 2, 3],
+      "unitsQuantities": [10, 10, 10],
+      "points": "500000",
+      "username": "u-top-XX",
+      "villagename": "v-top-XX",
+      "attacks": [
+        {
+          "to": "0xe117a8d00e33988b88e7f22c1a9b25e9e0b1af5b",
+          "unitsIds": [1, 2, 3],
+          "unitsQuantities": [5, 5, 5]
+        }
+      ]
+    }
+  ]
+}

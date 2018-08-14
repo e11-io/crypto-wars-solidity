@@ -1,0 +1,26 @@
+{
+  "typeId": 9,
+  "name": "Barracks",
+  "maxLevel": 5,
+  "baseStats": {
+    "price": 32500,
+    "resource": 0,
+    "blocks": 9,
+    "health": 0,
+    "defense": 0,
+    "attack": 0,
+    "goldCapacity": 0,
+    "crystalCapacity": 0,
+    "goldRate": 0,
+    "crystalRate": 0
+  },
+  "levelsRequirements": {
+    "1": ["city_center_3"],
+    "3": ["city_center_4"],
+    "5": ["city_center_5"]
+  },
+  "modifiers": {
+    "price": "BV * (2.05 ** (BL-1))",
+    "blocks": "BV * (2.05 ** (BL-1))"
+  }
+}

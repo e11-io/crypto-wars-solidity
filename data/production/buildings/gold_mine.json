@@ -1,0 +1,23 @@
+{
+  "typeId": 2,
+  "name": "Gold mine",
+  "maxLevel": 10,
+  "baseStats": {
+    "price": 5000,
+    "resource": 0,
+    "blocks": 5,
+    "health": 0,
+    "defense": 0,
+    "attack": 0,
+    "goldCapacity": 0,
+    "crystalCapacity": 0,
+    "goldRate": 10,
+    "crystalRate": 0
+  },
+  "levelsRequirements": {},
+  "modifiers": {
+    "price": "BV * (1.5 ** (BL-1))",
+    "blocks": "BV * (1.5 ** (BL-1))",
+    "goldRate": "BV * BL * (1.1**BL)"
+  }
+}

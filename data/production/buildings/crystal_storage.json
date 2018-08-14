@@ -1,0 +1,23 @@
+{
+  "typeId": 8,
+  "name": "Crystal Storage",
+  "maxLevel": 10,
+  "baseStats": {
+    "price": 9500,
+    "resource": 1,
+    "blocks": 21,
+    "health": 0,
+    "defense": 0,
+    "attack": 0,
+    "goldCapacity": 0,
+    "crystalCapacity": 8500,
+    "goldRate": 0,
+    "crystalRate": 0
+  },
+  "levelsRequirements": {},
+  "modifiers": {
+    "price": "BV * (2 ** (BL-1))",
+    "blocks": "BV * (2 ** (BL-1))",
+    "crystalCapacity": "BV * (1.8 * (Math.exp((20*BL/35))))"
+  }
+}

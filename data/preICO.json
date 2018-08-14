@@ -1,0 +1,7 @@
+{
+  "goal": 10,
+  "cap": 13,
+  "minPayment": 1,
+  "maxPayment": 3,
+  "rate": 1000
+}

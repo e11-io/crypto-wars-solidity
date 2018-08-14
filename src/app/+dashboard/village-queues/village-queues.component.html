@@ -2,43 +2,44 @@
 
   <div class="e11-box-container buildings">
     <div class="box-header">
-      <i class="e11-icon e11f-building"></i> Build
+      <i class="e11-icon e11f-building"></i> {{'APPWIDE.COMMON.build' | translate}}
     </div>
     <div class="box-content define" [class.empty]="buildingsQueueIsEmpty">
       <ng-container *ngFor="let building of buildingsQueue; trackBy: trackByFn">
         <div class="box-option" *ngIf="building && building.inProgress">
           <div class="item-avatar">
             <div class="e11-avatar"
-                 [style.background-image]="'url(/assets/img/buildings/thumbnails/' + building.name + '.png)'">
+                 [style.background-image]="'url(/assets/img/buildings/thumbnails/' +
+                                           ('DATA.buildings.' + building.name + '.idName' | translate) + '_' +
+                                           ('DATA.buildings.' + building.name + '.image-level' | translate) + '.png)'">
             </div>
           </div>
           <div class="flex-col">
             <strong>
               {{'DATA.buildings.' + [building.name] + '.name' | translate}} - Lv. {{building.level}}
               <span class="price" [attr.color]="building.resource">
-                <div class="bullet-outline"></div>{{building.price}}
+                <div class="bullet-outline"></div>{{building.price | largeNumber}}
               </span> 
             </strong>
             <span *ngIf="!building.finished">
-              {{building.percent}}% Done
-              ({{building.remainingSeconds}} seconds left)
+              {{building.percent}}% {{'APPWIDE.COMMON.done' | translate}}
+              ({{building.remainingBlocks | blockTime}} {{'APPWIDE.COMMON.left' | translate}})
             </span>
             <span *ngIf="building.finished" color="success">
-              Finishing up...
+              {{'DASHBOARD.VILLAGE_QUEUE.finishing' | translate}}
             </span>
           </div>
         </div>
       </ng-container>
       <span class="empty-queue" *ngIf="buildingsQueueIsEmpty" (click)="navigateTo.emit('buildings')">
-        Your buildings queue is empty.
-        Start building!
+        {{'DASHBOARD.VILLAGE_QUEUE.empty-buildings-queue' | translate}}
       </span>
     </div>
   </div>
 
   <div class="e11-box-container">
     <div class="box-header">
-      <i class="e11-icon e11f-sword"></i> Barracks
+      <i class="e11-icon e11f-sword"></i> {{'APPWIDE.COMMON.barracks' | translate}}
     </div>
     <div class="box-content define" [class.empty]="unitsQueueIsEmpty">
       <ng-container *ngFor="let unit of unitsQueue; trackBy: trackByFn">
@@ -52,43 +53,48 @@
             <strong>
               {{'DATA.units.' + [unit.name] + '.name' | translate}}
               <ng-template [ngIf]="unit.quantity > 1">
-                ({{unit.quantity - unit.quantityInQueue + '/' + unit.quantity}})
+                <ng-template [ngIf]="unit.quantity - unit.quantityInQueue >= 0">
+                  {{unit.quantity - unit.quantityInQueue}}
+                </ng-template>
+                <ng-template [ngIf]="unit.quantity - unit.quantityInQueue < 0">
+                  0
+                </ng-template>
+                / {{unit.quantity}}
               </ng-template>
               <span class="price" [attr.color]="unit.resource">
-                <div class="bullet-outline"></div>{{unit.price * unit.quantity}}
+                <div class="bullet-outline"></div>{{(unit.price * unit.quantity) | largeNumber}}
               </span> 
             </strong>
             <span *ngIf="!unit.finished">
-              {{unit.percent}}% Done
-              ({{unit.remainingSeconds}} seconds left)
+              {{unit.percent}}% {{'APPWIDE.COMMON.done' | translate}}
+              ({{unit.remainingBlocks | blockTime}} {{'APPWIDE.COMMON.left' | translate}})
             </span>
             <span *ngIf="unit.finished" color="success">
-              Finishing up...
+              {{'DASHBOARD.VILLAGE_QUEUE.finishing' | translate}}
             </span>
           </div>
         </div>
       </ng-container>
       <span class="empty-queue" *ngIf="unitsQueueIsEmpty" (click)="navigateTo.emit('units')">
-        Your barracks queue is empty.
-        Start creating!
+        {{'DASHBOARD.VILLAGE_QUEUE.empty-barracks-queue' | translate}}
       </span>
     </div>
   </div>
 
   <div class="e11-box-container">
     <div class="box-header">
-      <i class="e11-icon e11f-research"></i> Research
+      <i class="e11-icon e11f-research"></i> {{'APPWIDE.COMMON.research' | translate}}
     </div>
     <div class="box-content define" [class.empty]="!researchQueue.length">
       <div class="box-option" *ngFor="let research of researchQueue">
-         research
+         {{'DASHBOARD.VILLAGE_QUEUE.research' | translate}}
       </div>
       <!-- <span *ngIf="!unitsQueue.length">
         Nothing researching now
         Start now!
       </span> -->
       <span>
-        Coming soon
+        {{'APPWIDE.coming-soon' | translate}}
       </span>
     </div>
   </div>

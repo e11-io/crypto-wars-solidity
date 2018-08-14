@@ -7,6 +7,10 @@
     $badge-padding: 4px 9px;
     $badge-shadow: 0 -1px 0 0 #E6EAEE;
 
+    $badge-points-background: #7F8CA3;
+    $badge-points-font-size: .9rem;
+    $badge-points-font-size-medium: 1rem;
+
     .e11-badge {
       @extend .noselect;
 
@@ -19,6 +23,42 @@
       background: $badge-background;
       color: $badge-color;
       box-shadow: $badge-shadow;
+      cursor: default;
+    }
+
+    .e11-points-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: $badge-points-background;
+      color: $badge-color;
+      border-radius: 10rem;
+      font-size: $badge-points-font-size;
+      font-weight: bold;
+      line-height: normal;
+      text-align: center;
+      padding: .1rem .6rem;
+      white-space: nowrap;
+      cursor: default;
+
+      .e11-icon {
+        margin-right: .5rem;
+        font-size: 1rem;
+      }
+
+      &[position="bottom"] {
+        position: absolute;
+        bottom: -.5rem;
+      }
+      &[size='medium'] {
+        font-size: 1rem;
+        padding: .2rem .7rem;
+
+        .e11-icon {
+          font-size: 1.1rem;
+        }
+      }
+
     }
 
 }

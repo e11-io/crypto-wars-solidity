@@ -1,0 +1,48 @@
+.battle-army-stats-container {
+  .e11-box-container {
+    padding: 2.4rem 1rem;
+  }
+  .army-stats {
+    display: flex;
+    flex-direction: row;
+    margin-top: 1.5rem;
+    .stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      position: relative;
+
+      &:not(:first-child):not(:last-child) {
+        &::before,
+        &::after {
+          content: '';
+          position: absolute;
+          width: 1px;
+          height: 3rem;
+          background: #313D4F;
+        }
+        &::after {
+          right: 0;
+        }
+        &::before {
+          left: 0;
+        }
+      }
+
+      span {
+        display: flex;
+        align-items: center;
+        text-transform: uppercase;
+        font-size: 1rem;
+        line-height: 1;
+        margin-top: .5rem;
+        .e11-icon {
+          margin-right: .3rem;
+          font-size: 1.1rem;
+        }
+      }
+    }
+  }
+}

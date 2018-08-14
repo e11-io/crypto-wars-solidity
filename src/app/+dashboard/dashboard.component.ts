@@ -10,13 +10,18 @@ import 'rxjs/add/operator/take';
 import { CryptoWarsState } from '../app.state';
 
 import { ContractsService } from '../../core/shared/contracts.service';
+import { BattleDetail } from '../../core/player/battle/battle-detail.model';
+import { PlayerBattleActions } from '../../core/player/battle/player-battle.actions';
 import { PlayerResourcesState, initialPlayerResourcesState } from '../../core/player/resources/player-resources.state';
 import { Web3Service } from '../../core/web3/web3.service';
 
 import { AbstractContainerComponent } from '../shared/components/abstract-container.component';
-import { getCurrentBlockFromStore, getPercentBetweenBlocks, getRemainingSeconds } from '../shared/util/helpers';
+import { getCurrentBlockFromStore, getPercentBetweenBlocks, getRemainingBlocksBetween } from '../shared/util/helpers';
 import { Building } from '../shared/models/building.model';
 import { UnitMap } from '../shared/models/unit.model';
+
+import * as selectors from '../app.selectors';
+
 
 @Component({
   selector: 'e11-dashboard',
@@ -24,12 +29,13 @@ import { UnitMap } from '../shared/models/unit.model';
   styleUrls: ['./dashboard.component.scss']
 })
 
-export class DashboardComponent extends AbstractContainerComponent {
+export class DashboardComponent extends AbstractContainerComponent implements OnInit {
 
   buildingsInQueue: Building[];
+  battleDetails: BattleDetail[] = [];
   e11Balance: number = 0;
   ownedBuildings: Building[];
-  playerResources: PlayerResourcesState = initialPlayerResourcesState;
+  playerResources: any;
   unitsMap: UnitMap = {};
   unitsInQueue: any;
   villageName: string = '';
@@ -46,9 +52,14 @@ export class DashboardComponent extends AbstractContainerComponent {
       this.setBuildings(),
       this.setUnits(),
       this.setUnitsInQueue(),
-      this.setVillageName()
+      this.setVillageName(),
+      this.setBattleLogs(),
     );
 
+  }
+
+  ngOnInit() {
+    this.store.dispatch(new PlayerBattleActions.GetBattleHistory());
   }
 
   setE11Balance() {
@@ -58,7 +69,7 @@ export class DashboardComponent extends AbstractContainerComponent {
   }
 
   setPlayerResources() {
-    return this.store.select(s => s.player.resources).subscribe(playerResources => {
+    return this.store.select(selectors.selectPlayerResources).subscribe(playerResources => {
       this.playerResources = playerResources;
     });
   }
@@ -71,14 +82,12 @@ export class DashboardComponent extends AbstractContainerComponent {
         if (building.endBlock <= currentBlock) {
           return Object.assign({}, building, {
             finished: true,
-            percent: 100,
-            remainingSeconds: 0,
+            percent: 100
           });
         }
         return Object.assign({}, building, {
           finished: false,
-          percent: getPercentBetweenBlocks(building.startBlock, building.endBlock, currentBlock),
-          remainingSeconds: getRemainingSeconds(building.endBlock, this.store),
+          percent: getPercentBetweenBlocks(building.startBlock, building.endBlock, currentBlock)
         });
       });
 
@@ -100,13 +109,13 @@ export class DashboardComponent extends AbstractContainerComponent {
           return Object.assign({}, unit, {
             finished: true,
             percent: 100,
-            remainingSeconds: 0,
+            remainingBlocks: 0
           })
         }
         return Object.assign({}, unit, {
           finished: false,
           percent: getPercentBetweenBlocks(unit.startBlock, unit.endBlock, currentBlock),
-          remainingSeconds: getRemainingSeconds(unit.endBlock, this.store),
+          remainingBlocks: getRemainingBlocksBetween(currentBlock, unit.endBlock)
         })
       });
 
@@ -120,9 +129,19 @@ export class DashboardComponent extends AbstractContainerComponent {
     });
   }
 
+  viewBattleDetail(selectedBattle: BattleDetail) {
+    this.store.dispatch(new PlayerBattleActions.SelectBattleDetail(selectedBattle.id));
+    this.router.navigate(['/battle/history']);
+  }
 
   navigateTo(page: string) {
     this.router.navigate(['/assets/' + page]);
+  }
+
+  setBattleLogs() {
+    return this.store.select(s => s.player.battle.battles).distinctUntilChanged().subscribe(battles => {
+      this.battleDetails = battles;
+    });
   }
 
 }
