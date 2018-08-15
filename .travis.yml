@@ -21,7 +21,6 @@ install:
 env:
   global:
     - SOLIDITY_COVERAGE=true
-    - UPLOAD_COVERALLS=false
 before_script:
   - truffle version
 script:

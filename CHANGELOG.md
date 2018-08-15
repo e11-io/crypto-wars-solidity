@@ -1,5 +1,11 @@
 # Changelog
 
+0.1.12 / 2018-08-15
+==================
+
+  * Re-enable coverage
+  * Fixed Quantum dust translation
+
 0.1.11 / 2018-08-8
 ==================
 

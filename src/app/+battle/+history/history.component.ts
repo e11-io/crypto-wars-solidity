@@ -52,6 +52,7 @@ export class BattleHistoryComponent extends AbstractContainerComponent implement
 
   ngOnInit() {
     if (!this.battleDetails || this.battleDetails.length === 0) {
+      this.store.dispatch(new PlayerBattleActions.ClearBattleHistory());
       this.store.dispatch(new PlayerBattleActions.GetBattleHistory());
     }
   }
